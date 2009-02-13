@@ -1,0 +1,140 @@
+<tp:spec
+   xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0"
+   xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <tp:title>Foo D-Bus Interface Specification</tp:title>
+  <tp:version>0.1</tp:version>
+
+  <tp:copyright>Copyright (C) 2009 Foo Unlimited</tp:copyright>
+  <tp:copyright>Copyright (C) 2005-2008 Collabora Limited</tp:copyright>
+
+  <tp:license xmlns="http://www.w3.org/1999/xhtml">
+    <p>This library is free software; you can redistribute it and/or
+      modify it under the terms of the GNU Lesser General Public
+      License as published by the Free Software Foundation; either
+      version 2.1 of the License, or (at your option) any later version.</p>
+
+    <p>This library is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+      Lesser General Public License for more details.</p>
+
+    <p>You should have received a copy of the GNU Lesser General Public
+      License along with this library; if not, write to the Free Software
+      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</p>
+  </tp:license>
+
+  <node name="/Foo_Node">
+    <interface name="org.freedesktop.Spec.Foo">
+
+      <tp:simple-type name="Foo_Simple_Type" type="s">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>A foo messaging protocol. It must consist only of ASCII
+            letters, digits and hyphen/minus signs (U+002D "-"), and must start
+            with a letter. Where possible, this SHOULD be
+            chosen from the following well-known values:</p>
+
+          <ul>
+            <li>irc - Internet Relay Chat (RFC 1459, 2810-2813)</li>
+            <li>jabber - XMPP (RFC 3920, 3921) or Jabber</li>
+            <li>local-xmpp - Link-local XMPP (XEP-0174) (Bonjour, Salut)</li>
+          </ul>
+        </tp:docstring>
+        <tp:changed version="0.1">Prior to version 0.1, the allowed
+          characters were not specified</tp:changed>
+      </tp:simple-type>
+
+      <tp:struct name="Foo_Struct" array-name="Foo_Struct_List">
+        <tp:docstring>A struct representing a Foo.</tp:docstring>
+        <tp:member type="s" name="Name">
+          <tp:docstring>A string parameter name</tp:docstring>
+        </tp:member>
+        <tp:member type="u" tp:type="Foo_Flags" name="Flags">
+          <tp:docstring>A bitwise OR of the parameter flags</tp:docstring>
+        </tp:member>
+        <tp:member type="s" tp:type="DBus_Signature" name="Signature">
+          <tp:docstring>A string containing the D-Bus type signature
+            for this parameter</tp:docstring>
+        </tp:member>
+      </tp:struct>
+
+      <tp:flags name="Foo_Flags" value-prefix="Foo_Flag" type="u">
+        <tp:flag suffix="Flag1" value="1">
+          <tp:docstring>
+            This is the first flag.
+          </tp:docstring>
+        </tp:flag>
+        <tp:flag suffix="Flag2" value="2">
+          <tp:docstring>
+            This is the second flag.
+          </tp:docstring>
+        </tp:flag>
+        <tp:flag suffix="Flag3" value="4">
+          <tp:docstring>
+            This is the third flag.
+            <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+              <p>And a comment.</p>
+            </tp:docstring>
+          </tp:docstring>
+          <tp:added version="0.1"/>
+        </tp:flag>
+      </tp:flags>
+
+      <method name="ListFoo"
+              tp:name-for-bindings="List_Foo">
+        <arg direction="out" type="as" tp:type="Foo_Simple_Type[]"
+             name="Foos">
+          <tp:docstring>
+            A array of foo identifiers supported.
+          </tp:docstring>
+        </arg>
+        <tp:docstring>
+          Get a list of identifiers that are implemented.
+        </tp:docstring>
+      </method>
+
+      <signal name="NewFoo"
+              tp:name-for-bindings="New_Foo">
+        <arg name="Bus_Name" type="s" tp:type="DBus_Bus_Name">
+          <tp:docstring>
+            The D-Bus service where the foo object can be found
+          </tp:docstring>
+        </arg>
+        <arg name="Object_Path" type="o">
+          <tp:docstring>
+            The object path of the Foo object on this service
+          </tp:docstring>
+        </arg>
+        <arg name="Foo" type="s" tp:type="Foo_Simple_Type">
+          <tp:docstring>
+            The identifier for the foo this connection uses
+          </tp:docstring>
+        </arg>
+        <tp:docstring>
+          Emitted when a new
+          <tp:dbus-ref namespace="org.freedesktop.Spec">Foo</tp:dbus-ref>
+          object is created.
+        </tp:docstring>
+      </signal>
+
+      <property name="MyProp" tp:name-for-bindings="My_Prop"
+                type="as" access="read">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>A list of foo.</p>
+        </tp:docstring>
+        <tp:added version="0.1"/>
+      </property>
+
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A D-Bus service which allows foo to be created. The foo
+          processes are intended to be started by D-Bus service activation.</p>
+      </tp:docstring>
+
+      <tp:changed version="0.1">Prior to version 0.1, bar was required.</tp:changed>
+
+    </interface>
+  </node>
+
+  <xi:include href="generic-types.xml"/>
+
+</tp:spec>

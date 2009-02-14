@@ -1,4 +1,4 @@
-SPEC_NAME = foobar
+SPEC_NAME = mpris
 RST =
 
 include Makefile.decl

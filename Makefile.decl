@@ -35,15 +35,17 @@ $(patsubst %.txt,%.html,$(RST)): %.html: %.txt Makefile
 GENERATED_FILES = \
 	$(patsubst %.txt,%.html,$(RST)) \
 	doc/spec.html \
-	doc/telepathy-spec.devhelp2 \
+	doc/$(SPEC_NAME)-spec.devhelp2 \
 	$(INTROSPECT) $(ASYNC_INTROSPECT) \
 	$(CANONICAL_NAMES)
 
 doc/spec.html: $(XMLS) tools/doc-generator.xsl
+	@install -d doc
 	@install -d tmp/doc
 	$(XSLTPROC) tools/doc-generator.xsl spec/all.xml > tmp/$@
 	mv tmp/$@ $@
-doc/telepathy-spec.devhelp2: $(XMLS) tools/devhelp.xsl
+doc/$(SPEC_NAME)-spec.devhelp2: $(XMLS) tools/devhelp.xsl
+	@install -d doc
 	@install -d tmp/doc
 	$(XSLTPROC) tools/devhelp.xsl spec/all.xml > tmp/$@
 	mv tmp/$@ $@
@@ -89,35 +91,11 @@ clean:
 	rm -rf test/output
 	rm -rf tmp
 
-maintainer-upload-snapshot: doc/spec.html
-	@install -d tmp
-	cp doc/spec.html tmp/spec.html
-	sed -i~ -e 's!\(<h2>Version [0-9][0-9.]*\)\(</h2>\)!\1 (git commit '`git rev-list -n 1 --abbrev-commit --abbrev=8 HEAD`', '`date +%Y-%m-%d`')\2!' \
-		tmp/spec.html
-	scp tmp/spec.html \
-		telepathy.freedesktop.org:/srv/telepathy.freedesktop.org/www/spec-snapshot.html
-
-maintainer-upload-release: doc/spec.html
-	@install -d tmp
-	set -e ; \
-	version="`sed -ne s'!<tp:version>\(.*\)</tp:version>!\1!p' spec/all.xml`";\
-	if ! echo $$version | egrep '[0-9]+\.[0-9]+\.[0-9]+'; then \
-		echo 'This does not look like a spec release'; \
-		exit 1; \
-	fi; \
-	test -f telepathy-spec-$$version.tar.gz; \
-	test -f telepathy-spec-$$version.tar.gz.asc; \
-	gpg --verify telepathy-spec-$$version.tar.gz.asc; \
-	rsync -vzP telepathy-spec-$$version.tar.gz telepathy.freedesktop.org:/srv/telepathy.freedesktop.org/www/releases/telepathy-spec/ ; \
-	rsync -vzP telepathy-spec-$$version.tar.gz.asc telepathy.freedesktop.org:/srv/telepathy.freedesktop.org/www/releases/telepathy-spec/ ; \
-	rsync -vzP doc/spec.html telepathy.freedesktop.org:/srv/telepathy.freedesktop.org/www/spec-snapshot.html ; \
-	rsync -vzP doc/spec.html telepathy.freedesktop.org:/srv/telepathy.freedesktop.org/www/spec.html
-
 dist:
 	@install -d tmp
 	set -e ;\
 	version="`sed -ne s'!<tp:version>\(.*\)</tp:version>!\1!p' spec/all.xml`";\
-	distname="telepathy-spec-$$version";\
+	distname="$(SPEC_NAME)-spec-$$version";\
 	rm -f tmp/ChangeLog "$$distname".tar "$$distname".tar.gz; \
 	$(GIT) archive --format=tar --prefix="$$distname"/ "HEAD^{tree}" \
 		> "$$distname".tar;\
@@ -130,13 +108,3 @@ dist:
 	$(GZIP) -9 "$$distname".tar;\
 	$(TAR) -ztvf "$$distname".tar.gz;\
 	rm -rf tmp/"$$distname"
-
-BRANCH = $(shell sh tools/git-which-branch.sh misc | tr -d '\n' | tr -C "[:alnum:]" _)
-UPLOAD_BRANCH_TO = people.freedesktop.org:public_html/telepathy-spec
-
-# Usage: make upload-branch BRANCH=discussion
-upload-branch: all
-	rsync -zvP doc/spec.html $(patsubst %.txt,%.html,$(RST)) \
-		$(UPLOAD_BRANCH_TO)-$(BRANCH)/
-	@echo Your spec branch might be at:
-	@echo '  ' http://people.freedesktop.org/~$$USER/telepathy-spec-$(BRANCH)/

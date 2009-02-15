@@ -198,6 +198,24 @@
         </tp:docstring>
       </method>
 
+      <signal name="TrackListChange" tp:name-for-bindings="Track_List_Change">
+        <arg name="Nb_Tracks" type="i">
+          <tp:docstring>
+            The number of elements in the TrackList after the change
+            happened.
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>Signal is emitted when the "TrackList" content has changed:
+            <ul>
+              <li>When one or more elements have been added</li>
+              <li>When one or more elements have been removed</li>
+              <li>When the ordering of elements has changed </li>
+            </ul>
+          </p>
+        </tp:docstring>
+      </signal>
+
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Those methods must be access though the "/TrackList" object
           path.</p>
@@ -208,6 +226,7 @@
           GetCurrentTrack (which always returns 0), GetLength (which
           will return 0 or 1), and AddTrack.</p>
       </tp:docstring>
+
     </interface>
   </node>
 
@@ -361,7 +380,7 @@
         </tp:flag>
       </tp:flags>
       <method name="GetCaps" tp:name-for-bindings="Get_Caps">
-        <arg direction="out" type="i" tp:type="Caps_Flags" name="Flags">
+        <arg direction="out" type="i" tp:type="Caps_Flags" name="Capabilities">
           <tp:docstring>
             Flags.
           </tp:docstring>
@@ -423,10 +442,52 @@
         </tp:docstring>
       </method>
 
+      <signal name="TrackChange" tp:name-for-bindings="Track_Change">
+        <arg name="Metadata" type="a{sv}" tp:type="String_Variant_Map">
+          <tp:docstring>
+            Metadata of the new track.
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>Signal is emitted when the "Media Player" plays another
+            "Track". Argument of the signal is the metadata attached to
+            the new "Track".
+          </p>
+        </tp:docstring>
+      </signal>
+
+      <signal name="StatusChange" tp:name-for-bindings="Status_Change">
+        <arg name="Status" type="(iiii)" tp:type="Status_Struct">
+          <tp:docstring>
+            Media player status.
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>Signal is emitted when the status of the "Media Player"
+            change. The argument has the same meaning as the value
+            returned by GetStatus.
+          </p>
+        </tp:docstring>
+      </signal>
+
+      <signal name="CapsChange" tp:name-for-bindings="Caps_Change">
+        <arg name="Capabilities" type="i" tp:type="Caps_Flags">
+          <tp:docstring>
+            Media player capabilities.
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>Signal is emitted when the "Media Player" changes
+            capabilities, see GetCaps method.
+          </p>
+        </tp:docstring>
+      </signal>
+
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Those methods must be access though the "/Player" object
           path.</p>
       </tp:docstring>
+
     </interface>
   </node>
 

@@ -261,7 +261,7 @@
         </tp:docstring>
       </method>
 
-      <tp:struct name="Status_Structure">
+      <tp:struct name="Status_Struct">
         <tp:docstring>The status of the media player.</tp:docstring>
         <tp:member type="i" name="Playback_State">
           <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -287,7 +287,7 @@
         </tp:member>
       </tp:struct>
       <method name="GetStatus" tp:name-for-bindings="Get_Status">
-        <arg direction="out" type="(iiii)" tp:type="Status_Structure" name="Status">
+        <arg direction="out" type="(iiii)" tp:type="Status_Struct" name="Status">
           Status.
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">

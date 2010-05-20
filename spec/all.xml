@@ -401,6 +401,11 @@
             Whether the media player can hold a list of several items.
           </tp:docstring>
         </tp:flag>
+        <tp:flag suffix="REPEAT" value="1 &lt;&lt; 7">
+          <tp:docstring>
+            Whether the media player can be set to repeat the current track
+          </tp:docstring>
+        </tp:flag>
       </tp:flags>
       <method name="GetCaps" tp:name-for-bindings="Get_Caps">
         <arg direction="out" type="i" tp:type="Caps_Flags" name="Capabilities">

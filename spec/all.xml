@@ -3,7 +3,7 @@
    xmlns:xi="http://www.w3.org/2001/XInclude">
 
   <tp:title>MPRIS D-Bus Interface Specification</tp:title>
-  <tp:version>1.0</tp:version>
+  <tp:version>2.0-draft</tp:version>
 
   <tp:copyright>Copyright (C) 2008 the VideoLAN team (Mirsal Ennaime &amp; Funman)</tp:copyright>
   <tp:copyright>Copyright (C) 2008 Nick Welch</tp:copyright>
@@ -29,7 +29,7 @@
   </tp:license>
 
   <node name="/Root_Node">
-    <interface name="org.freedesktop.MediaPlayer">
+    <interface name="org.mpris.MediaPlayer">
 
       <tp:simple-type name="Identity" type="s">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -86,18 +86,29 @@
           <li>org.mpris.xmms2</li>
         </ul>
 
-        <p>All methods must be accessed through the
-          interface <b>org.freedesktop.MediaPlayer.</b></p>
+        <p>
+            media players <strong>must</strong> expose at least the three
+            following object paths whenever they are running:
+
+            <ul>
+                <li><strong>/org/mpris/MediaPlayer</strong> which implements the
+                    <strong>org.mpris.MediaPlayer</strong> interface</li>
+                <li><strong>/org/mpris/MediaPlayer/Player</strong> which implements the
+                    <strong>org.mpris.MediaPlayer.Player</strong> interface</li>
+                <li><strong>/org/mpris/MediaPlayer/TrackList</strong> which implements the
+                    <strong>org.mpris.MediaPlayer.TrackList</strong> interface</li>
+            </ul>
+        </p>
 
         <p>The Identity, Quit, and MprisVersion methods must be
-          accessed through the "/" object path.</p>
+            accessed through the "/org/mpris/MediaPlayer" object path.</p>
       </tp:docstring>
 
     </interface>
   </node>
 
   <node name="/TrackList_Node">
-    <interface name="org.freedesktop.MediaPlayer">
+    <interface name="org.mpris.MediaPlayer.TrackList">
       <method name="GetMetadata" tp:name-for-bindings="Get_Metadata">
         <arg direction="in" type="i" name="Position">
           <tp:docstring>
@@ -217,8 +228,8 @@
       </signal>
 
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Those methods must be access though the "/TrackList" object
-          path.</p>
+          <p>Those methods must be access though the
+              "/org/mpris/MediaPlayer/TrackList" object path.</p>
 
         <p>Note that if CAN_HAS_TRACKLIST is false, the methods
           described here must be implemented as no-ops, except
@@ -231,7 +242,7 @@
   </node>
 
   <node name="/Player_Node">
-    <interface name="org.freedesktop.MediaPlayer">
+    <interface name="org.mpris.MediaPlayer.Player">
 
       <method name="Next" tp:name-for-bindings="Next">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -484,8 +495,8 @@
       </signal>
 
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Those methods must be access though the "/Player" object
-          path.</p>
+          <p>Those methods must be access though the
+              "/org/mpris/MediaPlayer/Player" object path.</p>
       </tp:docstring>
 
     </interface>

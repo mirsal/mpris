@@ -33,7 +33,7 @@
     <h3>About</h3>
     <p> The Media Player Remote Interfacing specification is a standard
         <a href="http://www.freedesktop.org/wiki/Software/dbus">D-Bus</a>
-        interface which aims to provides a common programmatic API
+        interface which aims to provide a common programmatic API
         for controlling media players.</p>
 
     <h3>Bus name policy</h3>

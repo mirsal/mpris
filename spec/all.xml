@@ -406,6 +406,13 @@
             Whether the media player can be set to repeat the current track
           </tp:docstring>
         </tp:flag>
+        <tp:flag suffix="LOOP" value="1 &lt;&lt; 8">
+          <tp:docstring>
+            Whether the media player can be set to loop through the tracklist
+            using the SetLoop method of the org.mpris.MediaPlayer.Tracklist
+            interface on the /org/mpris/MediaPlayer/TrackList object path
+          </tp:docstring>
+        </tp:flag>
       </tp:flags>
       <method name="GetCaps" tp:name-for-bindings="Get_Caps">
         <arg direction="out" type="i" tp:type="Caps_Flags" name="Capabilities">

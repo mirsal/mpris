@@ -389,6 +389,15 @@
             Whether the media player can hold a list of several items.
           </tp:docstring>
         </tp:flag>
+        <tp:flag suffix="PROVIDE_LIBRARY" value="1 &lt;&lt; 8">
+          <tp:docstring>
+            Whether the media player manages a media library.
+            If this flag is set, the media player <strong>must</strong>
+            expose the <strong>/org/mpris/MediaPlayer/Library</strong>
+            object path, which implements the
+            <strong>org.mpris.MediaPlayer.Library</strong> interface.
+          </tp:docstring>
+        </tp:flag>
       </tp:flags>
       <method name="GetCaps" tp:name-for-bindings="Get_Caps">
         <arg direction="out" type="i" tp:type="Caps_Flags" name="Capabilities">

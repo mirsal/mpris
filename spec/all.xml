@@ -243,7 +243,7 @@
           <p>Those methods must be access though the
               "/org/mpris/MediaPlayer/TrackList" object path.</p>
 
-        <p>Note that if CAN_HAS_TRACKLIST is false, the methods
+        <p>Note that if CAN_PROVIDE_TRACKLIST is false, the methods
           described here must be implemented as no-ops, except
           GetMetadata (which is valid only if given argument is 0),
           GetCurrentTrack (which always returns 0), GetLength (which
@@ -396,7 +396,7 @@
             stream/source using GetMetadata at all.
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="HAS_TRACKLIST" value="1 &lt;&lt; 6">
+        <tp:flag suffix="PROVIDE_TRACKLIST" value="1 &lt;&lt; 6">
           <tp:docstring>
             Whether the media player can hold a list of several items.
           </tp:docstring>

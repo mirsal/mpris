@@ -58,6 +58,13 @@
             <li><strong>/org/mpris/MediaPlayer/TrackList</strong> which implements the
                 <strong>org.mpris.MediaPlayer.TrackList</strong> interface</li>
         </ul>
+
+        media players may expose the following object paths:
+
+        <ul>
+            <li><strong>/org/mpris/MediaPlayer/Library</strong> which implements the
+                <strong>org.mpris.MediaPlayer.Library</strong> interface </li>
+        </ul>
     </p>
 
   </tp:docstring>
@@ -519,6 +526,10 @@
               "/org/mpris/MediaPlayer/Player" object path.</p>
       </tp:docstring>
 
+    </interface>
+  </node>
+  <node name="/Library_Node">
+    <interface name="org.mpris.MediaPlayer.Library">
     </interface>
   </node>
 

@@ -46,6 +46,16 @@
       <li>org.mpris.xmms2</li>
     </ul>
 
+    <p> In the case where the media player allows multiples instances running
+        simultaneously, each additional instance should request a unique bus
+        name, adding a dot and a unique identifier to its usual bus name.
+        (such as a UNIX process id) For example:
+    </p>
+
+    <ul>
+        <li>org.mpris.vlc.7389</li>
+    </ul>
+
     <h3>Well-known object paths</h3>
     <p>
         media players <strong>must</strong> expose at least the three

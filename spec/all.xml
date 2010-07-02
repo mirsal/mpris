@@ -685,7 +685,7 @@
         <tp:flag suffix="PROVIDE_METADATA" value="1 &lt;&lt; 5">
           <tp:docstring>
             Metadata can be acquired for the currently played
-            stream/source. (The trackid and uri entries are provided
+            track. (The trackid and uri entries are provided
             even if this flag is not set)
           </tp:docstring>
         </tp:flag>
@@ -705,13 +705,18 @@
             The media player can be set to loop through the tracklist.
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="CONTROL_RATE" value="1 &lt;&lt; 9">
+        <tp:flag suffix="SHUFFLE" value="1 &lt;&lt; 9">
           <tp:docstring>
-            Clients can write to the Rate property and expect
-            the playing rate to change accordingly.
+            The media player can be set to play tracks randomly.
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="PLAY_BACKWARDS" value="1 &lt;&lt; 10">
+        <tp:flag suffix="CONTROL_RATE" value="1 &lt;&lt; 10">
+          <tp:docstring>
+            Clients can call the SetRate method on this interface and expect
+            the playback rate to change accordingly.
+          </tp:docstring>
+        </tp:flag>
+        <tp:flag suffix="PLAY_BACKWARDS" value="1 &lt;&lt; 11">
           <tp:docstring>
             The Rate property can take negative values.
           </tp:docstring>

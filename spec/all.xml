@@ -42,12 +42,12 @@
 
     <h3>Bus name policy</h3>
     <p> Each media player <strong>must</strong> request an unique bus name
-        which begins with <b>org.mpris</b>. For example:</p>
+        which begins with <b>org.mpris.mediaplayers</b>. For example:</p>
     <ul>
-      <li>org.mpris.audacious</li>
-      <li>org.mpris.vlc</li>
-      <li>org.mpris.bmp</li>
-      <li>org.mpris.xmms2</li>
+      <li>org.mpris.mediaplayers.audacious</li>
+      <li>org.mpris.mediaplayers.vlc</li>
+      <li>org.mpris.mediaplayers.bmp</li>
+      <li>org.mpris.mediaplayers.xmms2</li>
     </ul>
 
     <p> In the case where the media player allows multiple instances running
@@ -57,7 +57,7 @@
     </p>
 
     <ul>
-        <li>org.mpris.vlc.7389</li>
+        <li>org.mpris.mediaplayers.vlc.7389</li>
     </ul>
 
     <h3>Well-known object paths</h3>

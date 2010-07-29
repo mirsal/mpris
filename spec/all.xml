@@ -120,6 +120,21 @@
         </tp:docstring>
       </method>
 
+      <method name="Raise" tp:name-for-bindings="Raise">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>
+            Brings the media player's user interface to the front using any
+            available and appropriate mechanism.
+          </p>
+          <p>
+            The media player may not be able to control when its user interface
+            is displayed, or it may not have a graphical user interface at all,
+            in this case, the CAN_RAISE capability flag is not set and this
+            method does nothing.
+          </p>
+        </tp:docstring>
+      </method>
+
       <tp:struct name="Version_Struct">
         <tp:docstring>A struct representing the MPRIS spec version.</tp:docstring>
         <tp:member type="q" name="Major">
@@ -165,7 +180,13 @@
             interface
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="QUIT" value="1 &lt;&lt; 1">
+        <tp:flag suffix="RAISE" value="1 &lt;&lt; 1">
+          <tp:docstring>
+            A call to Raise on this interface will present the media player's user
+            interface to the user.
+          </tp:docstring>
+        </tp:flag>
+        <tp:flag suffix="QUIT" value="1 &lt;&lt; 2">
           <tp:docstring>
             A call to Quit on this interface will make
             the media player stop running.

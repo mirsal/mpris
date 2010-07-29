@@ -283,7 +283,7 @@
 
       <tp:simple-type name="Uri" type="s">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>A track Uri</p>
+          <p>A unique resource identifier</p>
         </tp:docstring>
       </tp:simple-type>
 
@@ -702,8 +702,9 @@
         <tp:flag suffix="SEEK" value="1 &lt;&lt; 4">
           <tp:docstring>
             Seeking is possible in the currently played
-            stream. (UIs/frontends can then enable/disable seeking
-            controls)
+            stream. Clients can enable seeking controls and
+            expect both the SetPosition and the Seek methods to
+            alter the current playback position
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="PROVIDE_METADATA" value="1 &lt;&lt; 5">
@@ -828,6 +829,7 @@
             If the Position argument is greater than the track length,
             do nothing
           </p>
+          <p>If the PLAYER_CAN_SEEK capability flag is not set, do nothing</p>
         </tp:docstring>
       </method>
 
@@ -836,6 +838,12 @@
             <p>
               The current track position in milliseconds, between 0 and
               the 'length' metadata entry (see Metadata)
+            </p>
+            <p>
+              Note: If the media player allows it, the current playback position
+              can be changed either the SetPosition method or the Seek method on
+              this interface.
+              If it is not the case, the PLAYER_CAN_SEEK is not set.
             </p>
           </tp:docstring>
       </property>
@@ -860,6 +868,7 @@
             If the value passed in would mean seeking beyond the end
             of the track, acts like a call to Next
           </p>
+          <p>If the PLAYER_CAN_SEEK capability flag is not set, do nothing</p>
         </tp:docstring>
       </method>
 

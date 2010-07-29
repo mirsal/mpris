@@ -124,12 +124,12 @@
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>
             Brings the media player's user interface to the front using any
-            available and appropriate mechanism.
+            appropriate mechanism available.
           </p>
           <p>
-            The media player may not be able to control when its user interface
-            is displayed, or it may not have a graphical user interface at all,
-            in this case, the CAN_RAISE capability flag is not set and this
+            The media player may not be able to control how its user interface
+            is displayed, or it may not have a graphical user interface at all.
+            In this case, the CAN_RAISE capability flag is not set and this
             method does nothing.
           </p>
         </tp:docstring>
@@ -180,13 +180,18 @@
             interface
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="RAISE" value="1 &lt;&lt; 1">
+        <tp:flag suffix="MANAGE_PLAYLISTS" value="1 &lt;&lt; 1">
           <tp:docstring>
-            A call to Raise on this interface will present the media player's user
-            interface to the user.
+            The playlist property contains a list of playlists
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="QUIT" value="1 &lt;&lt; 2">
+        <tp:flag suffix="RAISE" value="1 &lt;&lt; 2">
+          <tp:docstring>
+            A call to Raise on this interface will present the media player's
+            user interface to the user.
+          </tp:docstring>
+        </tp:flag>
+        <tp:flag suffix="QUIT" value="1 &lt;&lt; 3">
           <tp:docstring>
             A call to Quit on this interface will make
             the media player stop running.
@@ -202,6 +207,44 @@
         </tp:docstring>
       </property>
 
+      <tp:simple-type name="Playlist_Structs_List" type="a(sss)">
+        <tp:docstring>A list of playlists</tp:docstring>
+      </tp:simple-type>
+
+      <tp:struct name="Playlist_Struct" array-name="Playlist_Structs_List">
+        <tp:docstring>Represents a named playlist</tp:docstring>
+        <tp:member type="s" tp:type="Playlist_Title" name="Title">
+          <tp:docstring>
+            The human readable title of the playlist.
+            An empty string means no title.
+          </tp:docstring>
+        </tp:member>
+        <tp:member type="s" tp:type="Uri" name="Icon">
+          <tp:docstring>
+            The uri of an icon which represents the playlist.
+            An empty string means no icon.
+          </tp:docstring>
+        </tp:member>
+        <tp:member type="s" tp:type="Dbus_Object_Path" name="TrackList">
+          <tp:docstring>
+            The dbus path of an object which implements the
+            <strong>org.mpris.MediaPlayer.TrackList</strong>
+            interface.
+          </tp:docstring>
+        </tp:member>
+    </tp:struct>
+
+      <property name="Playlists" type="a(sss)" tp:type="Playlist_Structs_List" tp:name-for-bindings="Playlists" access="read">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>A list of named playlists</p>
+          <p>
+            If the media player does not support playlists,
+            the CAN_MANAGE_PLAYLISTS capability flag is not set and this
+            property contains an empty list
+          </p>
+        </tp:docstring>
+      </property>
+
       <signal name="CapabilitiesChanged" tp:name-for-bindings="Capabilities_Changed">
         <arg name="Capabilities" type="i" tp:type="Capability_Flags">
           <tp:docstring>The new capabilities</tp:docstring>
@@ -210,6 +253,12 @@
           <p>Indicates a change in the capabilities</p>
         </tp:docstring>
       </signal>
+
+      <tp:simple-type name="Playlist_Title" type="s">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>A playlist title</p>
+        </tp:docstring>
+      </tp:simple-type>
 
     </interface>
   </node>
@@ -327,18 +376,20 @@
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>Skip to the specified TrackId</p>
-          <p>If the track is not part of the TrackList, do nothing</p>
+          <p>If the track is not part of this tracklist, do nothing</p>
+          <p>
+            If this object is not the current TrackList, replace the current
+            tracklist's tracks with this one's contents and
+            fire the TrackListReplaced signal on the current TrackList.
+          </p>
         </tp:docstring>
       </method>
 
       <tp:flags name="Track_List_Capability_Flags" value-prefix="TRACKLIST_CAN" type="i">
         <tp:flag suffix="EDIT_TRACKS" value="1 &lt;&lt; 0">
           <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-            The media player exposes the well-known
-            <strong>/org/mpris/MediaPlayer/TrackList</strong>
-            object path, which implements the
-            <strong>org.mpris.MediaPlayer.TrackList</strong>
-            interface
+            A call to AddTrack will add a track to this TrackList and a call to
+            RemoveTrack will remove a track.
           </tp:docstring>
         </tp:flag>
         <tp:docstring />
@@ -355,7 +406,7 @@
           <tp:docstring>The new capabilities</tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Indicates a change in the capabilities</p>
+          <p>Indicates a change in the tracklist capabilities</p>
         </tp:docstring>
       </signal>
 

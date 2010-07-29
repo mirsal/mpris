@@ -5,7 +5,10 @@
   <tp:title>MPRIS D-Bus Interface Specification</tp:title>
   <tp:version>2.0-draft</tp:version>
 
-  <tp:copyright>Copyright (C) 2006-2010 the VideoLAN team (Mirsal Ennaime &amp; Rafaël Carré)</tp:copyright>
+  <tp:copyright>
+    Copyright (C) 2006-2010 the VideoLAN team
+    (Mirsal Ennaime, Rafaël Carré, Jean-Paul Saman)
+  </tp:copyright>
   <tp:copyright>Copyright (C) 2005-2008 Milosz Derezynski</tp:copyright>
   <tp:copyright>Copyright (C) 2008 Nick Welch</tp:copyright>
   <tp:copyright>Copyright (C) 2010 Alex Merry</tp:copyright>

@@ -1,0 +1,178 @@
+<?xml version="1.0" ?>
+<node name="/Root_Node" xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
+  <interface name="org.mpris.MediaPlayer">
+
+    <tp:simple-type name="Identity" type="s">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          A free form string which represents the media player identity,
+          in a human-readable way, such as Totem 2.22.2.
+        </p>
+      </tp:docstring>
+    </tp:simple-type>
+
+    <property name="Identity" type="s" tp:type="Identity" tp:name-for-bindings="Identity" access="read">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A friendly name to identify the media player to users.</p>
+      </tp:docstring>
+    </property>
+
+    <method name="Quit" tp:name-for-bindings="Quit">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Causes the media player to stop running.</p>
+        <p>
+          The media player may refuse to allow clients to shut it down.
+          In this case, the CAN_QUIT capability flag is not set and
+          this method does nothing.
+        </p>
+      </tp:docstring>
+    </method>
+
+    <method name="Raise" tp:name-for-bindings="Raise">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          Brings the media player's user interface to the front using any
+          appropriate mechanism available.
+        </p>
+        <p>
+          The media player may not be able to control how its user interface
+          is displayed, or it may not have a graphical user interface at all.
+          In this case, the CAN_RAISE capability flag is not set and this
+          method does nothing.
+        </p>
+      </tp:docstring>
+    </method>
+
+    <tp:struct name="Version_Struct">
+      <tp:docstring>
+        <p>A struct representing the MPRIS spec version.</p>
+      </tp:docstring>
+      <tp:member type="q" name="Major">
+        <tp:docstring>
+          <p>
+            Major version (incremented when there is a non-compatible change
+            to existing API).
+          </p>
+        </tp:docstring>
+      </tp:member>
+      <tp:member type="q" name="Minor">
+        <tp:docstring>
+          <p>Minor version (incremented when new API is added).</p>
+        </tp:docstring>
+      </tp:member>
+    </tp:struct>
+
+    <property name="MprisVersion" type="(qq)" tp:type="Version_Struct" tp:name-for-bindings="Mpris_Version" access="read">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>The version of the MPRIS implemented by the media player.</p>
+        <p>Returns 2 as the first member, and 0 as the second one.</p>
+      </tp:docstring>
+    </property>
+
+    <tp:simple-type name="Dbus_Object_Path" type="s">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A D-Bus object path.</p>
+      </tp:docstring>
+    </tp:simple-type>
+
+    <tp:flags name="Capability_Flags" value-prefix="CAN" type="i">
+      <tp:flag suffix="MANAGE_TRACKLIST" value="1 &lt;&lt; 0">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>
+            The media player exposes the well-known
+            <strong>/org/mpris/MediaPlayer/TrackList</strong>
+            object path, which implements the
+            <strong>org.mpris.MediaPlayer.TrackList</strong>
+            interface.
+          </p>
+        </tp:docstring>
+      </tp:flag>
+      <tp:flag suffix="MANAGE_PLAYLISTS" value="1 &lt;&lt; 1">
+        <tp:docstring>
+          <p>The playlist property contains a list of playlists.</p>
+        </tp:docstring>
+      </tp:flag>
+      <tp:flag suffix="RAISE" value="1 &lt;&lt; 2">
+        <tp:docstring>
+          <p>
+            A call to Raise on this interface will present the media player's
+            user interface to the user.
+          </p>
+        </tp:docstring>
+      </tp:flag>
+      <tp:flag suffix="QUIT" value="1 &lt;&lt; 3">
+        <tp:docstring>
+          <p>
+            A call to Quit on this interface will make the media player stop
+            running.
+          </p>
+        </tp:docstring>
+      </tp:flag>
+
+      <tp:docstring />
+    </tp:flags>
+
+    <property name="Capabilities" type="i" tp:type="Capability_Flags" tp:name-for-bindings="Capabilities" access="read">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A bitmask of capabilities.</p>
+      </tp:docstring>
+    </property>
+
+    <tp:struct name="Playlist_Struct" array-name="Playlist_Structs_List">
+      <tp:docstring>Represents a named playlist</tp:docstring>
+      <tp:member type="s" tp:type="Playlist_Title" name="Title">
+        <tp:docstring>
+          <p>
+            The human readable title of the playlist. An empty string means
+            no title.
+          </p>
+        </tp:docstring>
+      </tp:member>
+      <tp:member type="s" tp:type="Uri" name="Icon">
+        <tp:docstring>
+          <p>
+            The uri of an icon which represents the playlist. An empty string
+            means no icon.
+          </p>
+        </tp:docstring>
+      </tp:member>
+      <tp:member type="s" tp:type="Dbus_Object_Path" name="TrackList">
+        <tp:docstring>
+          <p>
+            The dbus path of an object which implements the
+            <strong>org.mpris.MediaPlayer.TrackList</strong>
+            interface.
+          </p>
+        </tp:docstring>
+      </tp:member>
+  </tp:struct>
+
+    <property name="Playlists" type="a(sss)" tp:type="Playlist_Struct[]" tp:name-for-bindings="Playlists" access="read">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A list of named playlists.</p>
+        <p>
+          If the media player does not support playlists,
+          the CAN_MANAGE_PLAYLISTS capability flag is not set and this
+          property contains an empty list.
+        </p>
+      </tp:docstring>
+    </property>
+
+    <signal name="CapabilitiesChanged" tp:name-for-bindings="Capabilities_Changed">
+      <arg name="Capabilities" type="i" tp:type="Capability_Flags">
+        <tp:docstring>The new capabilities.</tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Indicates a change in the capabilities.</p>
+      </tp:docstring>
+    </signal>
+
+    <tp:simple-type name="Playlist_Title" type="s">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A playlist title.</p>
+      </tp:docstring>
+    </tp:simple-type>
+
+  </interface>
+</node>
+<!-- vim:set sw=2 sts=2 et ft=xml: -->

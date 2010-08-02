@@ -1,0 +1,249 @@
+<?xml version="1.0" ?>
+<node name="/TrackList_Node" xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
+  <interface name="org.mpris.MediaPlayer.TrackList">
+
+    <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+      <p>Provides access to the track listing of the media player.</p>
+      <p>
+        To make use of this interface, the first thing that a client
+        should do is to fetch all the properties at once, using
+        GetAll on the D-Bus Properties interface.  This will ensure
+        all the properties are in a consistent state.
+
+        The client will probably then want to fetch the metadata for
+        the playlist (or possibly only part of it) using
+        GetTracksMetadata.
+      </p>
+      <p>
+        The client should listen to all the signals related to
+        properties it is interested in.
+      </p>
+    </tp:docstring>
+
+    <tp:mapping name="Metadata_Map" array-name="Metadata_Map_List">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A mapping from metadata attribute names to values.</p>
+        <p>
+          The <b>trackid</b> attribute must always be present.  This contains
+          a string that uniquely identifies the track within the scope of the
+          playlist.
+        </p>
+      </tp:docstring>
+      <tp:member type="s" name="Attribute">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>
+            The name of the attribute; see
+            <a href="http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata">
+              http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata
+            </a> for guidelines on names to use.
+          </p>
+        </tp:docstring>
+      </tp:member>
+      <tp:member type="v" name="Value">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>The value of the attribute, in the most appropriate format.</p>
+        </tp:docstring>
+      </tp:member>
+    </tp:mapping>
+
+    <method name="GetTracksMetadata" tp:name-for-bindings="Get_Tracks_Metadata">
+      <arg direction="in" name="TrackIds" type="as" tp:type="Track_Id[]">
+        <tp:docstring>
+          <p>The list of track ids for which metadata is requested.</p>
+        </tp:docstring>
+      </arg>
+      <arg direction="out" type="aa{sv}" tp:type="Metadata_Map[]" name="Metadata">
+        <tp:docstring>
+          <p>Metadata of the set of tracks given as input.</p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Gets all the metadata available for a set of tracks.</p>
+        <p>
+          Each set of metadata must have a "trackid" entry at the very least,
+          which contains a string that uniquely identifies this track within
+          the scope of the tracklist.
+        </p>
+      </tp:docstring>
+    </method>
+
+    <property name="Tracks" type="as" tp:type="Track_Id[]" tp:name-for-bindings="Tracks" access="read">
+      <tp:docstring>
+        <p>
+          An array which contains the identifier of each track
+          in the tracklist, in order.
+        </p>
+      </tp:docstring>
+    </property>
+
+    <tp:simple-type name="Uri" type="s">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A unique resource identifier.</p>
+      </tp:docstring>
+    </tp:simple-type>
+
+    <method name="AddTrack" tp:name-for-bindings="Add_Track">
+      <arg direction="in" type="s" tp:type="Uri" name="Uri">
+        <tp:docstring>
+          <p>The uri of the item to add.</p>
+        </tp:docstring>
+      </arg>
+      <arg direction="in" type="s" tp:type="Track_Id" name="AfterTrack">
+        <tp:docstring>
+          <p>
+            The identifier of the track after which
+            the new item should be inserted. An empty
+            string means at the begining of the track list.
+          </p>
+        </tp:docstring>
+      </arg>
+      <arg direction="in" type="b" name="SetAsCurrent">
+        <tp:docstring>
+          <p>
+            Whether the newly inserted track should be considered as
+            the current track. This has the same effect as a call to
+            GoTo afterwards.
+          </p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Adds an URI in the TrackList.</p>
+      </tp:docstring>
+    </method>
+
+    <method name="RemoveTrack" tp:name-for-bindings="Remove__Track">
+      <arg direction="in" type="s" name="TrackId">
+        <tp:docstring>
+          <p>Identifier of the track to be removed.</p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Removes an item from the TrackList.</p>
+      </tp:docstring>
+    </method>
+
+    <method name="GoTo" tp:name-for-bindings="Go_To">
+      <arg direction="in" type="s" tp:type="Track_Id" name="TrackId">
+        <tp:docstring>
+          <p>Identifier of the track to skip to.</p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Skip to the specified TrackId.</p>
+        <p>If the track is not part of this tracklist, do nothing.</p>
+        <p>
+          If this object is not the current TrackList, replace the current
+          tracklist's tracks with this one's contents and
+          fire the TrackListReplaced signal on the current TrackList.
+        </p>
+      </tp:docstring>
+    </method>
+
+    <tp:flags name="Track_List_Capability_Flags" value-prefix="TRACKLIST_CAN" type="i">
+      <tp:flag suffix="EDIT_TRACKS" value="1 &lt;&lt; 0">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>
+            A call to AddTrack will add a track to this TrackList and a call
+            to RemoveTrack will remove a track.
+          </p>
+        </tp:docstring>
+      </tp:flag>
+      <tp:docstring />
+    </tp:flags>
+
+    <property name="Capabilities" type="i" tp:type="Track_List_Capability_Flags" tp:name-for-bindings="Capabilities" access="read">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A bitmask of capabilities.</p>
+      </tp:docstring>
+    </property>
+
+    <signal name="CapabilitiesChanged" tp:name-for-bindings="Capabilities_Changed">
+      <arg name="Capabilities" type="i" tp:type="Track_List_Capability_Flags">
+        <tp:docstring>
+          <p>The new capabilities.</p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Indicates a change in the tracklist capabilities.</p>
+      </tp:docstring>
+    </signal>
+
+    <signal name="TrackListReplaced" tp:name-for-bindings="Track_List_Replaced">
+      <arg name="Tracks" type="as" tp:type="Track_Id[]">
+        <tp:docstring>
+          <p>The new content of the tracklist.</p>
+        </tp:docstring>
+      </arg>
+      <arg name="CurrentTrack" type="s" tp:type="Track_Id">
+        <tp:docstring>
+          <p>The identifier of the track to be considered as current.</p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Indicates that the entire tracklist has been replaced.</p>
+        <p>
+          It is left up to the implementation to decide when
+          a change to the track list is invasive enough that
+          this signal should be emitted instead of a series of
+          TrackAdded and TrackRemoved signals.
+        </p>
+      </tp:docstring>
+    </signal>
+
+    <signal name="TrackAdded" tp:name-for-bindings="Track_Added">
+      <arg type="a{sv}" tp:type="Metadata_Map" name="Metadata">
+        <tp:docstring>
+          <p>The metadata of the newly added item.</p>
+          <p>This must include a trackid entry.</p>
+        </tp:docstring>
+      </arg>
+      <arg type="s" tp:type="Track_Id" name="AfterTrack">
+        <tp:docstring>
+          <p>
+            The identifier of the track after which the new track
+            was inserted. An empty string means at the begining of
+            the tracklist.
+          </p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Indicates that a track has been added to the track list.</p>
+      </tp:docstring>
+    </signal>
+
+    <signal name="TrackRemoved" tp:name-for-bindings="Track_Removed">
+      <arg type="s" tp:type="Track_Id" name="TrackId">
+        <tp:docstring>
+          <p>The identifier of the track being removed.</p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Indicates that a track has been removed from the track list.</p>
+      </tp:docstring>
+    </signal>
+
+    <signal name="TrackMetadataChanged" tp:name-for-bindings="Track_Metadata_Changed">
+      <arg type="s" tp:type="Track_Id" name="TrackId">
+        <tp:docstring>
+          <p>The id of the track which metadata has changed.</p>
+        </tp:docstring>
+      </arg>
+      <arg type="a{sv}" tp:type="Metadata_Map" name="Metadata">
+        <tp:docstring>
+          <p>The new track metadata.</p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          Indicates that the metadata of a track in the tracklist has changed.
+        </p>
+        <p>
+          This may indicate that a track has been replaced, in which case the
+          trackid metadata entry is different from the TrackId argument.
+        </p>
+      </tp:docstring>
+    </signal>
+
+  </interface>
+</node>
+<!-- vim:set sw=2 sts=2 et ft=xml: -->

@@ -1,17 +1,17 @@
 <tp:spec
-   xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0"
-   xmlns:xi="http://www.w3.org/2001/XInclude">
+  xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
 
   <tp:title>MPRIS D-Bus Interface Specification</tp:title>
   <tp:version>2.0-draft</tp:version>
 
   <tp:copyright>
-    Copyright (C) 2006-2010 the VideoLAN team
+    Copyright © 2006-2010 the VideoLAN team
     (Mirsal Ennaime, Rafaël Carré, Jean-Paul Saman)
   </tp:copyright>
-  <tp:copyright>Copyright (C) 2005-2008 Milosz Derezynski</tp:copyright>
-  <tp:copyright>Copyright (C) 2008 Nick Welch</tp:copyright>
-  <tp:copyright>Copyright (C) 2010 Alex Merry</tp:copyright>
+  <tp:copyright>Copyright © 2005-2008 Milosz Derezynski</tp:copyright>
+  <tp:copyright>Copyright © 2008 Nick Welch</tp:copyright>
+  <tp:copyright>Copyright © 2010 Alex Merry</tp:copyright>
 
   <tp:license xmlns="http://www.w3.org/1999/xhtml">
     <p>

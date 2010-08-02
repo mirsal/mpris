@@ -842,9 +842,9 @@
         </tp:docstring>
       </property>
 
-      <tp:simple-type name="Volume_Step" type="d">
+      <tp:simple-type name="Volume_Difference" type="d">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Volume level step.</p>
+          <p>A relative change in volume.</p>
           <p>
             Represents a volume level increment or decrement on the same scale
             as "Volume".
@@ -857,7 +857,7 @@
       </tp:simple-type>
 
       <method name="AdjustVolume" tp:name-for-bindings="Adjust_Volume">
-          <arg direction="in" type="d" name="Step" tp:type="Volume_Step">
+          <arg direction="in" type="d" name="Difference" tp:type="Volume_Difference">
             <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
                 <p>
                   Fraction of the maximum volume level by which the volume

@@ -806,48 +806,49 @@
         </tp:docstring>
       </property>
 
-      <tp:simple-type name="Volume" type="i">
+      <tp:simple-type name="Volume" type="d">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Audio volume level as an integer between [0;100] (inclusive).</p>
-          <p>Represents a percentage of the maximum volume level</p>
+          <p>Audio volume level on a linear scale as a double between [0.0;1.0] (inclusive).</p>
+          <ul>
+            <li>0.0 means mute</li>
+            <li>1.0 is the maximum volume level</li>
+          </ul>
         </tp:docstring>
       </tp:simple-type>
 
-      <property name="Volume" type="i" tp:type="Volume" tp:name-for-bindings="Volume" access="readwrite">
+      <property name="Volume" type="d" tp:type="Volume" tp:name-for-bindings="Volume" access="readwrite">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>The volume level</p>
           <p>When setting, if a negative value is passed, the volume
-          should be set to 0%.  If a value greater than 100 is
-          passed, the volume should be set to 100%.</p>
+          should be set to 0.0.  If a value greater than 1 is
+          passed, the volume should be set to the maximum level.</p>
         </tp:docstring>
       </property>
 
-      <tp:simple-type name="Volume_Step" type="i">
+      <tp:simple-type name="Volume_Step" type="d">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Volume level step as an integer between [-100;100] (inclusive).</p>
-          <p>Represents a percentage of the maximum volume level</p>
+          <p>Volume level step</p>
+          <p>Represents a volume level increment or decrement on the same scale as "Volume".</p>
+          <p>A positive value corresponds to an increment, while a negative value corresponds to a decrement</p>
         </tp:docstring>
       </tp:simple-type>
 
       <method name="AdjustVolume" tp:name-for-bindings="Adjust_Volume">
-          <arg direction="in" type="i" name="Increase" tp:type="Volume_Step">
+          <arg direction="in" type="d" name="Step" tp:type="Volume_Step">
             <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
                 <p>
-                  Percentage of the maximum value by which the volume
-                  should be increased
+                  Fraction of the maximum volume level by which the volume
+                  should be increased or decreased.
                 </p>
             </tp:docstring>
           </arg>
           <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>
-            Increases the volume by the specified number of
-            percentage points
-          </p>
+          <p>Adds the specified volume step to to the current volume level</p>
           <p>
             If adding the argument to the current volume would
-            cause it to go above 100, it should be set to the maximum volume.
+            cause it to go above 1, it should be set to the maximum.
             Similarly, if it would cause it to drop below 0,
-            it should be set to 0.
+            it should be set to 0.0
           </p>
           </tp:docstring>
       </method>
@@ -965,7 +966,7 @@
       </signal>
 
       <signal name="VolumeChanged" tp:name-for-bindings="Volume_Changed">
-        <arg name="Volume" type="i" tp:type="Volume">
+        <arg name="Volume" type="d" tp:type="Volume">
           <tp:docstring>The new volume level</tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">

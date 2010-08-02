@@ -559,8 +559,16 @@
       <method name="SetLoop" tp:name-for-bindings="Set_Loop">
         <arg direction="in" type="b" tp:type="Endless_State" name="State">
           <tp:docstring>
-            TRUE to loop through the tracklist, FALSE to stop playback once the
-            last item of the tracklist has been played.
+            <p>
+              TRUE to loop through the tracklist, FALSE to stop playback once the
+              last item of the tracklist has been played.
+            </p>
+            <p>
+              Note that just because the media player is in "endless playback"
+              state, that does not mean it is repeating.  The media player may
+              have other mechanisms for generating endless playback.  This
+              method only controls looping, however.
+            </p>
           </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">

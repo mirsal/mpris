@@ -492,7 +492,7 @@
         </tp:docstring>
       </method>
 
-      <method name="Prev" tp:name-for-bindings="Prev">
+      <method name="Previous" tp:name-for-bindings="Previous">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>Skip to the previous track in the tracklist</p>
           <p>If there is no previous track, (and looping is off) stop playback</p>
@@ -733,9 +733,9 @@
             expect the current track to change.
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="GO_PREV" value="1 &lt;&lt; 1">
+        <tp:flag suffix="GO_PREVIOUS" value="1 &lt;&lt; 1">
           <tp:docstring>
-            The client can call the Prev method on this interface and
+            The client can call the Previous method on this interface and
             expect the current track to change.
           </tp:docstring>
         </tp:flag>

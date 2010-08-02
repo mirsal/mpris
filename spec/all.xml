@@ -16,33 +16,43 @@
        Lureau</tp:copyright> -->
 
   <tp:license xmlns="http://www.w3.org/1999/xhtml">
-    <p>This library is free software; you can redistribute it and/or
+    <p>
+      This library is free software; you can redistribute it and/or
       modify it under the terms of the GNU Lesser General Public
       License as published by the Free Software Foundation; either
       version 2.1 of the License, or (at your option) any later
-      version.</p>
+      version.
+    </p>
 
-    <p>This library is distributed in the hope that it will be useful,
+    <p>
+      This library is distributed in the hope that it will be useful,
       but WITHOUT ANY WARRANTY; without even the implied warranty of
       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-      GNU Lesser General Public License for more details.</p>
+      GNU Lesser General Public License for more details.
+    </p>
 
-    <p>You should have received a copy of the GNU Lesser General
+    <p>
+      You should have received a copy of the GNU Lesser General
       Public License along with this library; if not, write to the
       Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-      Boston, MA 02110-1301, USA.</p>
+      Boston, MA 02110-1301, USA.
+    </p>
   </tp:license>
 
   <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
     <h3>About</h3>
-    <p> The Media Player Remote Interfacing specification is a standard
-        <a href="http://www.freedesktop.org/wiki/Software/dbus">D-Bus</a>
-        interface which aims to provide a common programmatic API
-        for controlling media players.</p>
+    <p>
+      The Media Player Remote Interfacing specification is a standard
+      <a href="http://www.freedesktop.org/wiki/Software/dbus">D-Bus</a>
+      interface which aims to provide a common programmatic API
+      for controlling media players.
+    </p>
 
     <h3>Bus name policy</h3>
-    <p> Each media player <strong>must</strong> request an unique bus name
-        which begins with <b>org.mpris.mediaplayers</b>. For example:</p>
+    <p>
+      Each media player <strong>must</strong> request an unique bus name
+      which begins with <b>org.mpris.mediaplayers</b>. For example:
+    </p>
     <ul>
       <li>org.mpris.mediaplayers.audacious</li>
       <li>org.mpris.mediaplayers.vlc</li>
@@ -50,10 +60,11 @@
       <li>org.mpris.mediaplayers.xmms2</li>
     </ul>
 
-    <p> In the case where the media player allows multiple instances running
-        simultaneously, each additional instance should request a unique bus
-        name, adding a dot and a unique identifier to its usual bus name.
-        (such as a UNIX process id) <br />For example:
+    <p>
+      In the case where the media player allows multiple instances running
+      simultaneously, each additional instance should request a unique bus
+      name, adding a dot and a unique identifier (such as a UNIX process
+      id) to its usual bus name. For example, this could be
     </p>
 
     <ul>
@@ -62,34 +73,40 @@
 
     <h3>Well-known object paths</h3>
     <p>
-        The media player must expose at least the two
-        following object paths whenever it is running:
+      The media player must expose at least the two
+      following object paths whenever it is running:
 
-        <ul>
-            <li><strong>/org/mpris/MediaPlayer</strong> which implements the
-                <strong>org.mpris.MediaPlayer</strong> interface</li>
-            <li><strong>/org/mpris/MediaPlayer/Player</strong> which implements the
-                <strong>org.mpris.MediaPlayer.Player</strong> interface</li>
-        </ul>
+      <ul>
+        <li>
+          <strong>/org/mpris/MediaPlayer</strong>, which implements the
+          <strong>org.mpris.MediaPlayer</strong> interface;
+        </li>
+        <li>
+          <strong>/org/mpris/MediaPlayer/Player</strong>, which implements the
+          <strong>org.mpris.MediaPlayer.Player</strong> interface.
+        </li>
+      </ul>
 
-        The media player may expose the following object path:
+      The media player may expose the following object path:
 
-        <ul>
-            <li><strong>/org/mpris/MediaPlayer/TrackList</strong>
-            which implements the <strong>org.mpris.MediaPlayer.TrackList
-            </strong> interface </li>
-        </ul>
+      <ul>
+        <li>
+          <strong>/org/mpris/MediaPlayer/TrackList</strong>,
+          which implements the <strong>org.mpris.MediaPlayer.TrackList
+          </strong> interface.
+        </li>
+      </ul>
     </p>
 
     <h3>The capabilities mechanism</h3>
     <p>
-        The mpris defines three sets of capabilities (one for each interface)
-        in order for media players to expose what action can be performed at a
-        given time. This is done using a D-Bus property named Capabilities,
-        which contains a
-        <a href="http://en.wikipedia.org/wiki/Bitfield">bitfield</a>
-        of capability flags, and a D-Bus signal named CapabilitiesChanged, which
-        is emitted whenever a member of the set of capablities is updated.
+      The mpris defines three sets of capabilities (one for each interface)
+      in order for media players to expose what action can be performed at a
+      given time. This is done using a D-Bus property named Capabilities,
+      which contains a
+      <a href="http://en.wikipedia.org/wiki/Bitfield">bitfield</a>
+      of capability flags, and a D-Bus signal named CapabilitiesChanged, which
+      is emitted whenever a member of the set of capablities is updated.
     </p>
 
   </tp:docstring>
@@ -99,8 +116,10 @@
 
       <tp:simple-type name="Identity" type="s">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>A free form string which represents the media player identity,
-             in a human-readable way, such as Totem 2.22.2.</p>
+          <p>
+            A free form string which represents the media player identity,
+            in a human-readable way, such as Totem 2.22.2.
+          </p>
         </tp:docstring>
       </tp:simple-type>
 
@@ -114,9 +133,9 @@
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>Causes the media player to stop running.</p>
           <p>
-             The media player may not allow clients to shut it down.
-             In this case, the CAN_QUIT capability flag is not set and
-             this method does nothing.
+            The media player may refuse to allow clients to shut it down.
+            In this case, the CAN_QUIT capability flag is not set and
+            this method does nothing.
           </p>
         </tp:docstring>
       </method>
@@ -137,12 +156,21 @@
       </method>
 
       <tp:struct name="Version_Struct">
-        <tp:docstring>A struct representing the MPRIS spec version.</tp:docstring>
+        <tp:docstring>
+          <p>A struct representing the MPRIS spec version.</p>
+        </tp:docstring>
         <tp:member type="q" name="Major">
-          <tp:docstring>Major version (incremented when there is a non-compatible change to existing API).</tp:docstring>
+          <tp:docstring>
+            <p>
+              Major version (incremented when there is a non-compatible change
+              to existing API).
+            </p>
+          </tp:docstring>
         </tp:member>
         <tp:member type="q" name="Minor">
-          <tp:docstring>Minor version (incremented when new API is added).</tp:docstring>
+          <tp:docstring>
+            <p>Minor version (incremented when new API is added).</p>
+          </tp:docstring>
         </tp:member>
       </tp:struct>
 
@@ -174,28 +202,34 @@
       <tp:flags name="Capability_Flags" value-prefix="CAN" type="i">
         <tp:flag suffix="MANAGE_TRACKLIST" value="1 &lt;&lt; 0">
           <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-            The media player exposes the well-known
-            <strong>/org/mpris/MediaPlayer/TrackList</strong>
-            object path, which implements the
-            <strong>org.mpris.MediaPlayer.TrackList</strong>
-            interface.
+            <p>
+              The media player exposes the well-known
+              <strong>/org/mpris/MediaPlayer/TrackList</strong>
+              object path, which implements the
+              <strong>org.mpris.MediaPlayer.TrackList</strong>
+              interface.
+            </p>
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="MANAGE_PLAYLISTS" value="1 &lt;&lt; 1">
           <tp:docstring>
-            The playlist property contains a list of playlists.
+            <p>The playlist property contains a list of playlists.</p>
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="RAISE" value="1 &lt;&lt; 2">
           <tp:docstring>
-            A call to Raise on this interface will present the media player's
-            user interface to the user.
+            <p>
+              A call to Raise on this interface will present the media player's
+              user interface to the user.
+            </p>
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="QUIT" value="1 &lt;&lt; 3">
           <tp:docstring>
-            A call to Quit on this interface will make
-            the media player stop running.
+            <p>
+              A call to Quit on this interface will make the media player stop
+              running.
+            </p>
           </tp:docstring>
         </tp:flag>
 
@@ -209,28 +243,36 @@
       </property>
 
       <tp:simple-type name="Playlist_Structs_List" type="a(sss)">
-        <tp:docstring>A list of playlists.</tp:docstring>
+        <tp:docstring>
+          <p>A list of playlists.</p>
+        </tp:docstring>
       </tp:simple-type>
 
       <tp:struct name="Playlist_Struct" array-name="Playlist_Structs_List">
         <tp:docstring>Represents a named playlist</tp:docstring>
         <tp:member type="s" tp:type="Playlist_Title" name="Title">
           <tp:docstring>
-            The human readable title of the playlist.
-            An empty string means no title.
+            <p>
+              The human readable title of the playlist. An empty string means
+              no title.
+            </p>
           </tp:docstring>
         </tp:member>
         <tp:member type="s" tp:type="Uri" name="Icon">
           <tp:docstring>
-            The uri of an icon which represents the playlist.
-            An empty string means no icon.
+            <p>
+              The uri of an icon which represents the playlist. An empty string
+              means no icon.
+            </p>
           </tp:docstring>
         </tp:member>
         <tp:member type="s" tp:type="Dbus_Object_Path" name="TrackList">
           <tp:docstring>
-            The dbus path of an object which implements the
-            <strong>org.mpris.MediaPlayer.TrackList</strong>
-            interface.
+            <p>
+              The dbus path of an object which implements the
+              <strong>org.mpris.MediaPlayer.TrackList</strong>
+              interface.
+            </p>
           </tp:docstring>
         </tp:member>
     </tp:struct>
@@ -300,12 +342,12 @@
       <method name="GetTracksMetadata" tp:name-for-bindings="Get_Tracks_Metadata">
         <arg direction="in" name="TrackIds" type="as" tp:type="Track_Id_List">
           <tp:docstring>
-            The list of track ids for which metadata is requested.
+            <p>The list of track ids for which metadata is requested.</p>
           </tp:docstring>
         </arg>
         <arg direction="out" type="aa{sv}" tp:type="String_Variant_Map_List" name="Metadata">
           <tp:docstring>
-            Metadata of the set of tracks given as input.
+            <p>Metadata of the set of tracks given as input.</p>
           </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -326,8 +368,10 @@
 
       <property name="Tracks" type="as" tp:type="Track_Id_List" tp:name-for-bindings="Tracks" access="read">
         <tp:docstring>
-          An array which contains the identifier of each track
-          in the tracklist, in order.
+          <p>
+            An array which contains the identifier of each track
+            in the tracklist, in order.
+          </p>
         </tp:docstring>
       </property>
 
@@ -340,21 +384,25 @@
       <method name="AddTrack" tp:name-for-bindings="Add_Track">
         <arg direction="in" type="s" tp:type="Uri" name="Uri">
           <tp:docstring>
-            The uri of the item to add.
+            <p>The uri of the item to add.</p>
           </tp:docstring>
         </arg>
         <arg direction="in" type="s" tp:type="Track_Id" name="AfterTrack">
           <tp:docstring>
-            The identifier of the track after which
-            the new item should be inserted. An empty
-            string means at the begining of the track list.
+            <p>
+              The identifier of the track after which
+              the new item should be inserted. An empty
+              string means at the begining of the track list.
+            </p>
           </tp:docstring>
         </arg>
         <arg direction="in" type="b" name="SetAsCurrent">
           <tp:docstring>
-            Whether the newly inserted track should be considered as
-            the current track. This has the same effect as a call to
-            GoTo afterwards.
+            <p>
+              Whether the newly inserted track should be considered as
+              the current track. This has the same effect as a call to
+              GoTo afterwards.
+            </p>
           </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -364,16 +412,20 @@
 
       <method name="RemoveTrack" tp:name-for-bindings="Remove__Track">
         <arg direction="in" type="s" name="TrackId">
-          <tp:docstring>Identifier of the track to be removed.</tp:docstring>
+          <tp:docstring>
+            <p>Identifier of the track to be removed.</p>
+          </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          Removes an item from the TrackList.
+          <p>Removes an item from the TrackList.</p>
         </tp:docstring>
       </method>
 
       <method name="GoTo" tp:name-for-bindings="Go_To">
         <arg direction="in" type="s" tp:type="Track_Id" name="TrackId">
-          <tp:docstring>Identifier of the track to skip to.</tp:docstring>
+          <tp:docstring>
+            <p>Identifier of the track to skip to.</p>
+          </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>Skip to the specified TrackId.</p>
@@ -389,8 +441,10 @@
       <tp:flags name="Track_List_Capability_Flags" value-prefix="TRACKLIST_CAN" type="i">
         <tp:flag suffix="EDIT_TRACKS" value="1 &lt;&lt; 0">
           <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-            A call to AddTrack will add a track to this TrackList and a call to
-            RemoveTrack will remove a track.
+            <p>
+              A call to AddTrack will add a track to this TrackList and a call
+              to RemoveTrack will remove a track.
+            </p>
           </tp:docstring>
         </tp:flag>
         <tp:docstring />
@@ -404,7 +458,9 @@
 
       <signal name="CapabilitiesChanged" tp:name-for-bindings="Capabilities_Changed">
         <arg name="Capabilities" type="i" tp:type="Track_List_Capability_Flags">
-          <tp:docstring>The new capabilities.</tp:docstring>
+          <tp:docstring>
+            <p>The new capabilities.</p>
+          </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>Indicates a change in the tracklist capabilities.</p>
@@ -413,11 +469,13 @@
 
       <signal name="TrackListReplaced" tp:name-for-bindings="Track_List_Replaced">
         <arg name="Tracks" type="as" tp:type="Track_Id_List">
-          <tp:docstring>The new content of the tracklist.</tp:docstring>
+          <tp:docstring>
+            <p>The new content of the tracklist.</p>
+          </tp:docstring>
         </arg>
         <arg name="CurrentTrack" type="s" tp:type="Track_Id">
           <tp:docstring>
-            The identifier of the track to be considered as current.
+            <p>The identifier of the track to be considered as current.</p>
           </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -434,15 +492,17 @@
       <signal name="TrackAdded" tp:name-for-bindings="Track_Added">
         <arg type="a{sv}" tp:type="String_Variant_Map" name="Metadata">
           <tp:docstring>
-            The metadata of the newly added item.
-            This must include a trackid entry.
+            <p>The metadata of the newly added item.</p>
+            <p>This must include a trackid entry.</p>
           </tp:docstring>
         </arg>
         <arg type="s" tp:type="Track_Id" name="AfterTrack">
           <tp:docstring>
-            The identifier of the track after which the new track
-            was inserted. An empty string means at the begining of
-            the tracklist.
+            <p>
+              The identifier of the track after which the new track
+              was inserted. An empty string means at the begining of
+              the tracklist.
+            </p>
           </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -452,7 +512,9 @@
 
       <signal name="TrackRemoved" tp:name-for-bindings="Track_Removed">
         <arg type="s" tp:type="Track_Id" name="TrackId">
-          <tp:docstring>The identifier of the track being removed.</tp:docstring>
+          <tp:docstring>
+            <p>The identifier of the track being removed.</p>
+          </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>Indicates that a track has been removed from the track list.</p>
@@ -462,11 +524,13 @@
       <signal name="TrackMetadataChanged" tp:name-for-bindings="Track_Metadata_Changed">
         <arg type="s" tp:type="Track_Id" name="TrackId">
           <tp:docstring>
-            The id of the track which metadata has changed.
+            <p>The id of the track which metadata has changed.</p>
           </tp:docstring>
         </arg>
         <arg type="a{sv}" tp:type="String_Variant_Map" name="Metadata">
-          <tp:docstring>The new track metadata.</tp:docstring>
+          <tp:docstring>
+            <p>The new track metadata.</p>
+          </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>
@@ -548,7 +612,7 @@
       <method name="SetRepeat" tp:name-for-bindings="Set_Repeat">
         <arg direction="in" type="b" name="State">
           <tp:docstring>
-            TRUE to repeat the current track, FALSE to stop repeating.
+            <p>TRUE to repeat the current track, FALSE to stop repeating.</p>
           </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -579,7 +643,7 @@
       <method name="SetShuffle" tp:name-for-bindings="Set_Shuffle">
         <arg direction="in" type="b" tp:type="Shuffle_State" name="State">
           <tp:docstring>
-            The shuffle state to set.
+            <p>The shuffle state to set.</p>
           </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -638,7 +702,9 @@
       </property>
 -->
       <tp:struct name="Status_Struct">
-        <tp:docstring>The status of the media player.</tp:docstring>
+        <tp:docstring>
+          <p>The status of the media player.</p>
+        </tp:docstring>
         <tp:member type="i" tp:type="Playback_State" name="Playback_State">
           <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
             <p>The current playback state.</p>
@@ -691,7 +757,9 @@
 
       <method name="SetRate" tp:name-for-bindings="Set_Rate">
         <arg direction="in" name="Rate" type="d" tp:type="Rate" >
-          <tp:docstring>The playack rate to set.</tp:docstring>
+          <tp:docstring>
+            <p>The playack rate to set.</p>
+          </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>Sets the current playing rate.</p>
@@ -744,75 +812,101 @@
       <tp:flags name="Player_Capability_Flags" value-prefix="PLAYER_CAN" type="i">
         <tp:flag suffix="GO_NEXT" value="1 &lt;&lt; 0">
           <tp:docstring>
-            The client can call the Next method on this interface and
-            expect the current track to change.
+            <p>
+              The client can call the Next method on this interface and
+              expect the current track to change.
+            </p>
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="GO_PREVIOUS" value="1 &lt;&lt; 1">
           <tp:docstring>
-            The client can call the Previous method on this interface and
-            expect the current track to change.
+            <p>
+              The client can call the Previous method on this interface and
+              expect the current track to change.
+            </p>
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="PAUSE" value="1 &lt;&lt; 2">
           <tp:docstring>
-            The client can call the Pause and PlayPause methods on this
-            interface and expect playback to pause.
+            <p>
+              The client can call the Pause and PlayPause methods on this
+              interface and expect playback to pause.
+            </p>
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="PLAY" value="1 &lt;&lt; 3">
           <tp:docstring>
-            Playback can be started.
+            <p>
+              Playback can be started.
+            </p>
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="SEEK" value="1 &lt;&lt; 4">
           <tp:docstring>
-            Seeking is possible in the currently played
-            stream. Clients can enable seeking controls and
-            expect both the SetPosition and the Seek methods to
-            alter the current playback position.
+            <p>
+              Seeking is possible in the currently played
+              stream. Clients can enable seeking controls and
+              expect both the SetPosition and the Seek methods to
+              alter the current playback position.
+            </p>
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="PROVIDE_METADATA" value="1 &lt;&lt; 5">
           <tp:docstring>
-            Metadata can be acquired for the currently played
-            track. (The trackid and uri entries are provided
-            even if this flag is not set).
+            <p>
+              Metadata can be acquired for the currently played
+              track. (The trackid and uri entries are provided
+              even if this flag is not set).
+            </p>
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="PROVIDE_POSITION" value="1 &lt;&lt; 6">
           <tp:docstring>
-            Playback position information can be retrieved through the Position
-            property on this interface.
+            <p>
+              Playback position information can be retrieved through the Position
+              property on this interface.
+            </p>
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="REPEAT" value="1 &lt;&lt; 7">
           <tp:docstring>
-            The media player can be set to repeat the current track.
+            <p>
+              The media player can be set to repeat the current track.
+            </p>
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="LOOP" value="1 &lt;&lt; 8">
           <tp:docstring>
-            The media player can be set to loop through the tracklist.
+            <p>
+              The media player can be set to loop through the tracklist.
+            </p>
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="SHUFFLE" value="1 &lt;&lt; 9">
           <tp:docstring>
-            The media player can be set to play tracks randomly.
+            <p>
+              The media player can be set to play tracks randomly.
+            </p>
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="CONTROL_RATE" value="1 &lt;&lt; 10">
           <tp:docstring>
-            Clients can call the SetRate method on this interface and expect
-            the playback rate to change accordingly.
+            <p>
+              Clients can call the SetRate method on this interface and expect
+              the playback rate to change accordingly.
+            </p>
           </tp:docstring>
         </tp:flag>
         <tp:flag suffix="PLAY_BACKWARDS" value="1 &lt;&lt; 11">
           <tp:docstring>
-            The Rate property can take negative values.
+            <p>
+              The Rate property can take negative values.
+            </p>
           </tp:docstring>
         </tp:flag>
-        <tp:docstring>Player capability flags.</tp:docstring>
+        <tp:docstring>
+          <p>Player capability flags.</p>
+        </tp:docstring>
       </tp:flags>
 
       <property name="Capabilities" type="i" tp:type="Player_Capability_Flags" tp:name-for-bindings="Capabilities" access="read">
@@ -918,7 +1012,7 @@
               Note: If the media player allows it, the current playback position
               can be changed either the SetPosition method or the Seek method on
               this interface.
-              If it is not the case, the PLAYER_CAN_SEEK is not set.
+              If it is not the case, the PLAYER_CAN_SEEK capability flag is not set.
             </p>
           </tp:docstring>
       </property>
@@ -958,7 +1052,9 @@
           </tp:docstring>
         </arg> -->
         <arg name="Metadata" type="a{sv}" tp:type="String_Variant_Map">
-          <tp:docstring>The new metadata</tp:docstring>
+          <tp:docstring>
+            <p>The new metadata</p>
+          </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>Indicates the the track metadata has changed.</p>
@@ -972,7 +1068,9 @@
 
       <signal name="StatusChanged" tp:name-for-bindings="Status_Changed">
         <arg name="Status" type="(idbbb)" tp:type="Status_Struct">
-          <tp:docstring>The new status of the media player.</tp:docstring>
+          <tp:docstring>
+            <p>The new status of the media player.</p>
+          </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>Indicates a change in the status of the media player.</p>
@@ -981,7 +1079,9 @@
 
       <signal name="CapabilitiesChanged" tp:name-for-bindings="Capabilities_Changed">
         <arg name="Capabilities" type="i" tp:type="Player_Capability_Flags">
-          <tp:docstring>The new capabilities.</tp:docstring>
+          <tp:docstring>
+            <p>The new capabilities.</p>
+          </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>Indicates a change in the player capabilities.</p>
@@ -990,7 +1090,9 @@
 
       <signal name="VolumeChanged" tp:name-for-bindings="Volume_Changed">
         <arg name="Volume" type="d" tp:type="Volume">
-          <tp:docstring>The new volume level.</tp:docstring>
+          <tp:docstring>
+            <p>The new volume level.</p>
+          </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>Indicates a change in volume.</p>
@@ -999,7 +1101,9 @@
 
       <signal name="Seeked" tp:name-for-bindings="Seeked">
         <arg name="Position" type="i" tp:type="Time_In_Ms">
-          <tp:docstring>The new position, in milliseconds.</tp:docstring>
+          <tp:docstring>
+            <p>The new position, in milliseconds.</p>
+          </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>

@@ -109,7 +109,9 @@
         </tp:docstring>
       </tp:flag>
 
-      <tp:docstring />
+      <tp:docstring>
+        <p>Capability flags for the root object</p>
+      </tp:docstring>
     </tp:flags>
 
     <property name="Capabilities" type="i" tp:type="Capability_Flags" tp:name-for-bindings="Capabilities" access="read">

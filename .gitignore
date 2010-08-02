@@ -1,5 +1,8 @@
 .*.sw?
+*.pyc
+/FIXME.out
 /doc/*.html
+/doc/spec
 /doc/*-spec.devhelp2
 /*-spec-*.tar*
 /test/output

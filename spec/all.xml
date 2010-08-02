@@ -228,12 +228,6 @@
         </tp:docstring>
       </property>
 
-      <tp:simple-type name="Playlist_Structs_List" type="a(sss)">
-        <tp:docstring>
-          <p>A list of playlists.</p>
-        </tp:docstring>
-      </tp:simple-type>
-
       <tp:struct name="Playlist_Struct" array-name="Playlist_Structs_List">
         <tp:docstring>Represents a named playlist</tp:docstring>
         <tp:member type="s" tp:type="Playlist_Title" name="Title">
@@ -263,7 +257,7 @@
         </tp:member>
     </tp:struct>
 
-      <property name="Playlists" type="a(sss)" tp:type="Playlist_Structs_List" tp:name-for-bindings="Playlists" access="read">
+      <property name="Playlists" type="a(sss)" tp:type="Playlist_Struct[]" tp:name-for-bindings="Playlists" access="read">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>A list of named playlists.</p>
           <p>
@@ -313,25 +307,39 @@
         </p>
       </tp:docstring>
 
-      <tp:simple-type name="Track_Id_List" type="as">
+      <tp:mapping name="Metadata_Map" array-name="Metadata_Map_List">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>A list of track ids, see Track_Id.</p>
+          <p>A mapping from metadata attribute names to values.</p>
+          <p>
+            The <b>trackid</b> attribute must always be present.  This contains
+            a string that uniquely identifies the track within the scope of the
+            playlist.
+          </p>
         </tp:docstring>
-      </tp:simple-type>
-
-      <tp:simple-type name="String_Variant_Map_List" type="aa{sv}">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>An array of String / Variant maps.</p>
-        </tp:docstring>
-      </tp:simple-type>
+        <tp:member type="s" name="Attribute">
+          <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+            <p>
+              The name of the attribute; see
+              <a href="http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata">
+                http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata
+              </a> for guidelines on names to use.
+            </p>
+          </tp:docstring>
+        </tp:member>
+        <tp:member type="v" name="Value">
+          <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+            <p>The value of the attribute, in the most appropriate format.</p>
+          </tp:docstring>
+        </tp:member>
+      </tp:mapping>
 
       <method name="GetTracksMetadata" tp:name-for-bindings="Get_Tracks_Metadata">
-        <arg direction="in" name="TrackIds" type="as" tp:type="Track_Id_List">
+        <arg direction="in" name="TrackIds" type="as" tp:type="Track_Id[]">
           <tp:docstring>
             <p>The list of track ids for which metadata is requested.</p>
           </tp:docstring>
         </arg>
-        <arg direction="out" type="aa{sv}" tp:type="String_Variant_Map_List" name="Metadata">
+        <arg direction="out" type="aa{sv}" tp:type="Metadata_Map[]" name="Metadata">
           <tp:docstring>
             <p>Metadata of the set of tracks given as input.</p>
           </tp:docstring>
@@ -343,16 +351,10 @@
             which contains a string that uniquely identifies this track within
             the scope of the tracklist.
           </p>
-          <p>
-            Guidelines for other field names are at
-            <a href="http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata">
-              http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata
-            </a>.
-          </p>
         </tp:docstring>
       </method>
 
-      <property name="Tracks" type="as" tp:type="Track_Id_List" tp:name-for-bindings="Tracks" access="read">
+      <property name="Tracks" type="as" tp:type="Track_Id[]" tp:name-for-bindings="Tracks" access="read">
         <tp:docstring>
           <p>
             An array which contains the identifier of each track
@@ -454,7 +456,7 @@
       </signal>
 
       <signal name="TrackListReplaced" tp:name-for-bindings="Track_List_Replaced">
-        <arg name="Tracks" type="as" tp:type="Track_Id_List">
+        <arg name="Tracks" type="as" tp:type="Track_Id[]">
           <tp:docstring>
             <p>The new content of the tracklist.</p>
           </tp:docstring>
@@ -476,7 +478,7 @@
       </signal>
 
       <signal name="TrackAdded" tp:name-for-bindings="Track_Added">
-        <arg type="a{sv}" tp:type="String_Variant_Map" name="Metadata">
+        <arg type="a{sv}" tp:type="Metadata_Map" name="Metadata">
           <tp:docstring>
             <p>The metadata of the newly added item.</p>
             <p>This must include a trackid entry.</p>
@@ -513,7 +515,7 @@
             <p>The id of the track which metadata has changed.</p>
           </tp:docstring>
         </arg>
-        <arg type="a{sv}" tp:type="String_Variant_Map" name="Metadata">
+        <arg type="a{sv}" tp:type="Metadata_Map" name="Metadata">
           <tp:docstring>
             <p>The new track metadata.</p>
           </tp:docstring>
@@ -750,7 +752,7 @@
         </tp:docstring>
       </method>
 
-      <tp:simple-type name="Track_Id" type="s">
+      <tp:simple-type name="Track_Id" type="s" array-name="Track_Id_List">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>Unique track identifier.</p>
           <p>
@@ -761,7 +763,7 @@
         </tp:docstring>
       </tp:simple-type>
 
-      <property name="Metadata" tp:name-for-bindings="Metadata" type="a{sv}" tp:type="String_Variant_Map" access="read">
+      <property name="Metadata" tp:name-for-bindings="Metadata" type="a{sv}" tp:type="Metadata_Map" access="read">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>The metadata of the current element.</p>
           <p>
@@ -1016,7 +1018,7 @@
       </method>
 
       <signal name="MetadataChanged" tp:name-for-bindings="Metadata_Changed">
-        <arg name="Metadata" type="a{sv}" tp:type="String_Variant_Map">
+        <arg name="Metadata" type="a{sv}" tp:type="Metadata_Map">
           <tp:docstring>
             <p>The new metadata</p>
           </tp:docstring>
@@ -1092,8 +1094,6 @@
 
     </interface>
   </node>
-
-  <xi:include href="generic-types.xml"/>
 
 </tp:spec>
 <!-- vim:set sw=2 sts=2 et ft=xml: -->

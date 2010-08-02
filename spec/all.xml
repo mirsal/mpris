@@ -12,8 +12,6 @@
   <tp:copyright>Copyright (C) 2005-2008 Milosz Derezynski</tp:copyright>
   <tp:copyright>Copyright (C) 2008 Nick Welch</tp:copyright>
   <tp:copyright>Copyright (C) 2010 Alex Merry</tp:copyright>
-  <!-- <tp:copyright>Copyright (C) 2009 Marc-André
-       Lureau</tp:copyright> -->
 
   <tp:license xmlns="http://www.w3.org/1999/xhtml">
     <p>
@@ -186,19 +184,7 @@
           <p>A D-Bus object path.</p>
         </tp:docstring>
       </tp:simple-type>
-<!--
-      <property name="CurrentTrackList" type="s" tp:type="Dbus_Object_Path" tp:name-for-bindings="Current_Track_List" access="readwrite">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>The current track list object path</p>
-          <p>
-             The returned object path implements the
-             org.mpris.MediaPlayer.TrackList interface unless
-             the media player does not support the tracklist interface,
-             in which case, this property is an empty string.
-          </p>
-        </tp:docstring>
-      </property>
--->
+
       <tp:flags name="Capability_Flags" value-prefix="CAN" type="i">
         <tp:flag suffix="MANAGE_TRACKLIST" value="1 &lt;&lt; 0">
           <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -694,13 +680,7 @@
           </ul>
         </tp:docstring>
       </tp:simple-type>
-<!--
-      <property name="PlaybackStatus" type="i" tp:type="Playback_State" tp:name-for-bindings="Playback_Status" access="read">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>The current playback status</p>
-        </tp:docstring>
-      </property>
--->
+
       <tp:struct name="Status_Struct">
         <tp:docstring>
           <p>The status of the media player.</p>
@@ -780,13 +760,7 @@
           </p>
         </tp:docstring>
       </tp:simple-type>
-<!--
-      <property name="CurrentTrack" type="s" tp:type="Track_Id" tp:name-for-bindings="Current_Track" access="read">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>The current track's identifier</p>
-        </tp:docstring>
-      </property>
--->
+
       <property name="Metadata" tp:name-for-bindings="Metadata" type="a{sv}" tp:type="String_Variant_Map" access="read">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>The metadata of the current element.</p>
@@ -1042,15 +1016,6 @@
       </method>
 
       <signal name="MetadataChanged" tp:name-for-bindings="Metadata_Changed">
-        <!-- <arg type="s" tp:type="Track_Id" name="TrackId">
-          <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-            <p>
-              The new track's identifier if this signal is being emited due
-              to a track change or the currently playing track's if it has
-              not changed
-            </p>
-          </tp:docstring>
-        </arg> -->
         <arg name="Metadata" type="a{sv}" tp:type="String_Variant_Map">
           <tp:docstring>
             <p>The new metadata</p>

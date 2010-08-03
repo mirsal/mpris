@@ -2,9 +2,16 @@
 <node name="/Player_Node" xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
   <interface name="org.mpris.MediaPlayer.Player">
 
+    <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+      <p>
+        This interface implements the methods for querying and providing basic
+        control over what is currently playing.
+      </p>
+    </tp:docstring>
+
     <method name="Next" tp:name-for-bindings="Next">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Skip to the next track in the tracklist.</p>
+        <p>Skips to the next track in the tracklist.</p>
         <p>
           If there is no next track (and endless playback and track
           repeat are both off), stop playback.
@@ -15,7 +22,7 @@
 
     <method name="Previous" tp:name-for-bindings="Previous">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Skip to the previous track in the tracklist.</p>
+        <p>Skips to the previous track in the tracklist.</p>
         <p>
           If there is no previous track (and endless playback and track
           repeat are both off), stop playback.
@@ -26,8 +33,8 @@
 
     <method name="Pause" tp:name-for-bindings="Pause">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Pause playback.</p>
-        <p>If playback is already paused, do nothing.</p>
+        <p>Pauses playback.</p>
+        <p>If playback is already paused, does nothing.</p>
         <p>
           Calling Play after this should cause playback to start again
           from the same position.
@@ -37,16 +44,16 @@
 
     <method name="PlayPause" tp:name-for-bindings="PlayPause">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Pause playback.</p>
-        <p>If playback is already paused, resume playback.</p>
-        <p>If playback is stopped, start playback.</p>
+        <p>Pauses playback.</p>
+        <p>If playback is already paused, resumes playback.</p>
+        <p>If playback is stopped, starts playback.</p>
       </tp:docstring>
     </method>
 
     <method name="Stop" tp:name-for-bindings="Stop">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Stop playback.</p>
-        <p>If playback is already stopped, do nothing.</p>
+        <p>Stops playback.</p>
+        <p>If playback is already stopped, does nothing.</p>
         <p>
           Calling Play after this should cause playback to
           start again from the begining of the track.
@@ -56,9 +63,9 @@
 
     <method name="Play" tp:name-for-bindings="Play">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Start or resume playback.</p>
-        <p>If already playing, do nothing.</p>
-        <p>If there is no track to play, do nothing.</p>
+        <p>Starts or resumes playback.</p>
+        <p>If already playing, does nothing.</p>
+        <p>If there is no track to play, does nothing.</p>
       </tp:docstring>
     </method>
 
@@ -69,7 +76,7 @@
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Toggle the current track repeat.</p>
+        <p>Toggles the current track repeat.</p>
       </tp:docstring>
     </method>
 
@@ -89,7 +96,7 @@
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Toggle the tracklist loop.</p>
+        <p>Toggles the tracklist loop.</p>
       </tp:docstring>
     </method>
 
@@ -100,7 +107,7 @@
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Toggle the tracklist shuffle.</p>
+        <p>Toggles the tracklist shuffle.</p>
       </tp:docstring>
     </method>
 
@@ -251,7 +258,7 @@
     </property>
 
     <tp:flags name="Player_Capability_Flags" value-prefix="PLAYER_CAN" type="i">
-      <tp:flag suffix="GO_NEXT" value="1 &lt;&lt; 0">
+      <tp:flag suffix="GO_NEXT" value="1 (1 &lt;&lt; 0)">
         <tp:docstring>
           <p>
             The client can call the Next method on this interface and
@@ -259,7 +266,7 @@
           </p>
         </tp:docstring>
       </tp:flag>
-      <tp:flag suffix="GO_PREVIOUS" value="1 &lt;&lt; 1">
+      <tp:flag suffix="GO_PREVIOUS" value="2 (1 &lt;&lt; 1)">
         <tp:docstring>
           <p>
             The client can call the Previous method on this interface and
@@ -267,7 +274,7 @@
           </p>
         </tp:docstring>
       </tp:flag>
-      <tp:flag suffix="PAUSE" value="1 &lt;&lt; 2">
+      <tp:flag suffix="PAUSE" value="4 (1 &lt;&lt; 2)">
         <tp:docstring>
           <p>
             The client can call the Pause and PlayPause methods on this
@@ -275,14 +282,14 @@
           </p>
         </tp:docstring>
       </tp:flag>
-      <tp:flag suffix="PLAY" value="1 &lt;&lt; 3">
+      <tp:flag suffix="PLAY" value="8 (1 &lt;&lt; 3)">
         <tp:docstring>
           <p>
             Playback can be started.
           </p>
         </tp:docstring>
       </tp:flag>
-      <tp:flag suffix="SEEK" value="1 &lt;&lt; 4">
+      <tp:flag suffix="SEEK" value="16 (1 &lt;&lt; 4)">
         <tp:docstring>
           <p>
             Seeking is possible in the currently played
@@ -292,7 +299,7 @@
           </p>
         </tp:docstring>
       </tp:flag>
-      <tp:flag suffix="PROVIDE_METADATA" value="1 &lt;&lt; 5">
+      <tp:flag suffix="PROVIDE_METADATA" value="32 (1 &lt;&lt; 5)">
         <tp:docstring>
           <p>
             Metadata can be acquired for the currently played
@@ -301,7 +308,7 @@
           </p>
         </tp:docstring>
       </tp:flag>
-      <tp:flag suffix="PROVIDE_POSITION" value="1 &lt;&lt; 6">
+      <tp:flag suffix="PROVIDE_POSITION" value="64 (1 &lt;&lt; 6)">
         <tp:docstring>
           <p>
             Playback position information can be retrieved through the Position
@@ -309,28 +316,28 @@
           </p>
         </tp:docstring>
       </tp:flag>
-      <tp:flag suffix="REPEAT" value="1 &lt;&lt; 7">
+      <tp:flag suffix="REPEAT" value="128 (1 &lt;&lt; 7)">
         <tp:docstring>
           <p>
             The media player can be set to repeat the current track.
           </p>
         </tp:docstring>
       </tp:flag>
-      <tp:flag suffix="LOOP" value="1 &lt;&lt; 8">
+      <tp:flag suffix="LOOP" value="256 (1 &lt;&lt; 8)">
         <tp:docstring>
           <p>
             The media player can be set to loop through the tracklist.
           </p>
         </tp:docstring>
       </tp:flag>
-      <tp:flag suffix="SHUFFLE" value="1 &lt;&lt; 9">
+      <tp:flag suffix="SHUFFLE" value="512 (1 &lt;&lt; 9)">
         <tp:docstring>
           <p>
             The media player can be set to play tracks randomly.
           </p>
         </tp:docstring>
       </tp:flag>
-      <tp:flag suffix="CONTROL_RATE" value="1 &lt;&lt; 10">
+      <tp:flag suffix="CONTROL_RATE" value="1024 (1 &lt;&lt; 10)">
         <tp:docstring>
           <p>
             Clients can call the SetRate method on this interface and expect
@@ -338,7 +345,7 @@
           </p>
         </tp:docstring>
       </tp:flag>
-      <tp:flag suffix="PLAY_BACKWARDS" value="1 &lt;&lt; 11">
+      <tp:flag suffix="PLAY_BACKWARDS" value="2048 (1 &lt;&lt; 11)">
         <tp:docstring>
           <p>
             The Rate property can take negative values.
@@ -542,11 +549,15 @@
           Indicates that the track position has changed in a way that is
           inconsistant with the current playing state.
         </p>
-        <p>
-          When this signal is not received, clients should assume that when
-          Playing, the position progresses according to real time, and when
-          Paused, it remains constant.
-        </p>
+        <p>When this signal is not received, clients should assume that :</p>
+        <ul>
+          <li>
+            When playing, the position progresses according to the rate property
+            (or to real time if the PLAYER_CAN_CONTROL_RATE capability flag is
+            not set).
+          </li>
+          <li>When paused, it remains constant.</li>
+        </ul>
         <p>
           This signal does not need to be emitted when playback starts
           or when the track changes, unless the track is starting at an

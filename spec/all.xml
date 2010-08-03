@@ -113,7 +113,7 @@
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>Causes the media player to stop running</p>
           <p>
-             The media player may not allow clients to shut it down.
+             The media player may refuse to allow clients to shut it down.
              In this case, the CAN_QUIT capability flag is not set and
              this method does nothing.
           </p>
@@ -127,7 +127,7 @@
             appropriate mechanism available.
           </p>
           <p>
-            The media player may not be able to control how its user interface
+            The media player may be unable to control how its user interface
             is displayed, or it may not have a graphical user interface at all.
             In this case, the CAN_RAISE capability flag is not set and this
             method does nothing.
@@ -171,7 +171,7 @@
       </property>
 -->
       <tp:flags name="Capability_Flags" value-prefix="CAN" type="i">
-        <tp:flag suffix="MANAGE_TRACKLIST" value="1 &lt;&lt; 0">
+        <tp:flag suffix="MANAGE_TRACKLIST" value="1 (1 &lt;&lt; 0)">
           <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
             The media player exposes the well-known
             <strong>/org/mpris/MediaPlayer/TrackList</strong>
@@ -180,18 +180,18 @@
             interface
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="MANAGE_PLAYLISTS" value="1 &lt;&lt; 1">
+        <tp:flag suffix="MANAGE_PLAYLISTS" value="2 (1 &lt;&lt; 1)">
           <tp:docstring>
             The playlist property contains a list of playlists
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="RAISE" value="1 &lt;&lt; 2">
+        <tp:flag suffix="RAISE" value="4 (1 &lt;&lt; 2)">
           <tp:docstring>
             A call to Raise on this interface will present the media player's
             user interface to the user.
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="QUIT" value="1 &lt;&lt; 3">
+        <tp:flag suffix="QUIT" value="8 (1 &lt;&lt; 3)">
           <tp:docstring>
             A call to Quit on this interface will make
             the media player stop running.
@@ -206,10 +206,6 @@
           <p>A bitmask of capabilities</p>
         </tp:docstring>
       </property>
-
-      <tp:simple-type name="Playlist_Structs_List" type="a(sss)">
-        <tp:docstring>A list of playlists</tp:docstring>
-      </tp:simple-type>
 
       <tp:struct name="Playlist_Struct" array-name="Playlist_Structs_List">
         <tp:docstring>Represents a named playlist</tp:docstring>
@@ -234,7 +230,7 @@
         </tp:member>
     </tp:struct>
 
-      <property name="Playlists" type="a(sss)" tp:type="Playlist_Structs_List" tp:name-for-bindings="Playlists" access="read">
+      <property name="Playlists" type="a(sss)" tp:type="Playlist_Struct[]" tp:name-for-bindings="Playlists" access="read">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>A list of named playlists</p>
           <p>
@@ -267,42 +263,44 @@
     <interface name="org.mpris.MediaPlayer.TrackList">
 
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Provides access to the track listing of the media player.</p>
+        <p> Provides access to the track listing of the media player.</p>
         <p>
-          To make use of this interface, the first thing that a client
-          should do is to fetch all the properties at once, using
-          GetAll on the D-Bus Properties interface.  This will ensure
-          all the properties are in a consistent state.
-
-          The client will probably then want to fetch the metadata for
-          the playlist (or possibly only part of it) using
-          GetTracksMetadata.
+            Each track in the tracklist has a unique identifier.
+            The intention is that this uniquely identifies the track within
+            the scope of the tracklist. In particular, if a media item
+            (a particular music file, say) occurs twice in the track list, each
+            occurrence should have a different identifier. If a track is removed
+            from the middle of the playlist, it should not affect the track ids
+            of any other tracks in the playlist.
         </p>
-        <p>
-          The client should listen to all the signals related to
-          properties it is interested in.
+        <p> As a result, the traditional track identifiers of URLs and position
+            in the playlist cannot be used.  It is recognised that this may pose
+            some difficulties for media player implementations.  A potential
+            scheme would be to use the URI and, in the case of duplicates,
+            appending a fragment and a number (eg: the second
+            "file:///home/jim/foo.mp3" occurance could be
+            "file:///home/jim/foo.mp3#2", which will keep this track id even if
+            the first occurance is then removed).  Any scheme that satisfies the
+            uniqueness requirements is valid, however, as clients should not
+            make any assumptions about the value of the track id beyond the fact
+            that it is a unique identifier.
+        </p>
+
+        <p> Note that the (memory and processing) burden of implementing the
+            TrackList interface and maintaining unique track ids for the
+            playlist may be mitigated by only exposing part of the playlist when
+            it is very long (the 20 or so tracks around the currently playing
+            track, for example).
         </p>
       </tp:docstring>
 
-      <tp:simple-type name="Track_Id_List" type="as">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>A list of track ids, see Track_Id</p>
-        </tp:docstring>
-      </tp:simple-type>
-
-      <tp:simple-type name="String_Variant_Map_List" type="aa{sv}">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>An array of String / Variant maps</p>
-        </tp:docstring>
-      </tp:simple-type>
-
       <method name="GetTracksMetadata" tp:name-for-bindings="Get_Tracks_Metadata">
-        <arg direction="in" name="TrackIds" type="as" tp:type="Track_Id_List">
+        <arg direction="in" name="TrackIds" type="as" tp:type="Track_Id[]">
           <tp:docstring>
             The list of track ids for which metadata is requested
           </tp:docstring>
         </arg>
-        <arg direction="out" type="aa{sv}" tp:type="String_Variant_Map_List" name="Metadata">
+        <arg direction="out" type="aa{sv}" tp:type="String_Variant_Map[]" name="Metadata">
           <tp:docstring>
             Metadata of the set of tracks given as input
           </tp:docstring>
@@ -323,7 +321,7 @@
         </tp:docstring>
       </method>
 
-      <property name="Tracks" type="as" tp:type="Track_Id_List" tp:name-for-bindings="Tracks" access="read">
+      <property name="Tracks" type="as" tp:type="Track_Id[]" tp:name-for-bindings="Tracks" access="read">
         <tp:docstring>
           An array which contains the identifier of each track
           in the tracklist, in order
@@ -352,12 +350,19 @@
         <arg direction="in" type="b" name="SetAsCurrent">
           <tp:docstring>
             Whether the newly inserted track should be considered as
-            the current track. This has the same effect as a call to
-            GoTo afterwards.
+            the current track. Setting this to true has the same effect as
+            calling GoTo afterwards.
           </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Adds an URI in the TrackList.</p>
+          <p> Adds a URI in the TrackList.</p>
+          <p> If the TRACKLIST_CAN_EDIT_TRACKS capability flag is not set, does
+              nothing
+          </p>
+          <p> Note: Clients should not assume that the track has been added at
+              the time when this method returns. They should wait for a
+              TrackAdded or TrackListReplaced signal
+          </p>
         </tp:docstring>
       </method>
 
@@ -366,7 +371,15 @@
           <tp:docstring>Identifier of the track to be removed</tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          Removes an item from the TrackList.
+          <p> Removes an item from the TrackList.</p>
+          <p> If the track is not part of this tracklist, does nothing</p>
+          <p> If the TRACKLIST_CAN_EDIT_TRACKS capability flag is not set, does
+              nothing
+          </p>
+          <p> Note: Clients should not assume that the track has been removed at
+              the time when this method returns. They should wait for a
+              TrackAdded or TrackListReplaced signal
+          </p>
         </tp:docstring>
       </method>
 
@@ -375,18 +388,18 @@
           <tp:docstring>Identifier of the track to skip to</tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Skip to the specified TrackId</p>
-          <p>If the track is not part of this tracklist, do nothing</p>
+          <p> Skip to the specified TrackId</p>
+          <p> If the track is not part of this tracklist, does nothing</p>
           <p>
-            If this object is not the current TrackList, replace the current
-            tracklist's tracks with this one's contents and
-            fire the TrackListReplaced signal on the current TrackList.
+              If this object is not the current TrackList, replace the current
+              tracklist's tracks with this one's contents and
+              fire the TrackListReplaced signal on the current TrackList.
           </p>
         </tp:docstring>
       </method>
 
       <tp:flags name="Track_List_Capability_Flags" value-prefix="TRACKLIST_CAN" type="i">
-        <tp:flag suffix="EDIT_TRACKS" value="1 &lt;&lt; 0">
+        <tp:flag suffix="EDIT_TRACKS" value="1 (1 &lt;&lt; 0)">
           <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
             A call to AddTrack will add a track to this TrackList and a call to
             RemoveTrack will remove a track.
@@ -411,7 +424,7 @@
       </signal>
 
       <signal name="TrackListReplaced" tp:name-for-bindings="Track_List_Replaced">
-        <arg name="Tracks" type="as" tp:type="Track_Id_List">
+        <arg name="Tracks" type="as" tp:type="Track_Id[]">
           <tp:docstring>The new content of the tracklist</tp:docstring>
         </arg>
         <arg name="CurrentTrack" type="s" tp:type="Track_Id">
@@ -484,45 +497,51 @@
   <node name="/Player_Node">
     <interface name="org.mpris.MediaPlayer.Player">
 
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p> This interface implements the methods for querying and providing
+            basic control over what is currently playing.
+        </p>
+      </tp:docstring>
+
       <method name="Next" tp:name-for-bindings="Next">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Skip to the next track in the tracklist</p>
-          <p>If there is no next track, (and looping is off) stop playback</p>
-          <p>If playback is paused or stopped, it remains that way</p>
+          <p>Skips to the next track in the tracklist.</p>
+          <p>If there is no next track (and looping is off), stops playback.</p>
+          <p>If playback is paused or stopped, it remains that way.</p>
         </tp:docstring>
       </method>
 
       <method name="Previous" tp:name-for-bindings="Previous">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Skip to the previous track in the tracklist</p>
-          <p>If there is no previous track, (and looping is off) stop playback</p>
-          <p>If playback is paused or stopped, it remains that way</p>
+          <p>Skips to the previous track in the tracklist.</p>
+          <p>If there is no previous track (and looping is off), stops playback.</p>
+          <p>If playback is paused or stopped, it remains that way.</p>
         </tp:docstring>
       </method>
 
       <method name="Pause" tp:name-for-bindings="Pause">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Pause playback</p>
-          <p>If playback is already paused, do nothing</p>
+          <p>Pauses playback.</p>
+          <p>If playback is already paused, does nothing.</p>
           <p>
             Calling Play after this should cause playback to start again
-            from the same position
+            from the same position.
           </p>
         </tp:docstring>
       </method>
 
       <method name="PlayPause" tp:name-for-bindings="PlayPause">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Pause playback</p>
-          <p>If playback is already paused, resume playback</p>
-          <p>If playback is stopped, start playback</p>
+          <p>Pauses playback.</p>
+          <p>If playback is already paused, resumes playback</p>
+          <p>If playback is stopped, starts playback</p>
         </tp:docstring>
       </method>
 
       <method name="Stop" tp:name-for-bindings="Stop">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Stop playback</p>
-          <p>If playback is already stopped, do nothing</p>
+          <p>Stops playback</p>
+          <p>If playback is already stopped, does nothing</p>
           <p>
             Calling Play after this should cause playback to
             start again from the begining of the track
@@ -532,9 +551,9 @@
 
       <method name="Play" tp:name-for-bindings="Play">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Start or resume playback</p>
-          <p>If already playing, do nothing</p>
-          <p>If there is no track to play, do nothing</p>
+          <p>Starts or resumes playback</p>
+          <p>If already playing, does nothing</p>
+          <p>If there is no track to play, does nothing</p>
         </tp:docstring>
       </method>
 
@@ -545,7 +564,7 @@
           </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Toggle the current track repeat.</p>
+          <p>Toggles the current track repeat.</p>
         </tp:docstring>
       </method>
 
@@ -557,7 +576,7 @@
           </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Toggle the tracklist loop.</p>
+          <p>Toggles the tracklist loop.</p>
         </tp:docstring>
       </method>
 
@@ -568,7 +587,7 @@
           </tp:docstring>
         </arg>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Toggle the tracklist shuffle</p>
+          <p>Toggles the tracklist shuffle</p>
         </tp:docstring>
       </method>
 
@@ -687,7 +706,7 @@
         </tp:docstring>
       </method>
 
-      <tp:simple-type name="Track_Id" type="s">
+      <tp:simple-type name="Track_Id" type="s" tp:array-name="Track_Id_List">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>Unique track identifier</p>
           <p>
@@ -727,30 +746,30 @@
       </property>
 
       <tp:flags name="Player_Capability_Flags" value-prefix="PLAYER_CAN" type="i">
-        <tp:flag suffix="GO_NEXT" value="1 &lt;&lt; 0">
+        <tp:flag suffix="GO_NEXT" value="1 (1 &lt;&lt; 0)">
           <tp:docstring>
             The client can call the Next method on this interface and
             expect the current track to change.
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="GO_PREVIOUS" value="1 &lt;&lt; 1">
+        <tp:flag suffix="GO_PREVIOUS" value="2 (1 &lt;&lt; 1)">
           <tp:docstring>
             The client can call the Previous method on this interface and
             expect the current track to change.
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="PAUSE" value="1 &lt;&lt; 2">
+        <tp:flag suffix="PAUSE" value="4 (1 &lt;&lt; 2)">
           <tp:docstring>
             The client can call the Pause and PlayPause methods on this
             interface and expect playback to pause.
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="PLAY" value="1 &lt;&lt; 3">
+        <tp:flag suffix="PLAY" value="8 (1 &lt;&lt; 3)">
           <tp:docstring>
             Playback can be started.
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="SEEK" value="1 &lt;&lt; 4">
+        <tp:flag suffix="SEEK" value="16 (1 &lt;&lt; 4)">
           <tp:docstring>
             Seeking is possible in the currently played
             stream. Clients can enable seeking controls and
@@ -758,41 +777,41 @@
             alter the current playback position
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="PROVIDE_METADATA" value="1 &lt;&lt; 5">
+        <tp:flag suffix="PROVIDE_METADATA" value="32 (1 &lt;&lt; 5)">
           <tp:docstring>
             Metadata can be acquired for the currently played
             track. (The trackid and uri entries are provided
             even if this flag is not set)
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="PROVIDE_POSITION" value="1 &lt;&lt; 6">
+        <tp:flag suffix="PROVIDE_POSITION" value="64 (1 &lt;&lt; 6)">
           <tp:docstring>
             Playback position information can be retrieved through the Position
             property on this interface.
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="REPEAT" value="1 &lt;&lt; 7">
+        <tp:flag suffix="REPEAT" value="128 (1 &lt;&lt; 7)">
           <tp:docstring>
             The media player can be set to repeat the current track.
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="LOOP" value="1 &lt;&lt; 8">
+        <tp:flag suffix="LOOP" value="256 (21 &lt;&lt; 8)">
           <tp:docstring>
             The media player can be set to loop through the tracklist.
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="SHUFFLE" value="1 &lt;&lt; 9">
+        <tp:flag suffix="SHUFFLE" value="512 (1 &lt;&lt; 9)">
           <tp:docstring>
             The media player can be set to play tracks randomly.
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="CONTROL_RATE" value="1 &lt;&lt; 10">
+        <tp:flag suffix="CONTROL_RATE" value="1024 (1 &lt;&lt; 10)">
           <tp:docstring>
             Clients can call the SetRate method on this interface and expect
             the playback rate to change accordingly.
           </tp:docstring>
         </tp:flag>
-        <tp:flag suffix="PLAY_BACKWARDS" value="1 &lt;&lt; 11">
+        <tp:flag suffix="PLAY_BACKWARDS" value="2048 (1 &lt;&lt; 11)">
           <tp:docstring>
             The Rate property can take negative values.
           </tp:docstring>
@@ -983,18 +1002,22 @@
             Indicates that the track position has changed in a way that is
             inconsistant with the current playing state.
           </p>
-          <p>
-            When this signal is not received, clients should assume that when
-            Playing, the position progresses according to real time, and when
-            Paused, it remains constant
-          </p>
+          <p>When this signal is not received, clients should assume that :</p>
+          <ul>
+            <li>
+                When playing, the position progresses according to the rate
+                property (or to real time if the PLAYER_CAN_CONTROL_RATE
+                capability flag is not set)
+            </li>
+            <li>When paused, it remains constant.</li>
+          </ul>
           <p>
             This signal does not need to be emitted when playback starts
             or when the track changes, unless the track is starting at an
             unexpected position. An expected position would be the last
             known one when going from Paused to Playing, and 0 when going from
             Stopped to Playing.
-          </p >
+          </p>
         </tp:docstring>
       </signal>
 

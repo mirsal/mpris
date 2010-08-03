@@ -34,7 +34,7 @@
     <method name="Pause" tp:name-for-bindings="Pause">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Pauses playback.</p>
-        <p>If playback is already paused, does nothing.</p>
+        <p>If playback is already paused, this has no effect.</p>
         <p>
           Calling Play after this should cause playback to start again
           from the same position.
@@ -53,10 +53,10 @@
     <method name="Stop" tp:name-for-bindings="Stop">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Stops playback.</p>
-        <p>If playback is already stopped, does nothing.</p>
+        <p>If playback is already stopped, this has no effect.</p>
         <p>
           Calling Play after this should cause playback to
-          start again from the begining of the track.
+          start again from the beginning of the track.
         </p>
       </tp:docstring>
     </method>
@@ -64,8 +64,8 @@
     <method name="Play" tp:name-for-bindings="Play">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Starts or resumes playback.</p>
-        <p>If already playing, does nothing.</p>
-        <p>If there is no track to play, does nothing.</p>
+        <p>If already playing, this has no effect.</p>
+        <p>If there is no track to play, this has no effect.</p>
       </tp:docstring>
     </method>
 
@@ -111,47 +111,63 @@
       </tp:docstring>
     </method>
 
-    <tp:simple-type name="Playback_State" type="i">
+    <tp:enum name="Playback_State" type="i">
+      <tp:enumvalue suffix="Playing" value="0">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>A track is currently playing.</p>
+        </tp:docstring>
+      </tp:enumvalue>
+      <tp:enumvalue suffix="Paused" value="1">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>A track is currently paused.</p>
+        </tp:docstring>
+      </tp:enumvalue>
+      <tp:enumvalue suffix="Stopped" value="2">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>There is no track currently playing.</p>
+        </tp:docstring>
+      </tp:enumvalue>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>A playback state.</p>
-        <ul>
-          <li>0 = Playing</li>
-          <li>1 = Paused</li>
-          <li>2 = Stopped</li>
-        </ul>
+        <p>The playback state.</p>
       </tp:docstring>
-    </tp:simple-type>
+    </tp:enum>
 
     <tp:simple-type name="Shuffle_State" type="b">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>A shuffle state.</p>
-        <ul>
-          <li>0 = Playing linearly</li>
-          <li>1 = Playing randomly</li>
-        </ul>
+        <p>
+          A value of <strong>false</strong> indicates that playback is
+          progressing linearly through a playlist, while <strong>true</strong>
+          means playback is progressing through a playlist in some other order.
+        </p>
       </tp:docstring>
     </tp:simple-type>
 
     <tp:simple-type name="Repeat_State" type="b">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>A "repeat current track" state.</p>
-        <ul>
-          <li>
-              0 = Go to the next element once the current track
-              has finished playing
-          </li>
-          <li>1 = Repeat the current element</li>
-        </ul>
+        <p>
+          A value of <strong>false</strong> indicates that a different track
+          (although this might be identical to the current track) will start
+          playing when the current track finishes, while <strong>true</strong>
+          means the current track will be repeated indefinitely.
+        </p>
       </tp:docstring>
     </tp:simple-type>
 
     <tp:simple-type name="Endless_State" type="b">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>An endless playback state.</p>
-        <ul>
-          <li>0 = Stop playing once the last element has been played</li>
-          <li>1 = Never give up playing</li>
-        </ul>
+        <p>
+          A value of <strong>false</strong> indicates that playback will stop
+          once the last element in a finite list has been played, while
+          <strong>true</strong> means playback will continue forever.
+        </p>
+        <p>
+          Note that this may be <strong>false</strong> when Repeat_State is
+          <strong>true</strong>, even though Repeat_State is a form of endless
+          playback.
+        </p>
       </tp:docstring>
     </tp:simple-type>
 
@@ -170,6 +186,11 @@
           <p>
              If the PLAYER_CAN_PLAY_BACKWARDS capability flag is not set, this
              can take only positive values.
+          </p>
+          <p>
+            If the media player has no ability to play at speeds other than the
+            normal playback rate, this must still be implemented, and must
+            return 1.0.
           </p>
         </tp:docstring>
       </tp:member>
@@ -199,13 +220,27 @@
     <tp:simple-type name="Rate" type="d">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Playback rate.</p>
-        <ul>
-          <li>A value greater than 1 means fastforward</li>
-          <li>A value between 0 and 1 means slow motion</li>
-          <li>1 means realtime</li>
-          <li>0 means pause</li>
-          <li>A negative value means play backwards</li>
-        </ul>
+        <p>
+          This is a multiplier for the playback rate.  So a value of 0.5
+          indicates that playback is happening at half speed, while 1.5 means
+          that 1.5 seconds of "track time" is consumed every second.
+        </p>
+        <p>
+          If PLAYER_CAN_PLAY_BACKWARDS flag is set, this may take on negative
+          values, indicating that the position will decrease at the indicated
+          rate.
+        </p>
+        <p>
+          This should never be 0.0.  If playback is paused, the playback state
+          enumeration should be used to indicate this.
+        </p>
+        <tp:rationale>
+          <p>
+            This allows clients to display (reasonably) accurate progress bars
+            without having to regularly query the media player for the current
+            position.
+          </p>
+        </tp:rationale>
       </tp:docstring>
     </tp:simple-type>
 
@@ -213,13 +248,28 @@
       <arg direction="in" name="Rate" type="d" tp:type="Rate" >
         <tp:docstring>
           <p>The playack rate to set.</p>
+          <p>
+             If the PLAYER_CAN_PLAY_BACKWARDS capability flag is not set, this
+             must be positive.
+          </p>
+          <p>
+            A value of 0.0 should not be passed by the client.  If it is passed,
+            the media player should act as though Pause was called.
+          </p>
+          <p>
+            Not all values may be accepted by the media player.  It is left to
+            media player implementations to decide how to deal with values they
+            cannot use; they may either ignore them or pick a "best fit" value.
+            Clients are recommended to only use sensible fractions or multiples
+            of 1 (eg: 0.5, 0.25, 1.5, 2.0, etc).
+          </p>
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Sets the current playing rate.</p>
         <p>
            If the PLAYER_CAN_CONTROL_RATE capability flag is not set, this
-           method does nothing.
+           method has no effect.
         </p>
       </tp:docstring>
     </method>
@@ -303,8 +353,11 @@
         <tp:docstring>
           <p>
             Metadata can be acquired for the currently played
-            track. (The trackid and uri entries are provided
-            even if this flag is not set).
+            track.
+          </p>
+          <p>
+            Note that the trackid and uri entries are provided
+            even if this flag is not set.
           </p>
         </tp:docstring>
       </tp:flag>
@@ -365,7 +418,7 @@
 
     <tp:simple-type name="Volume" type="d">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Audio volume level on a linear scale as a double between [0.0;1.0] (inclusive).</p>
+        <p>Audio volume level on a linear scale between 0.0 and 1.0, inclusive.</p>
         <ul>
           <li>0.0 means mute.</li>
           <li>1.0 is the maximum volume level.</li>
@@ -436,7 +489,8 @@
       </arg>
       <arg direction="in" type="i" tp:type="Time_In_Ms" name="Position">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Track position between [0;&lt;track_length&gt;] in ms.</p>
+          <p>Track position in milliseconds.</p>
+          <p>This must be between 0 and &lt;track_length&gt;.</p>
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -446,7 +500,10 @@
           If the Position argument is greater than the track length,
           do nothing.
         </p>
-        <p>If the PLAYER_CAN_SEEK capability flag is not set, do nothing.</p>
+        <p>
+          If the PLAYER_CAN_SEEK capability flag is not set, this has no
+          effect.
+        </p>
       </tp:docstring>
     </method>
 
@@ -459,8 +516,8 @@
           <p>
             Note: If the media player allows it, the current playback position
             can be changed either the SetPosition method or the Seek method on
-            this interface.
-            If it is not the case, the PLAYER_CAN_SEEK capability flag is not set.
+            this interface.  If this is not the case, the PLAYER_CAN_SEEK
+            capability flag will not be set.
           </p>
         </tp:docstring>
     </property>
@@ -485,22 +542,26 @@
           If the value passed in would mean seeking beyond the end
           of the track, acts like a call to Next.
         </p>
-        <p>If the PLAYER_CAN_SEEK capability flag is not set, do nothing.</p>
+        <p>
+          If the PLAYER_CAN_SEEK capability flag is not set, this has no
+          effect.
+        </p>
       </tp:docstring>
     </method>
 
     <signal name="MetadataChanged" tp:name-for-bindings="Metadata_Changed">
       <arg name="Metadata" type="a{sv}" tp:type="Metadata_Map">
         <tp:docstring>
-          <p>The new metadata</p>
+          <p>The new metadata.</p>
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Indicates the the track metadata has changed.</p>
         <p>
           This may be due to a track change (in this case, the "trackid"
-          entry contains a new value), to a stream carrying new metadata
-          or to metadata being fetched asynchronously.
+          entry contains a new value), due to a stream carrying new metadata,
+          due to metadata being edited or due to metadata being fetched
+          asynchronously.
         </p>
       </tp:docstring>
     </signal>
@@ -552,9 +613,7 @@
         <p>When this signal is not received, clients should assume that :</p>
         <ul>
           <li>
-            When playing, the position progresses according to the rate property
-            (or to real time if the PLAYER_CAN_CONTROL_RATE capability flag is
-            not set).
+            When playing, the position progresses according to the rate property.
           </li>
           <li>When paused, it remains constant.</li>
         </ul>

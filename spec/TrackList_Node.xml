@@ -124,8 +124,8 @@
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Adds a URI in the TrackList.</p>
         <p>
-          If the TRACKLIST_CAN_EDIT_TRACKS capability flag is not set, does
-          nothing.
+          If the TRACKLIST_CAN_EDIT_TRACKS capability flag is not set, this has
+          no effect.
         </p>
         <p>
           Note: Clients should not assume that the track has been added at the
@@ -143,14 +143,14 @@
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Removes an item from the TrackList.</p>
-        <p>If the track is not part of this tracklist, does nothing.</p>
+        <p>If the track is not part of this tracklist, this has no effect.</p>
         <p>
-          If the TRACKLIST_CAN_EDIT_TRACKS capability flag is not set, does
-          nothing.
+          If the TRACKLIST_CAN_EDIT_TRACKS capability flag is not set, this has
+          no effect.
         </p>
         <p>
           Note: Clients should not assume that the track has been removed at the
-          time when this method returns. They should wait for a TrackAdded (or
+          time when this method returns. They should wait for a TrackRemoved (or
           TrackListReplaced) signal.
         </p>
       </tp:docstring>
@@ -164,11 +164,13 @@
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Skip to the specified TrackId.</p>
-        <p>If the track is not part of this tracklist, does nothing.</p>
+        <p>If the track is not part of this tracklist, this has no effect.</p>
         <p>
-          If this object is not the current TrackList, replace the current
-          tracklist's tracks with this one's contents and
-          fire the TrackListReplaced signal on the current TrackList.
+          If this object is not the current TrackList (ie: the one at
+          <strong>/org/mpris/MediaPlayer/TrackList</strong>), the current
+          TrackList's tracks should be replaced with the contents of this
+          TrackList, and the TrackListReplaced signal should be fired on
+          the current TrackList.
         </p>
       </tp:docstring>
     </method>

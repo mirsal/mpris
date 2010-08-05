@@ -23,7 +23,6 @@ $(CANONICAL_NAMES): tmp/%.name: spec/%.xml tools/extract-nodename.py
 	tr -d _ < $@ > $@.camel
 
 GENERATED_FILES = \
-	doc/spec.html \
 	doc/spec/index.html \
 	FIXME.out \
 	$(INTROSPECT) \
@@ -34,8 +33,8 @@ doc/spec.html: doc/templates/oldspec.html
 
 doc/spec/index.html: $(XMLS) tools/doc-generator.py tools/specparser.py $(TEMPLATES)
 	@install -d doc
-	$(PYTHON) tools/doc-generator.py spec/all.xml doc/spec/ telepathy-spec \
-		org.freedesktop.Telepathy
+	$(PYTHON) tools/doc-generator.py spec/all.xml doc/spec/ mpris-spec \
+		org.mpris
 
 $(INTROSPECT): introspect/%.xml: spec/%.xml tools/spec-to-introspect.xsl
 	@install -d introspect
@@ -54,6 +53,7 @@ FIXME.out: $(XMLS)
 
 clean:
 	rm -f $(GENERATED_FILES)
+	rm -f doc/spec.html
 	rm -fr introspect
 	rm -rf tmp
 	rm -rf doc/spec

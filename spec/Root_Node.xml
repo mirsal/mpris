@@ -120,6 +120,46 @@
       </tp:docstring>
     </property>
 
+    <property name="SupportedUriSchemes" type="as" tp:name-for-bindings="Supported_Uri_Schemes" access="read">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          The URI schemes supported by the media player.
+        </p>
+        <p>
+          This can be viewed as protocols supported by the player in almost
+          all cases.  Almost every media player will include support for the
+          "file" scheme.  Other common schemes are "http" and "rtsp".
+        </p>
+        <p>
+          Note that URI schemes should be lower-case.
+        </p>
+        <tp:rationale>
+          <p>
+            This is important for clients to know when using the editing
+            capabilities of the Playlist interface, for example.
+          </p>
+        </tp:rationale>
+      </tp:docstring>
+    </property>
+
+    <property name="SupportedMimeTypes" type="as" tp:name-for-bindings="Supported_Mime_Types" access="read">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          The mime-types supported by the media player.
+        </p>
+        <p>
+          Mime-types should be in the standard format (eg: audio/mpeg or
+          application/ogg).
+        </p>
+        <tp:rationale>
+          <p>
+            This is important for clients to know when using the editing
+            capabilities of the Playlist interface, for example.
+          </p>
+        </tp:rationale>
+      </tp:docstring>
+    </property>
+
     <tp:struct name="Playlist_Struct" array-name="Playlist_Structs_List">
       <tp:docstring>Represents a named playlist</tp:docstring>
       <tp:member type="s" tp:type="Playlist_Title" name="Title">

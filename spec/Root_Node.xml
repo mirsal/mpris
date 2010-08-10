@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <node name="/Root_Node" xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
-  <interface name="org.mpris.MediaPlayer">
+  <interface name="org.mpris.MediaPlayer2">
 
     <tp:simple-type name="Dbus_Object_Path" type="s">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -15,7 +15,7 @@
             The media player exposes the well-known
             <strong>/org/mpris/MediaPlayer/TrackList</strong>
             object path, which implements the
-            <strong>org.mpris.MediaPlayer.TrackList</strong>
+            <strong>org.mpris.MediaPlayer2.TrackList</strong>
             interface.
           </p>
         </tp:docstring>
@@ -75,7 +75,7 @@
         <tp:docstring>
           <p>
             The dbus path of an object which implements the
-            <strong>org.mpris.MediaPlayer.TrackList</strong>
+            <strong>org.mpris.MediaPlayer2.TrackList</strong>
             interface.
           </p>
         </tp:docstring>

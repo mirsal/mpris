@@ -84,11 +84,11 @@
       <ul>
         <li>
           <strong>/org/mpris/MediaPlayer</strong>, which implements the
-          <strong>org.mpris.MediaPlayer</strong> interface;
+          <strong>org.mpris.MediaPlayer2</strong> interface;
         </li>
         <li>
           <strong>/org/mpris/MediaPlayer/Player</strong>, which implements the
-          <strong>org.mpris.MediaPlayer.Player</strong> interface.
+          <strong>org.mpris.MediaPlayer2.Player</strong> interface.
         </li>
       </ul>
 
@@ -97,7 +97,7 @@
       <ul>
         <li>
           <strong>/org/mpris/MediaPlayer/TrackList</strong>,
-          which implements the <strong>org.mpris.MediaPlayer.TrackList
+          which implements the <strong>org.mpris.MediaPlayer2.TrackList
           </strong> interface.
         </li>
       </ul>

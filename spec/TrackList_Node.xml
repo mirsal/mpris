@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <node name="/TrackList_Node" xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
-  <interface name="org.mpris.MediaPlayer.TrackList">
+  <interface name="org.mpris.MediaPlayer2.TrackList">
 
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
       <p>Provides access to the track listing of the media player.</p>

@@ -2,40 +2,6 @@
 <node name="/Root_Node" xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
   <interface name="org.mpris.MediaPlayer2">
 
-    <tp:flags name="Capability_Flags" value-prefix="CAN" type="i">
-      <tp:flag suffix="MANAGE_TRACKLIST" value="1 (1 &lt;&lt; 0)">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>
-            The media player exposes the well-known
-            <strong>/org/mpris/MediaPlayer/TrackList</strong>
-            object path, which implements the
-            <strong>org.mpris.MediaPlayer2.TrackList</strong>
-            interface.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:flag suffix="RAISE" value="2 (1 &lt;&lt; 1)">
-        <tp:docstring>
-          <p>
-            A call to Raise on this interface will present the media player's
-            user interface to the user.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:flag suffix="QUIT" value="4 (1 &lt;&lt; 2)">
-        <tp:docstring>
-          <p>
-            A call to Quit on this interface will make the media player stop
-            running.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-
-      <tp:docstring>
-        <p>Capability flags for the root object</p>
-      </tp:docstring>
-    </tp:flags>
-
     <method name="Raise" tp:name-for-bindings="Raise">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>
@@ -45,8 +11,8 @@
         <p>
           The media player may be unable to control how its user interface
           is displayed, or it may not have a graphical user interface at all.
-          In this case, the CAN_RAISE capability flag is not set and this
-          method does nothing.
+          In this case, the <tp:member-ref>CanRaise</tp:member-ref> property is
+          <strong>false</strong> and this method does nothing.
         </p>
       </tp:docstring>
     </method>
@@ -56,11 +22,47 @@
         <p>Causes the media player to stop running.</p>
         <p>
           The media player may refuse to allow clients to shut it down.
-          In this case, the CAN_QUIT capability flag is not set and
-          this method does nothing.
+          In this case, the <tp:member-ref>CanQuit</tp:member-ref> property is
+          <strong>false</strong> and this method does nothing.
         </p>
       </tp:docstring>
     </method>
+
+    <property name="CanQuit" type="b" tp:name-for-bindings="Can_Quit" access="read">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          If <strong>false</strong>, calling
+          <tp:member-ref>Quit</tp:member-ref> will have no effect, and may
+          raise a NotSupported error.  If <strong>true</strong>, calling
+          <tp:member-ref>Quit</tp:member-ref> will cause the media application
+          to attempt to quit (although it may still be prevented from quitting
+          by the user, for example).
+        </p>
+      </tp:docstring>
+    </property>
+
+    <property name="CanRaise" type="b" tp:name-for-bindings="Can_Raise" access="read">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          If <strong>false</strong>, calling
+          <tp:member-ref>Raise</tp:member-ref> will have no effect, and may
+          raise a NotSupported error.  If <strong>true</strong>, calling
+          <tp:member-ref>Raise</tp:member-ref> will cause the media application
+          to attempt to bring its user interface to the front, although it may
+          be prevented from doing so (by the window manager, for example).
+        </p>
+      </tp:docstring>
+    </property>
+
+    <property name="HasTrackList" type="b" tp:name-for-bindings="Has_TrackList" access="read">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          Indicates whether the <strong>org.mpris.MediaPlayer.TrackList</strong>
+          interface is implemented by an object at
+          <strong>/org/mpris/MediaPlayer/TrackList</strong>.
+        </p>
+      </tp:docstring>
+    </property>
 
     <property name="Identity" type="s" tp:name-for-bindings="Identity" access="read">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -68,12 +70,6 @@
           A friendly name to identify the media player to users
           (eg: "Totem 2.22.2").
         </p>
-      </tp:docstring>
-    </property>
-
-    <property name="Capabilities" type="i" tp:type="Capability_Flags" tp:name-for-bindings="Capabilities" access="read">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>A bitmask of capabilities.</p>
       </tp:docstring>
     </property>
 
@@ -116,15 +112,6 @@
         </tp:rationale>
       </tp:docstring>
     </property>
-
-    <signal name="CapabilitiesChanged" tp:name-for-bindings="Capabilities_Changed">
-      <arg name="Capabilities" type="i" tp:type="Capability_Flags">
-        <tp:docstring>The new capabilities.</tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Indicates a change in the capabilities.</p>
-      </tp:docstring>
-    </signal>
 
   </interface>
 </node>

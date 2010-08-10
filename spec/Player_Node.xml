@@ -9,108 +9,6 @@
       </p>
     </tp:docstring>
 
-    <method name="Next" tp:name-for-bindings="Next">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Skips to the next track in the tracklist.</p>
-        <p>
-          If there is no next track (and endless playback and track
-          repeat are both off), stop playback.
-        </p>
-        <p>If playback is paused or stopped, it remains that way.</p>
-      </tp:docstring>
-    </method>
-
-    <method name="Previous" tp:name-for-bindings="Previous">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Skips to the previous track in the tracklist.</p>
-        <p>
-          If there is no previous track (and endless playback and track
-          repeat are both off), stop playback.
-        </p>
-        <p>If playback is paused or stopped, it remains that way.</p>
-      </tp:docstring>
-    </method>
-
-    <method name="Pause" tp:name-for-bindings="Pause">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Pauses playback.</p>
-        <p>If playback is already paused, this has no effect.</p>
-        <p>
-          Calling Play after this should cause playback to start again
-          from the same position.
-        </p>
-      </tp:docstring>
-    </method>
-
-    <method name="PlayPause" tp:name-for-bindings="PlayPause">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Pauses playback.</p>
-        <p>If playback is already paused, resumes playback.</p>
-        <p>If playback is stopped, starts playback.</p>
-      </tp:docstring>
-    </method>
-
-    <method name="Stop" tp:name-for-bindings="Stop">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Stops playback.</p>
-        <p>If playback is already stopped, this has no effect.</p>
-        <p>
-          Calling Play after this should cause playback to
-          start again from the beginning of the track.
-        </p>
-      </tp:docstring>
-    </method>
-
-    <method name="Play" tp:name-for-bindings="Play">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Starts or resumes playback.</p>
-        <p>If already playing, this has no effect.</p>
-        <p>If there is no track to play, this has no effect.</p>
-      </tp:docstring>
-    </method>
-
-    <method name="SetRepeat" tp:name-for-bindings="Set_Repeat">
-      <arg direction="in" type="b" name="State">
-        <tp:docstring>
-          <p>TRUE to repeat the current track, FALSE to stop repeating.</p>
-        </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Toggles the current track repeat.</p>
-      </tp:docstring>
-    </method>
-
-    <method name="SetLoop" tp:name-for-bindings="Set_Loop">
-      <arg direction="in" type="b" tp:type="Endless_State" name="State">
-        <tp:docstring>
-          <p>
-            TRUE to loop through the tracklist, FALSE to stop playback once the
-            last item of the tracklist has been played.
-          </p>
-          <p>
-            Note that just because the media player is in "endless playback"
-            state, that does not mean it is repeating.  The media player may
-            have other mechanisms for generating endless playback.  This
-            method only controls looping, however.
-          </p>
-        </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Toggles the tracklist loop.</p>
-      </tp:docstring>
-    </method>
-
-    <method name="SetShuffle" tp:name-for-bindings="Set_Shuffle">
-      <arg direction="in" type="b" tp:type="Shuffle_State" name="State">
-        <tp:docstring>
-          <p>The shuffle state to set.</p>
-        </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Toggles the tracklist shuffle.</p>
-      </tp:docstring>
-    </method>
-
     <tp:enum name="Playback_State" type="i">
       <tp:enumvalue suffix="Playing" value="0">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -211,12 +109,6 @@
       </tp:member>
     </tp:struct>
 
-    <property name="Status" type="(idbbb)" tp:type="Status_Struct" access="read" tp:name-for-bindings="Status">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>The current status of the media player.</p>
-      </tp:docstring>
-    </property>
-
     <tp:simple-type name="Rate" type="d">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Playback rate.</p>
@@ -244,36 +136,6 @@
       </tp:docstring>
     </tp:simple-type>
 
-    <method name="SetRate" tp:name-for-bindings="Set_Rate">
-      <arg direction="in" name="Rate" type="d" tp:type="Rate" >
-        <tp:docstring>
-          <p>The playack rate to set.</p>
-          <p>
-             If the PLAYER_CAN_PLAY_BACKWARDS capability flag is not set, this
-             must be positive.
-          </p>
-          <p>
-            A value of 0.0 should not be passed by the client.  If it is passed,
-            the media player should act as though Pause was called.
-          </p>
-          <p>
-            Not all values may be accepted by the media player.  It is left to
-            media player implementations to decide how to deal with values they
-            cannot use; they may either ignore them or pick a "best fit" value.
-            Clients are recommended to only use sensible fractions or multiples
-            of 1 (eg: 0.5, 0.25, 1.5, 2.0, etc).
-          </p>
-        </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Sets the current playing rate.</p>
-        <p>
-           If the PLAYER_CAN_CONTROL_RATE capability flag is not set, this
-           method has no effect.
-        </p>
-      </tp:docstring>
-    </method>
-
     <tp:simple-type name="Track_Id" type="s" array-name="Track_Id_List">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Unique track identifier.</p>
@@ -284,28 +146,6 @@
         </p>
       </tp:docstring>
     </tp:simple-type>
-
-    <property name="Metadata" tp:name-for-bindings="Metadata" type="a{sv}" tp:type="Metadata_Map" access="read">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>The metadata of the current element.</p>
-        <p>
-          If there is a current track, this must have a "trackid" entry
-          at the very least, which contains a string that uniquely identifies
-          this track.
-        </p>
-        <p>
-          If the media player implements the TrackList interface and allows
-          the same track to appear multiple times in the tracklist, the
-          "trackid" entry must be unique within the scope of the tracklist.
-        </p>
-        <p>
-          Guidelines for other field names are at
-          <a href="http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata">
-            http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata
-          </a>.
-        </p>
-      </tp:docstring>
-    </property>
 
     <tp:flags name="Player_Capability_Flags" value-prefix="PLAYER_CAN" type="i">
       <tp:flag suffix="GO_NEXT" value="1 (1 &lt;&lt; 0)">
@@ -410,12 +250,6 @@
       </tp:docstring>
     </tp:flags>
 
-    <property name="Capabilities" type="i" tp:type="Player_Capability_Flags" tp:name-for-bindings="Capabilities" access="read">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>A bitmask of capabilities.</p>
-      </tp:docstring>
-    </property>
-
     <tp:simple-type name="Volume" type="d">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Audio volume level on a linear scale between 0.0 and 1.0, inclusive.</p>
@@ -425,17 +259,6 @@
         </ul>
       </tp:docstring>
     </tp:simple-type>
-
-    <property name="Volume" type="d" tp:type="Volume" tp:name-for-bindings="Volume" access="readwrite">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>The volume level.</p>
-        <p>
-          When setting, if a negative value is passed, the volume
-          should be set to 0.0.  If a value greater than 1 is
-          passed, the volume should be set to the maximum level.
-        </p>
-      </tp:docstring>
-    </property>
 
     <tp:simple-type name="Volume_Difference" type="d">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -450,6 +273,171 @@
         </p>
       </tp:docstring>
     </tp:simple-type>
+
+    <tp:simple-type name="Time_In_Ms" type="i">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Time in milliseconds.</p>
+      </tp:docstring>
+    </tp:simple-type>
+
+    <method name="Next" tp:name-for-bindings="Next">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Skips to the next track in the tracklist.</p>
+        <p>
+          If there is no next track (and endless playback and track
+          repeat are both off), stop playback.
+        </p>
+        <p>If playback is paused or stopped, it remains that way.</p>
+      </tp:docstring>
+    </method>
+
+    <method name="Previous" tp:name-for-bindings="Previous">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Skips to the previous track in the tracklist.</p>
+        <p>
+          If there is no previous track (and endless playback and track
+          repeat are both off), stop playback.
+        </p>
+        <p>If playback is paused or stopped, it remains that way.</p>
+      </tp:docstring>
+    </method>
+
+    <method name="Pause" tp:name-for-bindings="Pause">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Pauses playback.</p>
+        <p>If playback is already paused, this has no effect.</p>
+        <p>
+          Calling Play after this should cause playback to start again
+          from the same position.
+        </p>
+      </tp:docstring>
+    </method>
+
+    <method name="PlayPause" tp:name-for-bindings="PlayPause">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Pauses playback.</p>
+        <p>If playback is already paused, resumes playback.</p>
+        <p>If playback is stopped, starts playback.</p>
+      </tp:docstring>
+    </method>
+
+    <method name="Stop" tp:name-for-bindings="Stop">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Stops playback.</p>
+        <p>If playback is already stopped, this has no effect.</p>
+        <p>
+          Calling Play after this should cause playback to
+          start again from the beginning of the track.
+        </p>
+      </tp:docstring>
+    </method>
+
+    <method name="Play" tp:name-for-bindings="Play">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Starts or resumes playback.</p>
+        <p>If already playing, this has no effect.</p>
+        <p>If there is no track to play, this has no effect.</p>
+      </tp:docstring>
+    </method>
+
+    <method name="SetRepeat" tp:name-for-bindings="Set_Repeat">
+      <arg direction="in" type="b" name="State">
+        <tp:docstring>
+          <p>TRUE to repeat the current track, FALSE to stop repeating.</p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Toggles the current track repeat.</p>
+      </tp:docstring>
+    </method>
+
+    <method name="SetLoop" tp:name-for-bindings="Set_Loop">
+      <arg direction="in" type="b" tp:type="Endless_State" name="State">
+        <tp:docstring>
+          <p>
+            TRUE to loop through the tracklist, FALSE to stop playback once the
+            last item of the tracklist has been played.
+          </p>
+          <p>
+            Note that just because the media player is in "endless playback"
+            state, that does not mean it is repeating.  The media player may
+            have other mechanisms for generating endless playback.  This
+            method only controls looping, however.
+          </p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Toggles the tracklist loop.</p>
+      </tp:docstring>
+    </method>
+
+    <method name="SetShuffle" tp:name-for-bindings="Set_Shuffle">
+      <arg direction="in" type="b" tp:type="Shuffle_State" name="State">
+        <tp:docstring>
+          <p>The shuffle state to set.</p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Toggles the tracklist shuffle.</p>
+      </tp:docstring>
+    </method>
+
+    <method name="Seek" tp:name-for-bindings="Seek">
+      <arg direction="in" type="i" name="Position" tp:type="Time_In_Ms">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>The number of milliseconds to seek forward.</p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          Seeks forward in the current track by the specified number
+          of milliseconds.
+        </p>
+        <p>
+          A negative value seeks back. If this would mean seeking
+          back further than the start of the track, the position
+          is set to 0.
+        </p>
+        <p>
+          If the value passed in would mean seeking beyond the end
+          of the track, acts like a call to Next.
+        </p>
+        <p>
+          If the PLAYER_CAN_SEEK capability flag is not set, this has no
+          effect.
+        </p>
+      </tp:docstring>
+    </method>
+
+    <method name="SetRate" tp:name-for-bindings="Set_Rate">
+      <arg direction="in" name="Rate" type="d" tp:type="Rate" >
+        <tp:docstring>
+          <p>The playack rate to set.</p>
+          <p>
+             If the PLAYER_CAN_PLAY_BACKWARDS capability flag is not set, this
+             must be positive.
+          </p>
+          <p>
+            A value of 0.0 should not be passed by the client.  If it is passed,
+            the media player should act as though Pause was called.
+          </p>
+          <p>
+            Not all values may be accepted by the media player.  It is left to
+            media player implementations to decide how to deal with values they
+            cannot use; they may either ignore them or pick a "best fit" value.
+            Clients are recommended to only use sensible fractions or multiples
+            of 1 (eg: 0.5, 0.25, 1.5, 2.0, etc).
+          </p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Sets the current playing rate.</p>
+        <p>
+           If the PLAYER_CAN_CONTROL_RATE capability flag is not set, this
+           method has no effect.
+        </p>
+      </tp:docstring>
+    </method>
 
     <method name="AdjustVolume" tp:name-for-bindings="Adjust_Volume">
         <arg direction="in" type="d" name="Difference" tp:type="Volume_Difference">
@@ -470,12 +458,6 @@
         </p>
         </tp:docstring>
     </method>
-
-    <tp:simple-type name="Time_In_Ms" type="i">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Time in milliseconds.</p>
-      </tp:docstring>
-    </tp:simple-type>
 
     <method name="SetPosition" tp:name-for-bindings="Set_Position">
       <arg direction="in" type="s" tp:type="Track_Id" name="TrackId">
@@ -507,6 +489,51 @@
       </tp:docstring>
     </method>
 
+    <property name="Status" type="(idbbb)" tp:type="Status_Struct" access="read" tp:name-for-bindings="Status">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>The current status of the media player.</p>
+      </tp:docstring>
+    </property>
+
+    <property name="Metadata" tp:name-for-bindings="Metadata" type="a{sv}" tp:type="Metadata_Map" access="read">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>The metadata of the current element.</p>
+        <p>
+          If there is a current track, this must have a "trackid" entry
+          at the very least, which contains a string that uniquely identifies
+          this track.
+        </p>
+        <p>
+          If the media player implements the TrackList interface and allows
+          the same track to appear multiple times in the tracklist, the
+          "trackid" entry must be unique within the scope of the tracklist.
+        </p>
+        <p>
+          Guidelines for other field names are at
+          <a href="http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata">
+            http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata
+          </a>.
+        </p>
+      </tp:docstring>
+    </property>
+
+    <property name="Capabilities" type="i" tp:type="Player_Capability_Flags" tp:name-for-bindings="Capabilities" access="read">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A bitmask of capabilities.</p>
+      </tp:docstring>
+    </property>
+
+    <property name="Volume" type="d" tp:type="Volume" tp:name-for-bindings="Volume" access="readwrite">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>The volume level.</p>
+        <p>
+          When setting, if a negative value is passed, the volume
+          should be set to 0.0.  If a value greater than 1 is
+          passed, the volume should be set to the maximum level.
+        </p>
+      </tp:docstring>
+    </property>
+
     <property name="Position" type="i" tp:type="Time_In_Ms" tp:name-for-bindings="Position" access="read">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>
@@ -521,33 +548,6 @@
           </p>
         </tp:docstring>
     </property>
-
-    <method name="Seek" tp:name-for-bindings="Seek">
-      <arg direction="in" type="i" name="Position" tp:type="Time_In_Ms">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>The number of milliseconds to seek forward.</p>
-        </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>
-          Seeks forward in the current track by the specified number
-          of milliseconds.
-        </p>
-        <p>
-          A negative value seeks back. If this would mean seeking
-          back further than the start of the track, the position
-          is set to 0.
-        </p>
-        <p>
-          If the value passed in would mean seeking beyond the end
-          of the track, acts like a call to Next.
-        </p>
-        <p>
-          If the PLAYER_CAN_SEEK capability flag is not set, this has no
-          effect.
-        </p>
-      </tp:docstring>
-    </method>
 
     <signal name="MetadataChanged" tp:name-for-bindings="Metadata_Changed">
       <arg name="Metadata" type="a{sv}" tp:type="Metadata_Map">

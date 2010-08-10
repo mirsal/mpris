@@ -61,6 +61,26 @@
       </tp:member>
     </tp:mapping>
 
+    <tp:simple-type name="Uri" type="s">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A unique resource identifier.</p>
+      </tp:docstring>
+    </tp:simple-type>
+
+    <tp:flags name="Track_List_Capability_Flags" value-prefix="TRACKLIST_CAN" type="i">
+      <tp:flag suffix="EDIT_TRACKS" value="1 (1 &lt;&lt; 0)">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>
+            A call to AddTrack will add a track to this TrackList and a call
+            to RemoveTrack will remove a track.
+          </p>
+        </tp:docstring>
+      </tp:flag>
+      <tp:docstring>
+        <p>Capability flags for the TrackList interface.</p>
+      </tp:docstring>
+    </tp:flags>
+
     <method name="GetTracksMetadata" tp:name-for-bindings="Get_Tracks_Metadata">
       <arg direction="in" name="TrackIds" type="as" tp:type="Track_Id[]">
         <tp:docstring>
@@ -81,21 +101,6 @@
         </p>
       </tp:docstring>
     </method>
-
-    <property name="Tracks" type="as" tp:type="Track_Id[]" tp:name-for-bindings="Tracks" access="read">
-      <tp:docstring>
-        <p>
-          An array which contains the identifier of each track
-          in the tracklist, in order.
-        </p>
-      </tp:docstring>
-    </property>
-
-    <tp:simple-type name="Uri" type="s">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>A unique resource identifier.</p>
-      </tp:docstring>
-    </tp:simple-type>
 
     <method name="AddTrack" tp:name-for-bindings="Add_Track">
       <arg direction="in" type="s" tp:type="Uri" name="Uri">
@@ -175,19 +180,14 @@
       </tp:docstring>
     </method>
 
-    <tp:flags name="Track_List_Capability_Flags" value-prefix="TRACKLIST_CAN" type="i">
-      <tp:flag suffix="EDIT_TRACKS" value="1 (1 &lt;&lt; 0)">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>
-            A call to AddTrack will add a track to this TrackList and a call
-            to RemoveTrack will remove a track.
-          </p>
-        </tp:docstring>
-      </tp:flag>
+    <property name="Tracks" type="as" tp:type="Track_Id[]" tp:name-for-bindings="Tracks" access="read">
       <tp:docstring>
-        <p>Capability flags for the TrackList interface.</p>
+        <p>
+          An array which contains the identifier of each track
+          in the tracklist, in order.
+        </p>
       </tp:docstring>
-    </tp:flags>
+    </property>
 
     <property name="Capabilities" type="i" tp:type="Track_List_Capability_Flags" tp:name-for-bindings="Capabilities" access="read">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">

@@ -2,25 +2,6 @@
 <node name="/Root_Node" xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
   <interface name="org.mpris.MediaPlayer">
 
-    <tp:struct name="Version_Struct">
-      <tp:docstring>
-        <p>A struct representing the MPRIS spec version.</p>
-      </tp:docstring>
-      <tp:member type="q" name="Major">
-        <tp:docstring>
-          <p>
-            Major version (incremented when there is a non-compatible change
-            to existing API).
-          </p>
-        </tp:docstring>
-      </tp:member>
-      <tp:member type="q" name="Minor">
-        <tp:docstring>
-          <p>Minor version (incremented when new API is added).</p>
-        </tp:docstring>
-      </tp:member>
-    </tp:struct>
-
     <tp:simple-type name="Dbus_Object_Path" type="s">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>A D-Bus object path.</p>
@@ -133,13 +114,6 @@
           A friendly name to identify the media player to users
           (eg: "Totem 2.22.2").
         </p>
-      </tp:docstring>
-    </property>
-
-    <property name="MprisVersion" type="(qq)" tp:type="Version_Struct" tp:name-for-bindings="Mpris_Version" access="read">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>The version of the MPRIS implemented by the media player.</p>
-        <p>Returns 2 as the first member, and 0 as the second one.</p>
       </tp:docstring>
     </property>
 

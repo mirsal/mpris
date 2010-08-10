@@ -2,12 +2,6 @@
 <node name="/Root_Node" xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
   <interface name="org.mpris.MediaPlayer2">
 
-    <tp:simple-type name="Dbus_Object_Path" type="s">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>A D-Bus object path.</p>
-      </tp:docstring>
-    </tp:simple-type>
-
     <tp:flags name="Capability_Flags" value-prefix="CAN" type="i">
       <tp:flag suffix="MANAGE_TRACKLIST" value="1 (1 &lt;&lt; 0)">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -20,12 +14,7 @@
           </p>
         </tp:docstring>
       </tp:flag>
-      <tp:flag suffix="MANAGE_PLAYLISTS" value="2 (1 &lt;&lt; 1)">
-        <tp:docstring>
-          <p>The playlist property contains a list of playlists.</p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:flag suffix="RAISE" value="4 (1 &lt;&lt; 2)">
+      <tp:flag suffix="RAISE" value="2 (1 &lt;&lt; 1)">
         <tp:docstring>
           <p>
             A call to Raise on this interface will present the media player's
@@ -33,7 +22,7 @@
           </p>
         </tp:docstring>
       </tp:flag>
-      <tp:flag suffix="QUIT" value="8 (1 &lt;&lt; 3)">
+      <tp:flag suffix="QUIT" value="4 (1 &lt;&lt; 2)">
         <tp:docstring>
           <p>
             A call to Quit on this interface will make the media player stop
@@ -46,41 +35,6 @@
         <p>Capability flags for the root object</p>
       </tp:docstring>
     </tp:flags>
-
-    <tp:simple-type name="Playlist_Title" type="s">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>A playlist title.</p>
-      </tp:docstring>
-    </tp:simple-type>
-
-    <tp:struct name="Playlist_Struct" array-name="Playlist_Structs_List">
-      <tp:docstring>Represents a named playlist</tp:docstring>
-      <tp:member type="s" tp:type="Playlist_Title" name="Title">
-        <tp:docstring>
-          <p>
-            The human readable title of the playlist. An empty string means
-            no title.
-          </p>
-        </tp:docstring>
-      </tp:member>
-      <tp:member type="s" tp:type="Uri" name="Icon">
-        <tp:docstring>
-          <p>
-            The uri of an icon which represents the playlist. An empty string
-            means no icon.
-          </p>
-        </tp:docstring>
-      </tp:member>
-      <tp:member type="s" tp:type="Dbus_Object_Path" name="TrackList">
-        <tp:docstring>
-          <p>
-            The dbus path of an object which implements the
-            <strong>org.mpris.MediaPlayer2.TrackList</strong>
-            interface.
-          </p>
-        </tp:docstring>
-      </tp:member>
-    </tp:struct>
 
     <method name="Raise" tp:name-for-bindings="Raise">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -160,17 +114,6 @@
             capabilities of the Playlist interface, for example.
           </p>
         </tp:rationale>
-      </tp:docstring>
-    </property>
-
-    <property name="Playlists" type="a(sss)" tp:type="Playlist_Struct[]" tp:name-for-bindings="Playlists" access="read">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>A list of named playlists.</p>
-        <p>
-          If the media player does not support playlists,
-          the CAN_MANAGE_PLAYLISTS capability flag is not set and this
-          property contains an empty list.
-        </p>
       </tp:docstring>
     </property>
 

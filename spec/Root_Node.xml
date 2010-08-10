@@ -2,15 +2,6 @@
 <node name="/Root_Node" xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
   <interface name="org.mpris.MediaPlayer">
 
-    <tp:simple-type name="Identity" type="s">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>
-          A free form string which represents the media player identity,
-          in a human-readable way, such as Totem 2.22.2.
-        </p>
-      </tp:docstring>
-    </tp:simple-type>
-
     <tp:struct name="Version_Struct">
       <tp:docstring>
         <p>A struct representing the MPRIS spec version.</p>
@@ -136,9 +127,12 @@
       </tp:docstring>
     </method>
 
-    <property name="Identity" type="s" tp:type="Identity" tp:name-for-bindings="Identity" access="read">
+    <property name="Identity" type="s" tp:name-for-bindings="Identity" access="read">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>A friendly name to identify the media player to users.</p>
+        <p>
+          A friendly name to identify the media player to users
+          (eg: "Totem 2.22.2").
+        </p>
       </tp:docstring>
     </property>
 

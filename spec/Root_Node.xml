@@ -1,6 +1,12 @@
 <?xml version="1.0" ?>
 <node name="/Root_Node" xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
   <interface name="org.mpris.MediaPlayer2">
+    <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+
+    <tp:docstring> Every time the value of this interface's properties
+                   changes, the <tp:member-ref>PropertiesChanged</tp:member-ref>
+                   signal is emited with the new values.
+    </tp:docstring>
 
     <tp:mapping name="Property_Value_Map"
       array-name="Property_Value_Map_List">

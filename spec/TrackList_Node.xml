@@ -189,9 +189,9 @@
           in the tracklist, in order.
         </p>
         <p>
-          The <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited
-          every time this property changes, but the signal message does not
-          contain the new value.
+          The <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
+          signal is emited every time this property changes, but the signal
+          message does not contain the new value.
 
           Client implementations should rather rely on the
           <tp:member-ref>TrackAdded</tp:member-ref>,
@@ -212,8 +212,9 @@
           and may raise a NotSupported error.
         </p>
         <p>
-          Every time this property changes, the PropertiesChanged signal is
-          emited.
+          Every time this property changes, the
+          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
+          signal is emited.
         </p>
       </tp:docstring>
     </property>
@@ -290,27 +291,6 @@
         <p>
           This may indicate that a track has been replaced, in which case the
           trackid metadata entry is different from the TrackId argument.
-        </p>
-      </tp:docstring>
-    </signal>
-
-    <signal name="PropertiesChanged" tp:name-for-bindings="PropertiesChanged">
-      <arg type="a{sv}" tp:type="Property_Value_Map" name="ChangedProperties">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Changed properties with their new values</p>
-        </tp:docstring>
-      </arg>
-      <arg type="as" name="InvalidatedProperties">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Changed properties but which value is not conveyed</p>
-        </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>
-           Indicates that one or more properties have changed.
-           This signal works in the same way as the
-           <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-           signal.
         </p>
       </tp:docstring>
     </signal>

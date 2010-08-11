@@ -113,12 +113,12 @@
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
       <p>
         The <abbr title="Media Player Remote Interfacing Specification">MPRIS</abbr>
-        defines a PropertiesChanged signal on each interface. It works the same way
-        as <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>.
-        and it allows implementations to use bindings which do not support the new
-        <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal> signal.
-        Media players must emit both signals whenever properties annotated with
-        <literal>org.freedesktop.DBus.Property.EmitsChangedSignal</literal> change.
+        uses the <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
+        signal to notify clients of changes in the media player state.
+        If a client implementation uses D-Bus bindings which do not support this
+        signal, then it should connect to it manually.
+        If a media player implementation uses D-Bus bindings which do not support
+        this signal, then it should send it manually
       </p>
     </tp:docstring>
   </tp:section>

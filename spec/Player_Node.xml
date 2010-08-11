@@ -418,8 +418,8 @@
           of the track, acts like a call to Next.
         </p>
         <p>
-          If the PLAYER_CAN_SEEK capability flag is not set, this has no
-          effect.
+          If the <tp:member-ref>CanSeek</tp:member-ref> property is false,
+          this has no effect.
         </p>
       </tp:docstring>
     </method>

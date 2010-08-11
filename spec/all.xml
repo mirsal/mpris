@@ -104,17 +104,16 @@
     </tp:docstring>
   </tp:section>
 
-  <tp:section name="The Capabilities Mechanism">
+  <tp:section name="the PropertiesChanged signals">
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
       <p>
         The <abbr title="Media Player Remote Interfacing Specification">MPRIS</abbr>
-        defines three sets of capabilities (one for each interface)
-        in order for media players to expose what action can be performed at a
-        given time. This is done using a D-Bus property named Capabilities,
-        which contains a
-        <a href="http://en.wikipedia.org/wiki/Bitfield">bitfield</a>
-        of capability flags, and a D-Bus signal named CapabilitiesChanged, which
-        is emitted whenever a member of the set of capablities is updated.
+        defines a PropertiesChanged signal on each interface. It works the same way
+        as <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>.
+        and it allows implementation to use bindings which do not support the new
+        <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal> signal.
+        Media players must emit both signals whenever properties annotated with
+        <literal>org.freedesktop.DBus.Property.EmitsChangedSignal</literal> change.
       </p>
     </tp:docstring>
   </tp:section>

@@ -93,7 +93,12 @@
     <method name="AddTrack" tp:name-for-bindings="Add_Track">
       <arg direction="in" type="s" tp:type="Uri" name="Uri">
         <tp:docstring>
-          <p>The uri of the item to add.</p>
+          <p>
+            The uri of the item to add. Its uri scheme should be an element of the
+            <strong>org.mpris.MediaPlayer2.SupportedUriSchemes</strong>
+            property and the mime-type should match one of the elements of the
+            <strong>org.mpris.MediaPlayer2.SupportedMimeTypes</strong>
+          </p>
         </tp:docstring>
       </arg>
       <arg direction="in" type="o" tp:type="Track_Id" name="AfterTrack">

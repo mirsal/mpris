@@ -83,7 +83,7 @@
     </tp:simple-type>
 
     <method name="GetTracksMetadata" tp:name-for-bindings="Get_Tracks_Metadata">
-      <arg direction="in" name="TrackIds" type="as" tp:type="Track_Id[]">
+      <arg direction="in" name="TrackIds" type="ao" tp:type="Track_Id[]">
         <tp:docstring>
           <p>The list of track ids for which metadata is requested.</p>
         </tp:docstring>
@@ -109,7 +109,7 @@
           <p>The uri of the item to add.</p>
         </tp:docstring>
       </arg>
-      <arg direction="in" type="s" tp:type="Track_Id" name="AfterTrack">
+      <arg direction="in" type="o" tp:type="Track_Id" name="AfterTrack">
         <tp:docstring>
           <p>
             The identifier of the track after which
@@ -163,7 +163,7 @@
     </method>
 
     <method name="GoTo" tp:name-for-bindings="Go_To">
-      <arg direction="in" type="s" tp:type="Track_Id" name="TrackId">
+      <arg direction="in" type="o" tp:type="Track_Id" name="TrackId">
         <tp:docstring>
           <p>Identifier of the track to skip to.</p>
         </tp:docstring>
@@ -180,7 +180,7 @@
       </tp:docstring>
     </method>
 
-    <property name="Tracks" type="as" tp:type="Track_Id[]" tp:name-for-bindings="Tracks" access="read">
+    <property name="Tracks" type="ao" tp:type="Track_Id[]" tp:name-for-bindings="Tracks" access="read">
       <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="invalidates"/>
       <tp:docstring>
         <p>
@@ -218,12 +218,12 @@
     </property>
 
     <signal name="TrackListReplaced" tp:name-for-bindings="Track_List_Replaced">
-      <arg name="Tracks" type="as" tp:type="Track_Id[]">
+      <arg name="Tracks" type="ao" tp:type="Track_Id[]">
         <tp:docstring>
           <p>The new content of the tracklist.</p>
         </tp:docstring>
       </arg>
-      <arg name="CurrentTrack" type="s" tp:type="Track_Id">
+      <arg name="CurrentTrack" type="o" tp:type="Track_Id">
         <tp:docstring>
           <p>The identifier of the track to be considered as current.</p>
         </tp:docstring>
@@ -246,7 +246,7 @@
           <p>This must include a trackid entry.</p>
         </tp:docstring>
       </arg>
-      <arg type="s" tp:type="Track_Id" name="AfterTrack">
+      <arg type="o" tp:type="Track_Id" name="AfterTrack">
         <tp:docstring>
           <p>
             The identifier of the track after which the new track
@@ -261,7 +261,7 @@
     </signal>
 
     <signal name="TrackRemoved" tp:name-for-bindings="Track_Removed">
-      <arg type="s" tp:type="Track_Id" name="TrackId">
+      <arg type="o" tp:type="Track_Id" name="TrackId">
         <tp:docstring>
           <p>The identifier of the track being removed.</p>
         </tp:docstring>
@@ -272,7 +272,7 @@
     </signal>
 
     <signal name="TrackMetadataChanged" tp:name-for-bindings="Track_Metadata_Changed">
-      <arg type="s" tp:type="Track_Id" name="TrackId">
+      <arg type="o" tp:type="Track_Id" name="TrackId">
         <tp:docstring>
           <p>The id of the track which metadata has changed.</p>
         </tp:docstring>

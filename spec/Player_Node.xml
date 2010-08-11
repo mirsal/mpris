@@ -24,18 +24,18 @@
       </tp:member>
     </tp:mapping>
 
-    <tp:enum name="Playback_State" type="i">
-      <tp:enumvalue suffix="Playing" value="0">
+    <tp:enum name="Playback_Status" tp:name-for-bindings="Playback_Status" type="s">
+      <tp:enumvalue suffix="Playing" value="Playing">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>A track is currently playing.</p>
         </tp:docstring>
       </tp:enumvalue>
-      <tp:enumvalue suffix="Paused" value="1">
+      <tp:enumvalue suffix="Paused" value="Paused">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>A track is currently paused.</p>
         </tp:docstring>
       </tp:enumvalue>
-      <tp:enumvalue suffix="Stopped" value="2">
+      <tp:enumvalue suffix="Stopped" value="Stopped">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>There is no track currently playing.</p>
         </tp:docstring>
@@ -44,112 +44,6 @@
         <p>The playback state.</p>
       </tp:docstring>
     </tp:enum>
-
-    <tp:simple-type name="Shuffle_State" type="b">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>A shuffle state.</p>
-        <p>
-          A value of <strong>false</strong> indicates that playback is
-          progressing linearly through a playlist, while <strong>true</strong>
-          means playback is progressing through a playlist in some other order.
-        </p>
-      </tp:docstring>
-    </tp:simple-type>
-
-    <tp:simple-type name="Repeat_State" type="b">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>A "repeat current track" state.</p>
-        <p>
-          A value of <strong>false</strong> indicates that a different track
-          (although this might be identical to the current track) will start
-          playing when the current track finishes, while <strong>true</strong>
-          means the current track will be repeated indefinitely.
-        </p>
-      </tp:docstring>
-    </tp:simple-type>
-
-    <tp:simple-type name="Endless_State" type="b">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>An endless playback state.</p>
-        <p>
-          A value of <strong>false</strong> indicates that playback will stop
-          once the last element in a finite list has been played, while
-          <strong>true</strong> means playback will continue forever.
-        </p>
-        <p>
-          Note that this may be <strong>false</strong> when Repeat_State is
-          <strong>true</strong>, even though Repeat_State is a form of endless
-          playback.
-        </p>
-      </tp:docstring>
-    </tp:simple-type>
-
-    <tp:struct name="Status_Struct">
-      <tp:docstring>
-        <p>The status of the media player.</p>
-      </tp:docstring>
-      <tp:member type="i" tp:type="Playback_State" name="Playback_State">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>The current playback state.</p>
-        </tp:docstring>
-      </tp:member>
-      <tp:member type="d" tp:type="Rate" name="Playback_Rate">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>The current playback rate.</p>
-          <p>
-             If the PLAYER_CAN_PLAY_BACKWARDS capability flag is not set, this
-             can take only positive values.
-          </p>
-          <p>
-            If the media player has no ability to play at speeds other than the
-            normal playback rate, this must still be implemented, and must
-            return 1.0.
-          </p>
-        </tp:docstring>
-      </tp:member>
-      <tp:member type="b" tp:type="Shuffle_State" name="Shuffle_State">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Whether the playback is linear.</p>
-        </tp:docstring>
-      </tp:member>
-      <tp:member type="b" tp:type="Repeat_State" name="Repeat_State">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Whether the current track is repeated.</p>
-        </tp:docstring>
-      </tp:member>
-      <tp:member type="b" tp:type="Endless_State" name="Endless_State">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Whether the playback stops once the last track finishes.</p>
-        </tp:docstring>
-      </tp:member>
-    </tp:struct>
-
-    <tp:simple-type name="Rate" type="d">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Playback rate.</p>
-        <p>
-          This is a multiplier for the playback rate.  So a value of 0.5
-          indicates that playback is happening at half speed, while 1.5 means
-          that 1.5 seconds of "track time" is consumed every second.
-        </p>
-        <p>
-          If PLAYER_CAN_PLAY_BACKWARDS flag is set, this may take on negative
-          values, indicating that the position will decrease at the indicated
-          rate.
-        </p>
-        <p>
-          This should never be 0.0.  If playback is paused, the playback state
-          enumeration should be used to indicate this.
-        </p>
-        <tp:rationale>
-          <p>
-            This allows clients to display (reasonably) accurate progress bars
-            without having to regularly query the media player for the current
-            position.
-          </p>
-        </tp:rationale>
-      </tp:docstring>
-    </tp:simple-type>
 
     <tp:simple-type name="Track_Id" type="s" array-name="Track_Id_List">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -161,109 +55,6 @@
         </p>
       </tp:docstring>
     </tp:simple-type>
-
-    <tp:flags name="Player_Capability_Flags" value-prefix="PLAYER_CAN" type="i">
-      <tp:flag suffix="GO_NEXT" value="1 (1 &lt;&lt; 0)">
-        <tp:docstring>
-          <p>
-            The client can call the Next method on this interface and
-            expect the current track to change.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:flag suffix="GO_PREVIOUS" value="2 (1 &lt;&lt; 1)">
-        <tp:docstring>
-          <p>
-            The client can call the Previous method on this interface and
-            expect the current track to change.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:flag suffix="PAUSE" value="4 (1 &lt;&lt; 2)">
-        <tp:docstring>
-          <p>
-            The client can call the Pause and PlayPause methods on this
-            interface and expect playback to pause.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:flag suffix="PLAY" value="8 (1 &lt;&lt; 3)">
-        <tp:docstring>
-          <p>
-            Playback can be started.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:flag suffix="SEEK" value="16 (1 &lt;&lt; 4)">
-        <tp:docstring>
-          <p>
-            Seeking is possible in the currently played
-            stream. Clients can enable seeking controls and
-            expect both the SetPosition and the Seek methods to
-            alter the current playback position.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:flag suffix="PROVIDE_METADATA" value="32 (1 &lt;&lt; 5)">
-        <tp:docstring>
-          <p>
-            Metadata can be acquired for the currently played
-            track.
-          </p>
-          <p>
-            Note that the trackid and uri entries are provided
-            even if this flag is not set.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:flag suffix="PROVIDE_POSITION" value="64 (1 &lt;&lt; 6)">
-        <tp:docstring>
-          <p>
-            Playback position information can be retrieved through the Position
-            property on this interface.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:flag suffix="REPEAT" value="128 (1 &lt;&lt; 7)">
-        <tp:docstring>
-          <p>
-            The media player can be set to repeat the current track.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:flag suffix="LOOP" value="256 (1 &lt;&lt; 8)">
-        <tp:docstring>
-          <p>
-            The media player can be set to loop through the tracklist.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:flag suffix="SHUFFLE" value="512 (1 &lt;&lt; 9)">
-        <tp:docstring>
-          <p>
-            The media player can be set to play tracks randomly.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:flag suffix="CONTROL_RATE" value="1024 (1 &lt;&lt; 10)">
-        <tp:docstring>
-          <p>
-            Clients can call the SetRate method on this interface and expect
-            the playback rate to change accordingly.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:flag suffix="PLAY_BACKWARDS" value="2048 (1 &lt;&lt; 11)">
-        <tp:docstring>
-          <p>
-            The Rate property can take negative values.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:docstring>
-        <p>Player capability flags.</p>
-      </tp:docstring>
-    </tp:flags>
 
     <tp:simple-type name="Volume" type="d">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -341,48 +132,6 @@
       </tp:docstring>
     </method>
 
-    <method name="SetRepeat" tp:name-for-bindings="Set_Repeat">
-      <arg direction="in" type="b" name="State">
-        <tp:docstring>
-          <p>TRUE to repeat the current track, FALSE to stop repeating.</p>
-        </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Toggles the current track repeat.</p>
-      </tp:docstring>
-    </method>
-
-    <method name="SetLoop" tp:name-for-bindings="Set_Loop">
-      <arg direction="in" type="b" tp:type="Endless_State" name="State">
-        <tp:docstring>
-          <p>
-            TRUE to loop through the tracklist, FALSE to stop playback once the
-            last item of the tracklist has been played.
-          </p>
-          <p>
-            Note that just because the media player is in "endless playback"
-            state, that does not mean it is repeating.  The media player may
-            have other mechanisms for generating endless playback.  This
-            method only controls looping, however.
-          </p>
-        </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Toggles the tracklist loop.</p>
-      </tp:docstring>
-    </method>
-
-    <method name="SetShuffle" tp:name-for-bindings="Set_Shuffle">
-      <arg direction="in" type="b" tp:type="Shuffle_State" name="State">
-        <tp:docstring>
-          <p>The shuffle state to set.</p>
-        </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Toggles the tracklist shuffle.</p>
-      </tp:docstring>
-    </method>
-
     <method name="Seek" tp:name-for-bindings="Seek">
       <arg direction="in" type="i" name="Position" tp:type="Time_In_Ms">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -406,36 +155,6 @@
         <p>
           If the <tp:member-ref>CanSeek</tp:member-ref> property is false,
           this has no effect.
-        </p>
-      </tp:docstring>
-    </method>
-
-    <method name="SetRate" tp:name-for-bindings="Set_Rate">
-      <arg direction="in" name="Rate" type="d" tp:type="Rate" >
-        <tp:docstring>
-          <p>The playack rate to set.</p>
-          <p>
-             If the PLAYER_CAN_PLAY_BACKWARDS capability flag is not set, this
-             must be positive.
-          </p>
-          <p>
-            A value of 0.0 should not be passed by the client.  If it is passed,
-            the media player should act as though Pause was called.
-          </p>
-          <p>
-            Not all values may be accepted by the media player.  It is left to
-            media player implementations to decide how to deal with values they
-            cannot use; they may either ignore them or pick a "best fit" value.
-            Clients are recommended to only use sensible fractions or multiples
-            of 1 (eg: 0.5, 0.25, 1.5, 2.0, etc).
-          </p>
-        </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Sets the current playing rate.</p>
-        <p>
-           If the PLAYER_CAN_CONTROL_RATE capability flag is not set, this
-           method has no effect.
         </p>
       </tp:docstring>
     </method>
@@ -470,13 +189,122 @@
       </tp:docstring>
     </method>
 
-    <property name="Status" type="(idbbb)" tp:type="Status_Struct" access="read" tp:name-for-bindings="Status">
+    <property name="PlaybackStatus" tp:name-for-bindings="Playback_Status" type="s" tp:type="Playback_Status" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>The current status of the media player.</p>
+        <p>The current playback status.</p>
+        <p>
+          May be "Playing", "Paused" or "Stopped".
+        </p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
+      </tp:docstring>
+    </property>
+
+    <property name="Rate" tp:name-for-bindings="Rate" type="d" access="readwrite">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>The current playback rate.</p>
+        <p>
+          This is a multiplier for the playback rate.  So a value of 0.5
+          indicates that playback is happening at half speed, while 1.5 means
+          that 1.5 seconds of "track time" is consumed every second.
+        </p>
+        <p>
+          The value must fall in the range described by
+          <tp:member-ref>MinimumRate</tp:member-ref> and
+          <tp:member-ref>MaximumRate</tp:member-ref>, and must not be 0.0.  If
+          playback is paused, the <tp:member-ref>PlaybackStatus</tp:member-ref>
+          property should be used to indicate this.  A value of 0.0 should not
+          be set by the client.  If it is, the media player should act as
+          though <tp:member-ref>Pause</tp:member-ref> was called.
+        </p>
+        <p>
+          If the media player has no ability to play at speeds other than the
+          normal playback rate, this must still be implemented, and must
+          return 1.0.  The <tp:member-ref>MinimumRate</tp:member-ref> and
+          <tp:member-ref>MaximumRate</tp:member-ref> properties must also be
+          set to 1.0.
+        </p>
+        <p>
+          Not all values may be accepted by the media player.  It is left to
+          media player implementations to decide how to deal with values they
+          cannot use; they may either ignore them or pick a "best fit" value.
+          Clients are recommended to only use sensible fractions or multiples
+          of 1 (eg: 0.5, 0.25, 1.5, 2.0, etc).
+        </p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
+        <tp:rationale>
+          <p>
+            This allows clients to display (reasonably) accurate progress bars
+            without having to regularly query the media player for the current
+            position.
+          </p>
+        </tp:rationale>
+      </tp:docstring>
+    </property>
+
+    <property name="RepeatTrack" tp:name-for-bindings="Repeat_Track" type="b" access="readwrite">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Whether the current track is repeated indefinitely</p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
+        <p>
+          This property is optional, and clients should deal with NotSupported
+          errors gracefully.
+        </p>
+      </tp:docstring>
+    </property>
+
+    <property name="Loop" tp:name-for-bindings="Loop" type="b" access="readwrite">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Whether the media player is looping over its tracks</p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
+        <p>
+          This property is optional, and clients should deal with NotSupported
+          errors gracefully.
+        </p>
+      </tp:docstring>
+    </property>
+
+    <property name="Shuffle" tp:name-for-bindings="Shuffle" type="b" access="readwrite">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          A value of <strong>false</strong> indicates that playback is
+          progressing linearly through a playlist, while <strong>true</strong>
+          means playback is progressing through a playlist in some other order.
+        </p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
+        <p>
+          This property is optional, and clients should deal with NotSupported
+          errors gracefully.
+        </p>
       </tp:docstring>
     </property>
 
     <property name="Metadata" tp:name-for-bindings="Metadata" type="a{sv}" tp:type="Metadata_Map" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>The metadata of the current element.</p>
         <p>
@@ -495,6 +323,11 @@
             http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata
           </a>.
         </p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
       </tp:docstring>
     </property>
 
@@ -510,6 +343,7 @@
     </property>
 
     <property name="Position" type="i" tp:type="Time_In_Ms" tp:name-for-bindings="Position" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>
             The current track position in milliseconds, between 0 and
@@ -521,6 +355,15 @@
             this interface.  If this is not the case, the
             <tp:member-ref>CanSeek</tp:member-ref> property is false, and
             setting this property has no effect and can raise an error.
+          </p>
+          <p>
+            If the playback progresses in a way that is inconstistant with the
+            <tp:member-ref>Rate</tp:member-ref> property, the
+            <tp:member-ref>Seeked</tp:member-ref> signal is emited.
+          </p>
+          <p>
+            The <tp:member-ref>PropertiesChanged</tp:member-ref> is
+            <strong>not</strong> emited when this property changes
           </p>
         </tp:docstring>
     </property>
@@ -725,56 +568,6 @@
         </tp:rationale>
       </tp:docstring>
     </property>
-
-    <signal name="MetadataChanged" tp:name-for-bindings="Metadata_Changed">
-      <arg name="Metadata" type="a{sv}" tp:type="Metadata_Map">
-        <tp:docstring>
-          <p>The new metadata.</p>
-        </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Indicates the the track metadata has changed.</p>
-        <p>
-          This may be due to a track change (in this case, the "trackid"
-          entry contains a new value), due to a stream carrying new metadata,
-          due to metadata being edited or due to metadata being fetched
-          asynchronously.
-        </p>
-      </tp:docstring>
-    </signal>
-
-    <signal name="StatusChanged" tp:name-for-bindings="Status_Changed">
-      <arg name="Status" type="(idbbb)" tp:type="Status_Struct">
-        <tp:docstring>
-          <p>The new status of the media player.</p>
-        </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Indicates a change in the status of the media player.</p>
-      </tp:docstring>
-    </signal>
-
-    <signal name="CapabilitiesChanged" tp:name-for-bindings="Capabilities_Changed">
-      <arg name="Capabilities" type="i" tp:type="Player_Capability_Flags">
-        <tp:docstring>
-          <p>The new capabilities.</p>
-        </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Indicates a change in the player capabilities.</p>
-      </tp:docstring>
-    </signal>
-
-    <signal name="VolumeChanged" tp:name-for-bindings="Volume_Changed">
-      <arg name="Volume" type="d" tp:type="Volume">
-        <tp:docstring>
-          <p>The new volume level.</p>
-        </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Indicates a change in volume.</p>
-      </tp:docstring>
-    </signal>
 
     <signal name="Seeked" tp:name-for-bindings="Seeked">
       <arg name="Position" type="i" tp:type="Time_In_Ms">

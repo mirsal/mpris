@@ -239,8 +239,8 @@
         </p>
         <p>
           When this property changes, the
-          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
-          the new value.
+          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
+          signal is emited with the new value.
         </p>
         <p>
           This property is optional, and clients should deal with NotSupported

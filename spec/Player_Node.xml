@@ -618,6 +618,27 @@
       </tp:docstring>
     </property>
 
+    <property name="CanSetVolume" tp:name-for-bindings="Can_Set_Volume" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          Whether the <tp:member-ref>Volume</tp:member-ref> property
+          can be set. If this property is <strong>false</strong>, then the
+          <tp:member-ref>Volume</tp:member-ref> property is read-only.
+        </p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
+        <p>
+          If <tp:member-ref>CanControl</tp:member-ref> is
+          <strong>false</strong>, this property should also be
+          <strong>false</strong>.
+        </p>
+      </tp:docstring>
+    </property>
+
     <property name="CanControl" tp:name-for-bindings="Can_Control" type="b" access="read">
       <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">

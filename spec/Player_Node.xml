@@ -101,6 +101,11 @@
           repeat are both off), stop playback.
         </p>
         <p>If playback is paused or stopped, it remains that way.</p>
+        <p>
+          If <tp:member-ref>CanGoNext</tp:member-ref> is
+          <strong>false</strong>, attempting to call this method should have
+          no effect.
+        </p>
       </tp:docstring>
     </method>
 
@@ -112,6 +117,11 @@
           repeat are both off), stop playback.
         </p>
         <p>If playback is paused or stopped, it remains that way.</p>
+        <p>
+          If <tp:member-ref>CanGoPrevious</tp:member-ref> is
+          <strong>false</strong>, attempting to call this method should have
+          no effect.
+        </p>
       </tp:docstring>
     </method>
 
@@ -123,6 +133,11 @@
           Calling Play after this should cause playback to start again
           from the same position.
         </p>
+        <p>
+          If <tp:member-ref>CanPause</tp:member-ref> is
+          <strong>false</strong>, attempting to call this method should have
+          no effect.
+        </p>
       </tp:docstring>
     </method>
 
@@ -131,6 +146,11 @@
         <p>Pauses playback.</p>
         <p>If playback is already paused, resumes playback.</p>
         <p>If playback is stopped, starts playback.</p>
+        <p>
+          If <tp:member-ref>CanPause</tp:member-ref> is
+          <strong>false</strong>, attempting to call this method should have
+          no effect and raise an error.
+        </p>
       </tp:docstring>
     </method>
 
@@ -142,6 +162,11 @@
           Calling Play after this should cause playback to
           start again from the beginning of the track.
         </p>
+        <p>
+          If <tp:member-ref>CanControl</tp:member-ref> is
+          <strong>false</strong>, attempting to call this method should have
+          no effect and raise an error.
+        </p>
       </tp:docstring>
     </method>
 
@@ -150,6 +175,11 @@
         <p>Starts or resumes playback.</p>
         <p>If already playing, this has no effect.</p>
         <p>If there is no track to play, this has no effect.</p>
+        <p>
+          If <tp:member-ref>CanPlay</tp:member-ref> is
+          <strong>false</strong>, attempting to call this method should have
+          no effect.
+        </p>
       </tp:docstring>
     </method>
 
@@ -246,6 +276,11 @@
           This property is optional, and clients should deal with NotSupported
           errors gracefully.
         </p>
+        <p>
+          If <tp:member-ref>CanControl</tp:member-ref> is
+          <strong>false</strong>, attempting to set this property should have
+          no effect and raise an error.
+        </p>
       </tp:docstring>
     </property>
 
@@ -313,6 +348,11 @@
           This property is optional, and clients should deal with NotSupported
           errors gracefully.
         </p>
+        <p>
+          If <tp:member-ref>CanControl</tp:member-ref> is
+          <strong>false</strong>, attempting to set this property should have
+          no effect and raise an error.
+        </p>
       </tp:docstring>
     </property>
 
@@ -351,6 +391,11 @@
           When setting, if a negative value is passed, the volume
           should be set to 0.0.  If a value greater than 1 is
           passed, the volume should be set to the maximum level.
+        </p>
+        <p>
+          If <tp:member-ref>CanControl</tp:member-ref> is
+          <strong>false</strong>, attempting to set this property should have
+          no effect and raise an error.
         </p>
       </tp:docstring>
     </property>
@@ -436,11 +481,15 @@
           <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
           the new value.
         </p>
+        <p>
+          If <tp:member-ref>CanControl</tp:member-ref> is
+          <strong>false</strong>, this property should also be
+          <strong>false</strong>.
+        </p>
         <tp:rationale>
           <p>
-            Clients need to know whether to enable interface elements for
-            controlling moving to the next track before calling
-            <tp:member-ref>Next</tp:member-ref>.
+            Even when playback can generally be controlled, there may not
+            always be a next track to move to.
           </p>
         </tp:rationale>
       </tp:docstring>
@@ -459,11 +508,15 @@
           <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
           the new value.
         </p>
+        <p>
+          If <tp:member-ref>CanControl</tp:member-ref> is
+          <strong>false</strong>, this property should also be
+          <strong>false</strong>.
+        </p>
         <tp:rationale>
           <p>
-            Clients need to know whether to enable interface elements for
-            controlling moving to the previous track before calling
-            <tp:member-ref>Previous</tp:member-ref>.
+            Even when playback can generally be controlled, there may not
+            always be a next previous to move to.
           </p>
         </tp:rationale>
 
@@ -475,15 +528,30 @@
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Whether playback can be started using
            <tp:member-ref>Play</tp:member-ref> or
-           <tp:member-ref>PlayPause</tp:member-ref></p>
+           <tp:member-ref>PlayPause</tp:member-ref>.
+        </p>
+        <p>
+          Note that this is related to whether there is a "current track": the
+          value should not depend on whether the track is currently paused or
+          playing.  In fact, if a track is currently playing
+          <tp:member-ref>CanControl</tp:member-ref> is <strong>true</strong>),
+          this should be <strong>true</strong>.
+        </p>
         <p>
           When this property changes, the
           <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
-          the new value.</p>
+          the new value.
+        </p>
+        <p>
+          If <tp:member-ref>CanControl</tp:member-ref> is
+          <strong>false</strong>, this property should also be
+          <strong>false</strong>.
+        </p>
         <tp:rationale>
           <p>
-            Clients need to know whether to present interface elements for
-            controlling playback before calling those methods.
+            Even when playback can generally be controlled, it may not be
+            possible to enter a "playing" state, for example if there is no
+            "current track".
           </p>
         </tp:rationale>
       </tp:docstring>
@@ -494,15 +562,29 @@
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Whether playback can be paused using
            <tp:member-ref>Pause</tp:member-ref> or
-           <tp:member-ref>PlayPause</tp:member-ref></p>
+           <tp:member-ref>PlayPause</tp:member-ref>.
+        </p>
+        <p>
+          Note that this is an intrinsic property of the current track: its
+          value should not depend on whether the track is currently paused or
+          playing.  In fact, if playback is currently paused (and
+          <tp:member-ref>CanControl</tp:member-ref> is <strong>true</strong>),
+          this should be <strong>true</strong>.
+        </p>
         <p>
           When this property changes, the
           <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
-          the new value.</p>
+          the new value.
+        </p>
+        <p>
+          If <tp:member-ref>CanControl</tp:member-ref> is
+          <strong>false</strong>, this property should also be
+          <strong>false</strong>.
+        </p>
         <tp:rationale>
           <p>
-            Clients need to know whether to present interface elements for
-            controlling playback before calling those methods.
+            Not all media is pausable: it may not be possible to pause some
+            streamed media, for example.
           </p>
         </tp:rationale>
       </tp:docstring>
@@ -522,103 +604,40 @@
           <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
           the new value.
         </p>
+        <p>
+          If <tp:member-ref>CanControl</tp:member-ref> is
+          <strong>false</strong>, this property should also be
+          <strong>false</strong>.
+        </p>
         <tp:rationale>
           <p>
-            Clients need to know whether to present interface elements for
-            seeking before calling those methods.
+            Not all media is seekable: it may not be possible to seek when
+            playing some streamed media, for example.
           </p>
         </tp:rationale>
       </tp:docstring>
     </property>
 
-    <property name="CanControlRate" tp:name-for-bindings="Can_Control_Rate" type="b" access="read">
-      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>
-          Whether the client can set the <tp:member-ref>Rate</tp:member-ref>
-          property and expect the playback rate to change
-        </p>
-        <p>
-          When this property changes, the
-          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
-          the new value.
-        </p>
-        <tp:rationale>
-          <p>
-            Clients need to know whether to present user interface elements for
-            playback rate control.
-          </p>
-        </tp:rationale>
-      </tp:docstring>
-    </property>
-
-    <property name="CanControlVolume" tp:name-for-bindings="Can_Control_Volume" type="b" access="read">
-      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>
-          Whether the client can set the <tp:member-ref>Volume</tp:member-ref>
-          property and expect the volume to change
-        </p>
-        <p>
-          When this property changes, the
-          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
-          the new value.
-        </p>
-        <tp:rationale>
-          <p>
-            Clients need to know whether to present user interface elements for
-            volume control.
-          </p>
-        </tp:rationale>
-      </tp:docstring>
-    </property>
-
-    <property name="CanRepeatTrack" tp:name-for-bindings="Can_Repeat_Track" type="b" access="read">
+    <property name="CanControl" tp:name-for-bindings="Can_Control" type="b" access="read">
       <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Whether the media player can be set to repeat the current track</p>
+        <p>Whether the media player may be controlled over this interface.</p>
         <p>
           This property is not expected to change, as it describes an intrinsic
           capability of the implementation.
         </p>
-        <tp:rationale>
-          <p>
-            Clients need to know whether to present interface elements for
-            setting the media player to repeat the current track
-          </p>
-        </tp:rationale>
-      </tp:docstring>
-    </property>
-
-    <property name="CanLoop" tp:name-for-bindings="Can_Loop" type="b" access="read">
-      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Whether the media player can be set to loop through its tracks</p>
         <p>
-          This property is not expected to change, as it describes an intrinsic
-          capability of the implementation.
+          If this is <strong>false</strong>, clients should assume that all
+          properties on this interface are read-only (and will raise errors
+          if writing to them is attempted); all methods are not implemented
+          and all other properties starting with "Can" are also
+          <strong>false</strong>.
         </p>
         <tp:rationale>
           <p>
-            Clients need to know whether to present interface elements for
-            setting the media player to loop.
-          </p>
-        </tp:rationale>
-      </tp:docstring>
-    </property>
-
-    <property name="CanShuffle" tp:name-for-bindings="Can_Shuffle" type="b" access="read">
-      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Whether the media player can be set to play randomly</p>
-        <p>
-          This property is not expected to change, as it describes an intrinsic
-          capability of the implementation.
-        </p>
-        <tp:rationale>
-          <p>
-            Clients need to know whether to present interface elements for
-            setting the media player to play its track in random order
+            This allows clients to determine whether to present and enable
+            controls to the user in advance of attempting to call methods
+            and write to properties.
           </p>
         </tp:rationale>
       </tp:docstring>

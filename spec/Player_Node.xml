@@ -51,7 +51,7 @@
       </tp:docstring>
     </tp:enum>
 
-    <tp:simple-type name="Track_Id" type="s" array-name="Track_Id_List">
+    <tp:simple-type name="Track_Id" type="o" array-name="Track_Id_List">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Unique track identifier.</p>
         <p>
@@ -196,7 +196,7 @@
     </method>
 
     <method name="SetPosition" tp:name-for-bindings="Set_Position">
-      <arg direction="in" type="s" tp:type="Track_Id" name="TrackId">
+      <arg direction="in" type="o" tp:type="Track_Id" name="TrackId">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>The currently playing track's identifier.</p>
           <p>

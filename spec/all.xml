@@ -63,7 +63,7 @@
 
       <p>
         This allows clients to list available media players
-        (either already running or which can be activated via D-Bus activation)
+        (either already running or which can be started via D-Bus activation)
       </p>
 
       <p>

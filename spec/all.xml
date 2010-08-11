@@ -110,7 +110,7 @@
         The <abbr title="Media Player Remote Interfacing Specification">MPRIS</abbr>
         defines a PropertiesChanged signal on each interface. It works the same way
         as <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>.
-        and it allows implementation to use bindings which do not support the new
+        and it allows implementations to use bindings which do not support the new
         <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal> signal.
         Media players must emit both signals whenever properties annotated with
         <literal>org.freedesktop.DBus.Property.EmitsChangedSignal</literal> change.

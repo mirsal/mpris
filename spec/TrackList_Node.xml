@@ -172,11 +172,10 @@
         <p>Skip to the specified TrackId.</p>
         <p>If the track is not part of this tracklist, this has no effect.</p>
         <p>
-          If this object is not the current TrackList (ie: the one at
-          <strong>/org/mpris/MediaPlayer/TrackList</strong>), the current
-          TrackList's tracks should be replaced with the contents of this
-          TrackList, and the TrackListReplaced signal should be fired on
-          the current TrackList.
+          If this object is not <strong>/org/mpris/MediaPlayer2</strong>,
+          the current TrackList's tracks should be replaced with the contents of
+          this TrackList, and the TrackListReplaced signal should be fired from
+          <strong>/org/mpris/MediaPlayer2</strong>.
         </p>
       </tp:docstring>
     </method>

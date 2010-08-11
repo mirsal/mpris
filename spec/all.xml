@@ -52,13 +52,13 @@
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
       <p>
         Each media player <strong>must</strong> request an unique bus name
-        which begins with <b>org.mpris.mediaplayers</b>. For example:
+        which begins with <b>org.mpris.MediaPlayer2</b>. For example:
       </p>
       <ul>
-        <li>org.mpris.mediaplayers.audacious</li>
-        <li>org.mpris.mediaplayers.vlc</li>
-        <li>org.mpris.mediaplayers.bmp</li>
-        <li>org.mpris.mediaplayers.xmms2</li>
+        <li>org.mpris.MediaPlayer2.audacious</li>
+        <li>org.mpris.MediaPlayer2.vlc</li>
+        <li>org.mpris.MediaPlayer2.bmp</li>
+        <li>org.mpris.MediaPlayer2.xmms2</li>
       </ul>
 
       <p>
@@ -74,7 +74,7 @@
       </p>
 
       <ul>
-          <li>org.mpris.mediaplayers.vlc.7389</li>
+          <li>org.mpris.MediaPlayer2.vlc.7389</li>
       </ul>
     </tp:docstring>
   </tp:section>

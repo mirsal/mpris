@@ -275,20 +275,6 @@
       </tp:docstring>
     </tp:simple-type>
 
-    <tp:simple-type name="Volume_Difference" type="d">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>A relative change in volume.</p>
-        <p>
-          Represents a volume level increment or decrement on the same scale
-          as "Volume".
-        </p>
-        <p>
-          A positive value corresponds to an increment, while a negative
-          value corresponds to a decrement.
-        </p>
-      </tp:docstring>
-    </tp:simple-type>
-
     <tp:simple-type name="Time_In_Ms" type="i">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Time in milliseconds.</p>
@@ -452,26 +438,6 @@
            method has no effect.
         </p>
       </tp:docstring>
-    </method>
-
-    <method name="AdjustVolume" tp:name-for-bindings="Adjust_Volume">
-        <arg direction="in" type="d" name="Difference" tp:type="Volume_Difference">
-          <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-              <p>
-                Fraction of the maximum volume level by which the volume
-                should be increased or decreased.
-              </p>
-          </tp:docstring>
-        </arg>
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Adds the specified value to to the current volume level.</p>
-        <p>
-          If adding the argument to the current volume would
-          cause it to go above 1.0, it should be set to the maximum.
-          Similarly, if it would cause it to drop below 0,
-          it should be set to 0.0.
-        </p>
-        </tp:docstring>
     </method>
 
     <method name="SetPosition" tp:name-for-bindings="Set_Position">

@@ -498,8 +498,8 @@
           do nothing.
         </p>
         <p>
-          If the PLAYER_CAN_SEEK capability flag is not set, this has no
-          effect.
+          If the <tp:member-ref>CanSeek</tp:member-ref> property is false,
+          this has no effect.
         </p>
       </tp:docstring>
     </method>
@@ -552,8 +552,9 @@
           <p>
             Note: If the media player allows it, the current playback position
             can be changed either the SetPosition method or the Seek method on
-            this interface.  If this is not the case, the PLAYER_CAN_SEEK
-            capability flag will not be set.
+            this interface.  If this is not the case, the
+            <tp:member-ref>CanSeek</tp:member-ref> property is false, and
+            setting this property has no effect and can raise an error.
           </p>
         </tp:docstring>
     </property>

@@ -518,6 +518,49 @@
       </tp:docstring>
     </property>
 
+    <property name="CanControlRate" tp:name-for-bindings="Can_Control_Rate" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          Whether the client can set the <tp:member-ref>Rate</tp:member-ref>
+          property and expect the playback rate to change
+        </p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
+        <tp:rationale>
+          <p>
+            Clients need to know whether to present user interface elements for
+            playback rate control.
+          </p>
+        </tp:rationale>
+      </tp:docstring>
+    </property>
+
+    <property name="CanControlVolume" tp:name-for-bindings="Can_Control_Volume" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          Whether the client can set the <tp:member-ref>Volume</tp:member-ref>
+          property and expect the volume to change
+        </p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
+        <tp:rationale>
+          <p>
+            Clients need to know whether to present user interface elements for
+            volume control.
+          </p>
+        </tp:rationale>
+      </tp:docstring>
+    </property>
+
+
     <property name="CanRepeatTrack" tp:name-for-bindings="Can_Repeat_Track" type="b" access="read">
       <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">

@@ -41,7 +41,28 @@
         </tp:docstring>
       </tp:enumvalue>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>The playback state.</p>
+        <p>A playback state.</p>
+      </tp:docstring>
+    </tp:enum>
+
+    <tp:enum name="Loop_Status" tp:name-for-bindings="Loop_Status" type="s">
+      <tp:enumvalue suffix="None" value="None">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>The playback will stop when there are no more tracks to play</p>
+        </tp:docstring>
+      </tp:enumvalue>
+      <tp:enumvalue suffix="Track" value="Track">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>The current track will start again from the begining once it has finished playing</p>
+        </tp:docstring>
+      </tp:enumvalue>
+      <tp:enumvalue suffix="Playlist" value="Paylist">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>The playback loops through a list of tracks</p>
+        </tp:docstring>
+      </tp:enumvalue>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A repeat / loop status</p>
       </tp:docstring>
     </tp:enum>
 
@@ -133,7 +154,7 @@
     </method>
 
     <method name="Seek" tp:name-for-bindings="Seek">
-      <arg direction="in" type="x" name="Position" tp:type="Time_In_Us">
+      <arg direction="in" type="x" name="Offset" tp:type="Time_In_Us">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>The number of microseconds to seek forward.</p>
         </tp:docstring>
@@ -204,6 +225,30 @@
       </tp:docstring>
     </property>
 
+    <property name="LoopStatus" type="s" access="readwrite"
+              tp:name-for-bindings="Loop_Status" tp:type="Loop_Status">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>The current loop / repeat status</p>
+        <p>May be:
+          <ul>
+            <li>"None" if the playback will stop when there are no more tracks to play</li>
+            <li>"Track" if the current track will start again from the begining once it has finished playing</li>
+            <li>"Playlist" if the playback loops through a list of tracks</li>
+          </ul>
+        </p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
+        <p>
+          This property is optional, and clients should deal with NotSupported
+          errors gracefully.
+        </p>
+      </tp:docstring>
+    </property>
+
     <property name="Rate" tp:name-for-bindings="Rate" type="d" access="readwrite">
       <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -248,38 +293,6 @@
             position.
           </p>
         </tp:rationale>
-      </tp:docstring>
-    </property>
-
-    <property name="RepeatTrack" tp:name-for-bindings="Repeat_Track" type="b" access="readwrite">
-      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Whether the current track is repeated indefinitely</p>
-        <p>
-          When this property changes, the
-          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
-          the new value.
-        </p>
-        <p>
-          This property is optional, and clients should deal with NotSupported
-          errors gracefully.
-        </p>
-      </tp:docstring>
-    </property>
-
-    <property name="Loop" tp:name-for-bindings="Loop" type="b" access="readwrite">
-      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Whether the media player is looping over its tracks</p>
-        <p>
-          When this property changes, the
-          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
-          the new value.
-        </p>
-        <p>
-          This property is optional, and clients should deal with NotSupported
-          errors gracefully.
-        </p>
       </tp:docstring>
     </property>
 
@@ -559,7 +572,6 @@
         </tp:rationale>
       </tp:docstring>
     </property>
-
 
     <property name="CanRepeatTrack" tp:name-for-bindings="Can_Repeat_Track" type="b" access="read">
       <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>

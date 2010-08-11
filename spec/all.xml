@@ -62,6 +62,11 @@
       </ul>
 
       <p>
+        This allows clients to list available media players
+        (either already running or which can be activated via D-Bus activation)
+      </p>
+
+      <p>
         In the case where the media player allows multiple instances running
         simultaneously, each additional instance should request a unique bus
         name, adding a dot and a unique identifier (such as a UNIX process

@@ -46,6 +46,13 @@
           In this case, the <tp:member-ref>CanQuit</tp:member-ref> property is
           <strong>false</strong> and this method does nothing.
         </p>
+        <p>
+          Note: Media players which can be D-Bus activated, or for which there is
+          no sensibly easy way to terminate a running instance (via the main
+          interface or a notification area icon for example) should allow clients
+          to use this method. Otherwise, it should not be needed.
+        </p>
+        <p>If the media player does not have a UI, this must be implemented</p>
       </tp:docstring>
     </method>
 
@@ -87,10 +94,21 @@
 
     <property name="Identity" type="s" tp:name-for-bindings="Identity" access="read">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A friendly name to identify the media player to users.</p>
+        <p>This should usually match the name found in .desktop files</p>
+        <p>(eg: "VLC media player").</p>
+      </tp:docstring>
+    </property>
+
+    <property name="DesktopEntry" type="s" tp:name-for-bindings="Desktop_Entry" access="read">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>The basename of an installed .desktop file which complies with the <a href="http://standards.freedesktop.org/desktop-entry-spec/latest/">Desktop entry specification</a>,
+        with the ".desktop" extension stripped.</p>
         <p>
-          A friendly name to identify the media player to users
-          (eg: "Totem 2.22.2").
+          Example: The desktop entry file is "/usr/share/applications/vlc.desktop",
+          and this property contains "vlc"
         </p>
+        <p>This property is optional. Clients should handle its absence gracefully</p>
       </tp:docstring>
     </property>
 

@@ -79,7 +79,7 @@
     </tp:docstring>
   </tp:section>
 
-  <tp:section name="Well-known Object Path">
+  <tp:section name="Entry point">
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
 
       <p>
@@ -101,7 +101,7 @@
     </tp:docstring>
   </tp:section>
 
-  <tp:section name="the PropertiesChanged signals">
+  <tp:section name="The PropertiesChanged signal">
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
       <p>
         The <abbr title="Media Player Remote Interfacing Specification">MPRIS</abbr>

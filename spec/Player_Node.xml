@@ -517,12 +517,6 @@
       </tp:docstring>
     </property>
 
-    <property name="Capabilities" type="i" tp:type="Player_Capability_Flags" tp:name-for-bindings="Capabilities" access="read">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>A bitmask of capabilities.</p>
-      </tp:docstring>
-    </property>
-
     <property name="Volume" type="d" tp:type="Volume" tp:name-for-bindings="Volume" access="readwrite">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>The volume level.</p>
@@ -547,6 +541,207 @@
             capability flag will not be set.
           </p>
         </tp:docstring>
+    </property>
+
+    <property name="MinimumRate" tp:name-for-bindings="Minimum_Rate" type="d" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          The minimum value which the <tp:member-ref>Rate</tp:member-ref>
+          property can take.
+          Clients should not attempt to set the
+          <tp:member-ref>Rate</tp:member-ref> property below this value.
+        </p>
+        <p>
+          Note that even if this value is 0.0 or negative, clients should
+          not attempt to set the <tp:member-ref>Rate</tp:member-ref> property
+          to 0.0.
+        </p>
+        <p>This value should always be 1.0 or less.</p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
+      </tp:docstring>
+    </property>
+
+    <property name="MaximumRate" tp:name-for-bindings="Maximum_Rate" type="d" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          The minimum value which the <tp:member-ref>Rate</tp:member-ref>
+          property can take.
+          Clients should not attempt to set the
+          <tp:member-ref>Rate</tp:member-ref> property above this value.
+        </p>
+        <p>
+          This value should always be 1.0 or greater.
+        </p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
+      </tp:docstring>
+    </property>
+
+    <property name="CanGoNext" tp:name-for-bindings="Can_Go_Next" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          Whether the client can call the <tp:member-ref>Next</tp:member-ref>
+          method on this interface and expect the current track to change.
+        </p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
+        <tp:rationale>
+          <p>
+            Clients need to know whether to enable interface elements for
+            controlling moving to the next track before calling
+            <tp:member-ref>Next</tp:member-ref>.
+          </p>
+        </tp:rationale>
+      </tp:docstring>
+    </property>
+
+    <property name="CanGoPrevious" tp:name-for-bindings="Can_Go_Previous" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          Whether the client can call the
+          <tp:member-ref>Previous</tp:member-ref> method on this interface and
+          expect the current track to change.
+        </p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
+        <tp:rationale>
+          <p>
+            Clients need to know whether to enable interface elements for
+            controlling moving to the previous track before calling
+            <tp:member-ref>Previous</tp:member-ref>.
+          </p>
+        </tp:rationale>
+
+      </tp:docstring>
+    </property>
+
+    <property name="CanPlay" tp:name-for-bindings="Can_Play" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Whether playback can be started using
+           <tp:member-ref>Play</tp:member-ref> or
+           <tp:member-ref>PlayPause</tp:member-ref></p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.</p>
+        <tp:rationale>
+          <p>
+            Clients need to know whether to present interface elements for
+            controlling playback before calling those methods.
+          </p>
+        </tp:rationale>
+      </tp:docstring>
+    </property>
+
+    <property name="CanPause" tp:name-for-bindings="Can_Pause" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Whether playback can be paused using
+           <tp:member-ref>Pause</tp:member-ref> or
+           <tp:member-ref>PlayPause</tp:member-ref></p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.</p>
+        <tp:rationale>
+          <p>
+            Clients need to know whether to present interface elements for
+            controlling playback before calling those methods.
+          </p>
+        </tp:rationale>
+      </tp:docstring>
+    </property>
+
+    <property name="CanSeek" tp:name-for-bindings="Can_Seek" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          Whether the client can control the playback position using
+          <tp:member-ref>Seek</tp:member-ref> and
+          <tp:member-ref>SetPosition</tp:member-ref>.  This may be different for
+          different tracks.
+        </p>
+        <p>
+          When this property changes, the
+          <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited with
+          the new value.
+        </p>
+        <tp:rationale>
+          <p>
+            Clients need to know whether to present interface elements for
+            seeking before calling those methods.
+          </p>
+        </tp:rationale>
+      </tp:docstring>
+    </property>
+
+    <property name="CanRepeatTrack" tp:name-for-bindings="Can_Repeat_Track" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Whether the media player can be set to repeat the current track</p>
+        <p>
+          This property is not expected to change, as it describes an intrinsic
+          capability of the implementation.
+        </p>
+        <tp:rationale>
+          <p>
+            Clients need to know whether to present interface elements for
+            setting the media player to repeat the current track
+          </p>
+        </tp:rationale>
+      </tp:docstring>
+    </property>
+
+    <property name="CanLoop" tp:name-for-bindings="Can_Loop" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Whether the media player can be set to loop through its tracks</p>
+        <p>
+          This property is not expected to change, as it describes an intrinsic
+          capability of the implementation.
+        </p>
+        <tp:rationale>
+          <p>
+            Clients need to know whether to present interface elements for
+            setting the media player to loop.
+          </p>
+        </tp:rationale>
+      </tp:docstring>
+    </property>
+
+    <property name="CanShuffle" tp:name-for-bindings="Can_Shuffle" type="b" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Whether the media player can be set to play randomly</p>
+        <p>
+          This property is not expected to change, as it describes an intrinsic
+          capability of the implementation.
+        </p>
+        <tp:rationale>
+          <p>
+            Clients need to know whether to present interface elements for
+            setting the media player to play its track in random order
+          </p>
+        </tp:rationale>
+      </tp:docstring>
     </property>
 
     <signal name="MetadataChanged" tp:name-for-bindings="Metadata_Changed">

@@ -67,20 +67,6 @@
       </tp:docstring>
     </tp:simple-type>
 
-    <tp:flags name="Track_List_Capability_Flags" value-prefix="TRACKLIST_CAN" type="i">
-      <tp:flag suffix="EDIT_TRACKS" value="1 (1 &lt;&lt; 0)">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>
-            A call to AddTrack will add a track to this TrackList and a call
-            to RemoveTrack will remove a track.
-          </p>
-        </tp:docstring>
-      </tp:flag>
-      <tp:docstring>
-        <p>Capability flags for the TrackList interface.</p>
-      </tp:docstring>
-    </tp:flags>
-
     <method name="GetTracksMetadata" tp:name-for-bindings="Get_Tracks_Metadata">
       <arg direction="in" name="TrackIds" type="as" tp:type="Track_Id[]">
         <tp:docstring>
@@ -129,8 +115,8 @@
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Adds a URI in the TrackList.</p>
         <p>
-          If the TRACKLIST_CAN_EDIT_TRACKS capability flag is not set, this has
-          no effect.
+          If the <tp:member-ref>CanEditTracks</tp:member-ref> property is false,
+          this has no effect.
         </p>
         <p>
           Note: Clients should not assume that the track has been added at the
@@ -150,8 +136,8 @@
         <p>Removes an item from the TrackList.</p>
         <p>If the track is not part of this tracklist, this has no effect.</p>
         <p>
-          If the TRACKLIST_CAN_EDIT_TRACKS capability flag is not set, this has
-          no effect.
+          If the <tp:member-ref>CanEditTracks</tp:member-ref> property is false,
+          this has no effect.
         </p>
         <p>
           Note: Clients should not assume that the track has been removed at the
@@ -189,22 +175,16 @@
       </tp:docstring>
     </property>
 
-    <property name="Capabilities" type="i" tp:type="Track_List_Capability_Flags" tp:name-for-bindings="Capabilities" access="read">
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>A bitmask of capabilities.</p>
-      </tp:docstring>
-    </property>
-
-    <signal name="CapabilitiesChanged" tp:name-for-bindings="Capabilities_Changed">
-      <arg name="Capabilities" type="i" tp:type="Track_List_Capability_Flags">
-        <tp:docstring>
-          <p>The new capabilities.</p>
+    <property name="CanEditTracks" type="b" tp:name-for-bindings="Can_Edit_Tracks" access="read">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>
+            If <strong>false</strong>, calling
+            <tp:member-ref>AddTrack</tp:member-ref> or
+            <tp:member-ref>RemoveTrack</tp:member-ref> will have no effect,
+            and may raise a NotSupported error.
+          </p>
         </tp:docstring>
-      </arg>
-      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Indicates a change in the tracklist capabilities.</p>
-      </tp:docstring>
-    </signal>
+    </property>
 
     <signal name="TrackListReplaced" tp:name-for-bindings="Track_List_Replaced">
       <arg name="Tracks" type="as" tp:type="Track_Id[]">

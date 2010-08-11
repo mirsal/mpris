@@ -225,6 +225,32 @@
       </tp:docstring>
     </method>
 
+    <method name="OpenUri" tp:name-for-bindings="Open_Uri">
+      <arg direction="in" type="s" tp:type="Uri" name="Uri">
+        <tp:docstring>
+          <p>
+            Uri of the track to load. Its uri scheme should be an element of the
+            <literal>org.mpris.MediaPlayer2.SupportedUriSchemes</literal>
+            property and the mime-type should match one of the elements of the
+            <literal>org.mpris.MediaPlayer2.SupportedMimeTypes</literal>.
+          </p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Opens the Uri given as an argument</p>
+        <p>If the playback is stopped, starts playing</p>
+        <p>
+          If the media player implements the TrackList interface, then the
+          opened track should be made part of the tracklist, the
+          <literal>org.mpris.MediaPlayer2.TrackList.TrackAdded</literal> or
+          <literal>org.mpris.MediaPlayer2.TrackList.TrackListReplaced</literal>
+          signal should be fired, as well as the
+          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
+          signal on the tracklist interface.
+        </p>
+      </tp:docstring>
+    </method>
+
     <property name="PlaybackStatus" tp:name-for-bindings="Playback_Status" type="s" tp:type="Playback_Status" access="read">
       <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">

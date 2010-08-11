@@ -66,9 +66,9 @@
       </tp:docstring>
     </tp:simple-type>
 
-    <tp:simple-type name="Time_In_Ms" type="i">
+    <tp:simple-type name="Time_In_Us" type="x">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Time in milliseconds.</p>
+        <p>Time in microseconds.</p>
       </tp:docstring>
     </tp:simple-type>
 
@@ -133,15 +133,15 @@
     </method>
 
     <method name="Seek" tp:name-for-bindings="Seek">
-      <arg direction="in" type="i" name="Position" tp:type="Time_In_Ms">
+      <arg direction="in" type="x" name="Position" tp:type="Time_In_Us">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>The number of milliseconds to seek forward.</p>
+          <p>The number of microseconds to seek forward.</p>
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>
           Seeks forward in the current track by the specified number
-          of milliseconds.
+          of microseconds.
         </p>
         <p>
           A negative value seeks back. If this would mean seeking
@@ -169,9 +169,9 @@
           </p>
         </tp:docstring>
       </arg>
-      <arg direction="in" type="i" tp:type="Time_In_Ms" name="Position">
+      <arg direction="in" type="x" tp:type="Time_In_Us" name="Position">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>Track position in milliseconds.</p>
+          <p>Track position in microseconds.</p>
           <p>This must be between 0 and &lt;track_length&gt;.</p>
         </tp:docstring>
       </arg>
@@ -342,7 +342,7 @@
       </tp:docstring>
     </property>
 
-    <property name="Position" type="i" tp:type="Time_In_Ms" tp:name-for-bindings="Position" access="read">
+    <property name="Position" type="x" tp:type="Time_In_Us" tp:name-for-bindings="Position" access="read">
         <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>
@@ -570,9 +570,9 @@
     </property>
 
     <signal name="Seeked" tp:name-for-bindings="Seeked">
-      <arg name="Position" type="i" tp:type="Time_In_Ms">
+      <arg name="Position" type="x" tp:type="Time_In_Us">
         <tp:docstring>
-          <p>The new position, in milliseconds.</p>
+          <p>The new position, in microseconds.</p>
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">

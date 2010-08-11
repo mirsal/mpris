@@ -71,9 +71,9 @@
     <property name="HasTrackList" type="b" tp:name-for-bindings="Has_TrackList" access="read">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>
-          Indicates whether the <strong>org.mpris.MediaPlayer.TrackList</strong>
-          interface is implemented by an object at
-          <strong>/org/mpris/MediaPlayer/TrackList</strong>.
+          Indicates whether the <strong>/org/mpris/MediaPlayer2</strong>
+          object implements the <strong>org.mpris.MediaPlayer2.TrackList</strong>
+          interface.
         </p>
       </tp:docstring>
     </property>

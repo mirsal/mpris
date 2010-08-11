@@ -79,33 +79,25 @@
     </tp:docstring>
   </tp:section>
 
-  <tp:section name="Well-known Object Paths">
+  <tp:section name="Well-known Object Path">
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+
       <p>
-        The media player must expose at least the two
-        following object paths whenever it is running:
+        The media player <strong>must</strong> expose the
+        <strong>/org/mpris/MediaPlayer2</strong> object path, which
+        <strong>must</strong> implement the following interfaces:
       </p>
 
       <ul>
-        <li>
-          <strong>/org/mpris/MediaPlayer</strong>, which implements the
-          <strong>org.mpris.MediaPlayer2</strong> interface;
-        </li>
-        <li>
-          <strong>/org/mpris/MediaPlayer/Player</strong>, which implements the
-          <strong>org.mpris.MediaPlayer2.Player</strong> interface.
-        </li>
+        <li>org.mpris.MediaPlayer2</li>
+        <li>org.mpris.MediaPlayer2.Player</li>
       </ul>
 
-      <p>The media player may expose the following object path:</p>
+      <p>
+        The <strong>/org/mpris/MediaPlayer2</strong> object may implement
+        the <strong>org.mpris.MediaPlayer2.TrackList</strong> interface:
+      </p>
 
-      <ul>
-        <li>
-          <strong>/org/mpris/MediaPlayer/TrackList</strong>,
-          which implements the <strong>org.mpris.MediaPlayer2.TrackList
-          </strong> interface.
-        </li>
-      </ul>
     </tp:docstring>
   </tp:section>
 

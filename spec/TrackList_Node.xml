@@ -182,23 +182,40 @@
     </method>
 
     <property name="Tracks" type="as" tp:type="Track_Id[]" tp:name-for-bindings="Tracks" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="invalidates"/>
       <tp:docstring>
         <p>
           An array which contains the identifier of each track
           in the tracklist, in order.
         </p>
+        <p>
+          The <tp:member-ref>PropertiesChanged</tp:member-ref> signal is emited
+          every time this property changes, but the signal message does not
+          contain the new value.
+
+          Client implementations should rather rely on the
+          <tp:member-ref>TrackAdded</tp:member-ref>,
+          <tp:member-ref>TrackRemoved</tp:member-ref> and
+          <tp:member-ref>TrackListReplaced</tp:member-ref> signals to keep their
+          representation of the tracklist up to date.
+        </p>
       </tp:docstring>
     </property>
 
     <property name="CanEditTracks" type="b" tp:name-for-bindings="Can_Edit_Tracks" access="read">
-        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-          <p>
-            If <strong>false</strong>, calling
-            <tp:member-ref>AddTrack</tp:member-ref> or
-            <tp:member-ref>RemoveTrack</tp:member-ref> will have no effect,
-            and may raise a NotSupported error.
-          </p>
-        </tp:docstring>
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          If <strong>false</strong>, calling
+          <tp:member-ref>AddTrack</tp:member-ref> or
+          <tp:member-ref>RemoveTrack</tp:member-ref> will have no effect,
+          and may raise a NotSupported error.
+        </p>
+        <p>
+          Every time this property changes, the PropertiesChanged signal is
+          emited.
+        </p>
+      </tp:docstring>
     </property>
 
     <signal name="TrackListReplaced" tp:name-for-bindings="Track_List_Replaced">

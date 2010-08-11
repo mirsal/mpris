@@ -64,10 +64,10 @@
 
     <tp:simple-type name="Volume" type="d">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Audio volume level on a linear scale between 0.0 and 1.0, inclusive.</p>
+        <p>Audio volume level</p>
         <ul>
           <li>0.0 means mute.</li>
-          <li>1.0 is the maximum volume level.</li>
+          <li>1.0 is a sensible maximum volume level.</li>
         </ul>
       </tp:docstring>
     </tp:simple-type>
@@ -400,8 +400,7 @@
         <p>The volume level.</p>
         <p>
           When setting, if a negative value is passed, the volume
-          should be set to 0.0.  If a value greater than 1 is
-          passed, the volume should be set to the maximum level.
+          should be set to 0.0.
         </p>
         <p>
           If <tp:member-ref>CanControl</tp:member-ref> is

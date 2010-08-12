@@ -100,7 +100,7 @@
 
       <p>
         The <strong>/org/mpris/MediaPlayer2</strong> object may implement
-        the <strong>org.mpris.MediaPlayer2.TrackList</strong> interface:
+        the <strong>org.mpris.MediaPlayer2.TrackList</strong> interface.
       </p>
 
     </tp:docstring>

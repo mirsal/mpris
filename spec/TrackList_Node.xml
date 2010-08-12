@@ -3,7 +3,13 @@
   <interface name="org.mpris.MediaPlayer2.TrackList">
 
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-      <p>Provides access to the track listing of the media player.</p>
+      <p>
+        Provides access to a short list of tracks which were recently played or
+        will be played shortly.
+        For example, it can represent the list of tracks from the same album
+        as the currently playing song or the
+        <a href="http://projects.gnome.org/rhythmbox/">Rhythmbox</a> play queue
+      </p>
       <p>
         Each track in the tracklist has a unique identifier.
         The intention is that this uniquely identifies the track within
@@ -11,27 +17,23 @@
         (a particular music file, say) occurs twice in the track list, each
         occurrence should have a different identifier. If a track is removed
         from the middle of the playlist, it should not affect the track ids
-        of any other tracks in the playlist.
+        of any other tracks in the tracklist.
       </p>
       <p>
         As a result, the traditional track identifiers of URLs and position
-        in the playlist cannot be used. It is recognised that this may pose
-        some difficulties for media player implementations. A potential
-        scheme would be to use the URI and, in the case of duplicates,
-        appending a fragment and a number (eg: the second
-        "file:///home/jim/foo.mp3" occurance could be
-        "file:///home/jim/foo.mp3#2", which will keep this track id even if
-        the first occurance is then removed). Any scheme that satisfies the
-        uniqueness requirements is valid, however, as clients should not
-        make any assumptions about the value of the track id beyond the fact
+        in the playlist cannot be used. Any scheme which satisfies the
+        uniqueness requirements is valid, as clients should not make any
+        assumptions about the value of the track id beyond the fact
         that it is a unique identifier.
       </p>
       <p>
         Note that the (memory and processing) burden of implementing the
         TrackList interface and maintaining unique track ids for the
-        playlist may be mitigated by only exposing part of the playlist when
+        playlist can be mitigated by only exposing a subset of the playlist when
         it is very long (the 20 or so tracks around the currently playing
-        track, for example).
+        track, for example). This is a recommended as the tracklist interface
+        is not designed to enable browsing through a large list of tracks, but
+        rather to provide clients with context about the currently playing track.
       </p>
     </tp:docstring>
 

@@ -67,7 +67,7 @@
         <p>Audio volume level</p>
         <ul>
           <li>0.0 means mute.</li>
-          <li>1.0 is a sensible maximum volume level.</li>
+          <li>1.0 is a sensible maximum volume level (ex: 0dB).</li>
         </ul>
       </tp:docstring>
     </tp:simple-type>

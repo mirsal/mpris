@@ -31,9 +31,9 @@
         TrackList interface and maintaining unique track ids for the
         playlist can be mitigated by only exposing a subset of the playlist when
         it is very long (the 20 or so tracks around the currently playing
-        track, for example). This is a recommended as the tracklist interface
-        is not designed to enable browsing through a large list of tracks, but
-        rather to provide clients with context about the currently playing track.
+        track, for example). This is a recommended practice as the tracklist
+        interface is not designed to enable browsing through a large list of tracks,
+        but rather to provide clients with context about the currently playing track.
       </p>
     </tp:docstring>
 

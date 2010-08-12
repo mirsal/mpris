@@ -3,7 +3,7 @@
   xmlns:xi="http://www.w3.org/2001/XInclude">
 
   <tp:title>MPRIS D-Bus Interface Specification</tp:title>
-  <tp:version>2.0-draft</tp:version>
+  <tp:version>2.0</tp:version>
 
   <tp:copyright>
     Copyright © 2006-2010 the VideoLAN team

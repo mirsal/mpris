@@ -6,9 +6,9 @@
       <p>
         Provides access to a short list of tracks which were recently played or
         will be played shortly.
-        For example, it can represent the list of tracks from the same album
-        as the currently playing song or the
-        <a href="http://projects.gnome.org/rhythmbox/">Rhythmbox</a> play queue
+        Example use cases are the list of tracks from the same album as the
+        currently playing song or the
+        <a href="http://projects.gnome.org/rhythmbox/">Rhythmbox</a> play queue.
       </p>
       <p>
         Each track in the tracklist has a unique identifier.

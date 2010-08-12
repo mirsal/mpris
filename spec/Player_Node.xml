@@ -62,6 +62,17 @@
       </tp:docstring>
     </tp:simple-type>
 
+    <tp:simple-type name="Playback_Rate" type="d">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A playback rate</p>
+        <p>
+          This is a multiplier, so a value of 0.5 indicates that playback is
+          happening at half speed, while 1.5 means that 1.5 seconds of "track time"
+          is consumed every second.
+        </p>
+      </tp:docstring>
+    </tp:simple-type>
+
     <tp:simple-type name="Volume" type="d">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Audio volume level</p>
@@ -240,6 +251,14 @@
         <p>Opens the Uri given as an argument</p>
         <p>If the playback is stopped, starts playing</p>
         <p>
+          If the uri scheme or the mime-type of the uri to open is not supported,
+          this method does nothing and may raise an error.
+        </p>
+        <p>Clients should not assume that the Uri has been opened as soon as this
+           method returns. They should wait until the trackid field in the
+           <tp:member-ref>Metadata</tp:member-ref> property changes.
+        </p>
+        <p>
           If the media player implements the TrackList interface, then the
           opened track should be made part of the tracklist, the
           <literal>org.mpris.MediaPlayer2.TrackList.TrackAdded</literal> or
@@ -295,15 +314,10 @@
       </tp:docstring>
     </property>
 
-    <property name="Rate" tp:name-for-bindings="Rate" type="d" access="readwrite">
+    <property name="Rate" tp:name-for-bindings="Rate" type="d" tp:type="Playback_Rate" access="readwrite">
       <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>The current playback rate.</p>
-        <p>
-          This is a multiplier for the playback rate.  So a value of 0.5
-          indicates that playback is happening at half speed, while 1.5 means
-          that 1.5 seconds of "track time" is consumed every second.
-        </p>
         <p>
           The value must fall in the range described by
           <tp:member-ref>MinimumRate</tp:member-ref> and
@@ -436,7 +450,7 @@
         </tp:docstring>
     </property>
 
-    <property name="MinimumRate" tp:name-for-bindings="Minimum_Rate" type="d" access="read">
+    <property name="MinimumRate" tp:name-for-bindings="Minimum_Rate" type="d" tp:type="Playback_Rate" access="read">
       <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>
@@ -459,11 +473,11 @@
       </tp:docstring>
     </property>
 
-    <property name="MaximumRate" tp:name-for-bindings="Maximum_Rate" type="d" access="read">
+    <property name="MaximumRate" tp:name-for-bindings="Maximum_Rate" type="d" tp:type="Playback_Rate" access="read">
       <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>
-          The minimum value which the <tp:member-ref>Rate</tp:member-ref>
+          The maximum value which the <tp:member-ref>Rate</tp:member-ref>
           property can take.
           Clients should not attempt to set the
           <tp:member-ref>Rate</tp:member-ref> property above this value.

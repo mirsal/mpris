@@ -134,7 +134,7 @@
     </method>
 
     <method name="RemoveTrack" tp:name-for-bindings="Remove__Track">
-      <arg direction="in" type="s" name="TrackId">
+      <arg direction="in" type="o" tp:type="Track_Id" name="TrackId">
         <tp:docstring>
           <p>Identifier of the track to be removed.</p>
         </tp:docstring>

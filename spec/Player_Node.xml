@@ -41,7 +41,7 @@
           <p>The current track will start again from the begining once it has finished playing</p>
         </tp:docstring>
       </tp:enumvalue>
-      <tp:enumvalue suffix="Playlist" value="Paylist">
+      <tp:enumvalue suffix="Playlist" value="Playlist">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>The playback loops through a list of tracks</p>
         </tp:docstring>
@@ -59,6 +59,19 @@
           the same track to appear multiple times in the tracklist,
           this must be unique within the scope of the tracklist.
         </p>
+        <p>
+          Note that this should be a valid D-Bus object id, although clients
+          should not assume that any object is actually exported with any
+          interfaces at that path.
+        </p>
+        <tp:rationale>
+          <p>
+            This is a D-Bus object id as that is the definitive way to have
+            unique identifiers on D-Bus.  It also allows for future optional
+            expansions to the specification where tracks are exported to D-Bus
+            with an interface similar to org.gnome.UPnP.MediaItem2.
+          </p>
+        </tp:rationale>
       </tp:docstring>
     </tp:simple-type>
 
@@ -80,6 +93,10 @@
           <li>0.0 means mute.</li>
           <li>1.0 is a sensible maximum volume level (ex: 0dB).</li>
         </ul>
+        <p>
+          Note that the volume may be higher than 1.0, although generally
+          clients should not attempt to set it above 1.0.
+        </p>
       </tp:docstring>
     </tp:simple-type>
 
@@ -233,6 +250,14 @@
           If the <tp:member-ref>CanSeek</tp:member-ref> property is false,
           this has no effect.
         </p>
+        <tp:rationale>
+          <p>
+            The reason for having this method, rather than making
+            <tp:member-ref>Position</tp:member-ref> writable, is to include
+            the TrackId argument to avoid race conditions where a client tries
+            to seek to a position when the track has already changed.
+          </p>
+        </tp:rationale>
       </tp:docstring>
     </method>
 
@@ -445,7 +470,7 @@
           </p>
           <p>
             The <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-            is <strong>not</strong> emited when this property changes
+            is <strong>not</strong> emited when this property changes.
           </p>
         </tp:docstring>
     </property>

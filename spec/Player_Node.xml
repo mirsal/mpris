@@ -223,7 +223,7 @@
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>Sets the current track position in milliseconds.</p>
+        <p>Sets the current track position in microseconds.</p>
         <p>If the Position argument is less than 0, do nothing.</p>
         <p>
           If the Position argument is greater than the track length,
@@ -428,7 +428,7 @@
         <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>
-            The current track position in milliseconds, between 0 and
+            The current track position in microseconds, between 0 and
             the 'length' metadata entry (see Metadata).
           </p>
           <p>

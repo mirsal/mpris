@@ -38,7 +38,7 @@
           interface or a notification area icon for example) should allow clients
           to use this method. Otherwise, it should not be needed.
         </p>
-        <p>If the media player does not have a UI, this must be implemented</p>
+        <p>If the media player does not have a UI, this should be implemented</p>
       </tp:docstring>
     </method>
 

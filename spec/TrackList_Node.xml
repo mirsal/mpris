@@ -45,6 +45,28 @@
           a string that uniquely identifies the track within the scope of the
           playlist.
         </p>
+        <p>
+          If the length of the track is known, it should be provided in the
+          metadata property with the "mpris:length" key.  The length must be
+          given in microseconds, and be represented as a signed 64-bit integer.
+        </p>
+        <p>
+          If there is an image associated with the track, a URL for it may be
+          provided using the "mpris:artUrl" key.  For other metadata, fields
+          defined by the
+          <a href="http://xesam.org/main/XesamOntology">Xesam ontology</a>
+          should be used, prefixed by "xesam:".  See
+          <a href="http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata">
+            http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata
+          </a> for a list of common fields.
+        </p>
+        <p>
+          Lists of strings should be passed using the array-of-string ("as")
+          D-Bus type.  Dates should be passed as strings using the ISO 8601
+          extended format (eg: 2007-04-29T14:35:51).  If the timezone is
+          known, RFC 3339's internet profile should be used (eg:
+          2007-04-29T14:35:51+02:00).
+        </p>
       </tp:docstring>
       <tp:member type="s" name="Attribute">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -78,6 +100,7 @@
       <arg direction="out" type="aa{sv}" tp:type="Metadata_Map[]" name="Metadata">
         <tp:docstring>
           <p>Metadata of the set of tracks given as input.</p>
+          <p>See the type documentation for more details.</p>
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -237,6 +260,7 @@
         <tp:docstring>
           <p>The metadata of the newly added item.</p>
           <p>This must include a mpris:trackid entry.</p>
+          <p>See the type documentation for more details.</p>
         </tp:docstring>
       </arg>
       <arg type="o" tp:type="Track_Id" name="AfterTrack">
@@ -273,6 +297,8 @@
       <arg type="a{sv}" tp:type="Metadata_Map" name="Metadata">
         <tp:docstring>
           <p>The new track metadata.</p>
+          <p>This must include a mpris:trackid entry.</p>
+          <p>See the type documentation for more details.</p>
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">

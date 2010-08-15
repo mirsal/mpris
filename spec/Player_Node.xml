@@ -280,7 +280,7 @@
           this method does nothing and may raise an error.
         </p>
         <p>Clients should not assume that the Uri has been opened as soon as this
-           method returns. They should wait until the trackid field in the
+           method returns. They should wait until the mpris:trackid field in the
            <tp:member-ref>Metadata</tp:member-ref> property changes.
         </p>
         <p>
@@ -411,14 +411,14 @@
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>The metadata of the current element.</p>
         <p>
-          If there is a current track, this must have a "trackid" entry
+          If there is a current track, this must have a "mpris:trackid" entry
           at the very least, which contains a string that uniquely identifies
           this track.
         </p>
         <p>
           If the media player implements the TrackList interface and allows
           the same track to appear multiple times in the tracklist, the
-          "trackid" entry must be unique within the scope of the tracklist.
+          "mpris:trackid" entry must be unique within the scope of the tracklist.
         </p>
         <p>
           Guidelines for other field names are at

@@ -277,7 +277,9 @@
         <p>If the playback is stopped, starts playing</p>
         <p>
           If the uri scheme or the mime-type of the uri to open is not supported,
-          this method does nothing and may raise an error.
+          this method does nothing and may raise an error.  In particular, if the
+          list of available uri schemes is empty, this method may not be
+          implemented.
         </p>
         <p>Clients should not assume that the Uri has been opened as soon as this
            method returns. They should wait until the mpris:trackid field in the

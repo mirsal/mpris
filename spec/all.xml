@@ -3,7 +3,7 @@
   xmlns:xi="http://www.w3.org/2001/XInclude">
 
   <tp:title>MPRIS D-Bus Interface Specification</tp:title>
-  <tp:version>2.0</tp:version>
+  <tp:version>2.1</tp:version>
 
   <tp:copyright>
     Copyright © 2006-2010 the VideoLAN team
@@ -50,6 +50,15 @@
         basic playback and media player state control as well as a tracklist
         interface which is used to add context to the current item.
       </p>
+    </tp:docstring>
+  </tp:section>
+
+  <tp:section name="Changes">
+    <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+      <dl>
+        <dt>From 2.0 to 2.1:</dt>
+        <dd>Added the optional <b>org.mpris.MediaPlayer2.Playlists</b> interface.</dd>
+      </dl>
     </tp:docstring>
   </tp:section>
 
@@ -103,6 +112,11 @@
         the <strong>org.mpris.MediaPlayer2.TrackList</strong> interface.
       </p>
 
+      <p>
+        The <strong>/org/mpris/MediaPlayer2</strong> object may implement
+        the <strong>org.mpris.MediaPlayer2.Playlists</strong> interface.
+      </p>
+
     </tp:docstring>
   </tp:section>
 
@@ -124,6 +138,7 @@
     <xi:include href="Root_Node.xml" />
     <xi:include href="TrackList_Node.xml" />
     <xi:include href="Player_Node.xml" />
+    <xi:include href="Playlists.xml" />
   </tp:section>
 
 </tp:spec>

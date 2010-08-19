@@ -78,6 +78,18 @@
           <p>Ordering by date of last playback, oldest first.</p>
         </tp:docstring>
       </tp:enumvalue>
+      <tp:enumvalue suffix="UserDefined" value="User">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>A user-defined ordering.</p>
+          <tp:rationale>
+            <p>
+              Some media players may allow users to order playlists as they
+              wish.  This ordering allows playlists to be retreived in that
+              order.
+            </p>
+          </tp:rationale>
+        </tp:docstring>
+      </tp:enumvalue>
     </tp:enum>
 
     <method name="ActivatePlaylist" tp:name-for-bindings="Activate_Playlist">
@@ -154,8 +166,7 @@
     <property name="Orderings" tp:name-for-bindings="Orderings" type="as" tp:type="Playlist_Ordering[]" access="read">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>
-          The available orderings.  This must include Alphabetical and either
-          Created or Modified at a minimum.
+          The available orderings.  At least one must be offered.
         </p>
         <tp:rationale>
           <p>

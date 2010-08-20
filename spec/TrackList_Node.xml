@@ -5,7 +5,11 @@
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
       <p>
         Provides access to a short list of tracks which were recently played or
-        will be played shortly.
+        will be played shortly.  This is intended to provide context to the
+        currently-playing track, rather than giving complete access to the
+        media player's playlist.
+      </p>
+      <p>
         Example use cases are the list of tracks from the same album as the
         currently playing song or the
         <a href="http://projects.gnome.org/rhythmbox/">Rhythmbox</a> play queue.

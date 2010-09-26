@@ -120,6 +120,17 @@
     </tp:docstring>
   </tp:section>
 
+  <tp:section name="Corrections">
+    <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+      <ul>
+        <li>
+          2010-09-26: Added EmitsChangedSignal annotation to Volume property
+          on the Player interface.
+        </li>
+      </ul>
+    </tp:docstring>
+  </tp:section>
+
   <tp:section name="Interfaces">
     <xi:include href="Root_Node.xml" />
     <xi:include href="TrackList_Node.xml" />

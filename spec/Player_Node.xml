@@ -429,6 +429,7 @@
     </property>
 
     <property name="Volume" type="d" tp:type="Volume" tp:name-for-bindings="Volume" access="readwrite">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true" />
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>The volume level.</p>
         <p>
@@ -439,6 +440,11 @@
           If <tp:member-ref>CanControl</tp:member-ref> is
           <strong>false</strong>, attempting to set this property should have
           no effect and raise an error.
+        </p>
+        <p>
+          When this property changes, the
+          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
+          signal is emited with the new value.
         </p>
       </tp:docstring>
     </property>

@@ -41,6 +41,9 @@ class WrongNumberOfChildren(Exception): pass
 class MismatchedFlagsAndEnum(Exception): pass
 class TypeMismatch(Exception): pass
 class MissingVersion(Exception): pass
+class DuplicateEnumValueValue(Exception): pass
+class BadFlagValue(Exception): pass
+class BadFlagsType(Exception): pass
 
 class Xzibit(Exception):
     def __init__(self, parent, child):
@@ -79,8 +82,9 @@ def getOnlyChildByName(dom, namespace, name):
         return None
 
     if len(kids) > 1:
-        raise WrongNumberOfChildren('%s node should have at most one child of type '
-                '{%s}%s' % (dom.tagName, namespace, name))
+        raise WrongNumberOfChildren(
+            '<%s> node should have at most one <%s xmlns="%s"/> child' %
+            (dom.tagName, name, namespace))
 
     return kids[0]
 
@@ -163,8 +167,13 @@ class Base(object):
     def get_interface(self):
         return self.parent.get_interface()
 
+    def get_anchor(self):
+        return "%s:%s" % (
+            self.get_type_name().replace(' ', '-'),
+            self.short_name)
+
     def get_url(self):
-        return "%s#%s" % (self.get_interface().get_url(), self.name)
+        return "%s#%s" % (self.get_interface().get_url(), self.get_anchor())
 
     def _get_generic_with_ver(self, nnode, htmlclass, txt):
         if nnode is None:
@@ -174,14 +183,20 @@ class Base(object):
             node = nnode.cloneNode(True)
             node.tagName = 'div'
             node.baseURI = None
-            node.setAttribute('class', htmlclass)
+            node.setAttribute('class', 'annotation %s' % htmlclass)
 
             try:
                 node.removeAttribute('version')
 
-                span = xml.dom.minidom.parseString(
-                    ('<span class="version">%s\n</span>' % txt) %
-                            nnode.getAttribute('version')).firstChild
+                doc = self.get_spec().document
+
+                span = doc.createElement('span')
+                span.setAttribute('class', 'version')
+
+                text = doc.createTextNode(
+                    txt % nnode.getAttribute('version') + ' ')
+                span.appendChild(text)
+
                 node.insertBefore(span, node.firstChild)
             except xml.dom.NotFoundErr:
                 raise MissingVersion(
@@ -223,7 +238,8 @@ class Base(object):
 
     def _convert_to_html(self, node):
         spec = self.get_spec()
-        namespace = self.get_root_namespace()
+        doc = spec.document
+        root_namespace = self.get_root_namespace()
 
         # rewrite <tp:rationale>
         for n in node.getElementsByTagNameNS(XMLNS_TP, 'rationale'):
@@ -231,21 +247,26 @@ class Base(object):
             if nested:
                 raise Xzibit(n, nested[0])
 
-            rationale_div = xml.dom.minidom.parseString(
-                """
+            """
                 <div class='rationale'>
                   <h5>Rationale:</h5>
-                  <div/>
+                  <div/> <- inner_div
                 </div>
-                """).documentElement
-            n.parentNode.replaceChild(rationale_div, n)
+            """
+            outer_div = doc.createElement('div')
+            outer_div.setAttribute('class', 'rationale')
 
-            # It's the third child: space, h5, space, div
-            inner_div = rationale_div.childNodes[3]
-            assert inner_div.nodeName == 'div', inner_div
+            h5 = doc.createElement('h5')
+            h5.appendChild(doc.createTextNode('Rationale:'))
+            outer_div.appendChild(h5)
+
+            inner_div = doc.createElement('div')
+            outer_div.appendChild(inner_div)
 
             for rationale_body in n.childNodes:
                 inner_div.appendChild(rationale_body.cloneNode(True))
+
+            n.parentNode.replaceChild(outer_div, n)
 
         # rewrite <tp:type>
         for n in node.getElementsByTagNameNS(XMLNS_TP, 'type'):
@@ -254,16 +275,33 @@ class Base(object):
             n.namespaceURI = None
             n.setAttribute('href', t.get_url())
 
+        # rewrite <tp:error-ref>
+        error_ns = spec.spec_namespace + '.Error.'
+        for n in node.getElementsByTagNameNS(XMLNS_TP, 'error-ref'):
+            try:
+                e = spec.errors[error_ns + getText(n)]
+            except KeyError:
+                print >> sys.stderr, """
+WARNING: Error '%s' not known in error namespace '%s'
+         (<tp:error-ref> in %s)
+                """.strip() % (getText(n), error_ns[:-1], self)
+                continue
+
+            n.tagName = 'a'
+            n.namespaceURI = None
+            n.setAttribute('href', e.get_url())
+            n.setAttribute('title', error_ns + getText(n))
+
         # rewrite <tp:member-ref>
         for n in node.getElementsByTagNameNS(XMLNS_TP, 'member-ref'):
             key = getText(n)
             try:
-                o = spec.lookup(key, namespace=namespace)
+                o = spec.lookup(key, namespace=root_namespace)
             except KeyError:
                 print >> sys.stderr, """
 WARNING: Key '%s' not known in namespace '%s'
          (<tp:member-ref> in %s)
-                """.strip() % (key, namespace, self)
+                """.strip() % (key, root_namespace, self)
                 continue
 
             n.tagName = 'a'
@@ -276,8 +314,9 @@ WARNING: Key '%s' not known in namespace '%s'
             namespace = n.getAttribute('namespace')
             key = getText(n)
 
-            if namespace.startswith('ofdT.'):
-                namespace = 'org.freedesktop.Telepathy.' + namespace[5:]
+            if namespace.startswith('ofdT.') or namespace == 'ofdT':
+                namespace = namespace.replace('ofdT',
+                    'org.freedesktop.Telepathy')
 
             try:
                 o = spec.lookup(key, namespace=namespace)
@@ -293,11 +332,82 @@ WARNING: Key '%s' not known in namespace '%s'
             n.setAttribute('href', o.get_url())
             n.setAttribute('title', o.get_title())
 
+        # rewrite <tp:token-ref>
+        for n in node.getElementsByTagNameNS(XMLNS_TP, 'token-ref'):
+            key = getText(n)
+            namespace = n.getAttribute('namespace')
+
+            if namespace:
+                if namespace.startswith('ofdT.'):
+                    namespace = 'org.freedesktop.Telepathy.' + namespace[5:]
+            else:
+                namespace = root_namespace
+
+            try:
+                try:
+                    if '/' in key:
+                        sep = '.'
+                    else:
+                        sep = '/'
+
+                    o = spec.lookup(namespace + sep + key, None)
+                except KeyError:
+                    o = spec.lookup(key, None)
+            except KeyError:
+                print >> sys.stderr, """
+WARNING: Key '%s' not known in namespace '%s'
+         (<tp:dbus-ref> in %s)
+                """.strip() % (key, namespace, self)
+                continue
+
+            n.tagName = 'a'
+            n.namespaceURI = None
+            n.setAttribute('href', o.get_url())
+            n.setAttribute('title', o.get_title())
+
+        # Fill in <tp:list-dbus-property-parameters/> with a linkified list of
+        # properties which are also connection parameters
+        for n in node.getElementsByTagNameNS(XMLNS_TP,
+                    'list-dbus-property-parameters'):
+            n.tagName = 'ul'
+            n.namespaceURI = None
+
+            props = (p for interface in spec.interfaces
+                       for p in interface.properties
+                       if p.is_connection_parameter
+                    )
+
+            for p in props:
+                link_text = doc.createTextNode(p.name)
+
+                a = doc.createElement('a')
+                a.setAttribute('href', p.get_url())
+                a.appendChild(link_text)
+
+                # FIXME: it'd be nice to include the rich type of the property
+                # here too.
+                type_text = doc.createTextNode(' (%s)' % p.dbus_type)
+
+                li = doc.createElement('li')
+                li.appendChild(a)
+                li.appendChild(type_text)
+
+                n.appendChild(li)
+
     def get_title(self):
         return '%s %s' % (self.get_type_name(), self.name)
 
     def __repr__(self):
         return '%s(%s)' % (self.__class__.__name__, self.name)
+
+    def get_index_entries(self):
+        context = self.parent.get_index_context()
+        return set([
+            '%s (%s in %s)' % (self.short_name, self.get_type_name(), context),
+            '%s %s' % (self.get_type_name(), self.name)])
+
+    def get_index_context(self):
+        return self.short_name
 
 class DBusConstruct(Base):
     """Base class for signals, methods and properties."""
@@ -326,6 +436,12 @@ class PossibleError(Base):
         try:
             return spec.errors[self.name]
         except KeyError:
+            if not spec.allow_externals:
+                print >> sys.stderr, """
+WARNING: Error not known: '%s'
+         (<tp:possible-error> in %s)
+                """.strip() % (self.name, self.parent)
+
             return External(self.name)
 
     def get_url(self):
@@ -454,6 +570,17 @@ class Property(DBusConstruct, Typed):
         else:
             raise UnknownAccess("Unknown access '%s' on %s" % (access, self))
 
+        is_cp = dom.getAttributeNS(XMLNS_TP, 'is-connection-parameter')
+        self.is_connection_parameter = is_cp != ''
+
+        immutable = dom.getAttributeNS(XMLNS_TP, 'immutable')
+        self.immutable = immutable != ''
+        self.sometimes_immutable = immutable == 'sometimes'
+
+        requestable = dom.getAttributeNS(XMLNS_TP, 'requestable')
+        self.requestable = requestable != ''
+        self.sometimes_requestable = requestable == 'sometimes'
+
     def get_access(self):
         if self.access & self.ACCESS_READ and self.access & self.ACCESS_WRITE:
             return 'Read/Write'
@@ -461,6 +588,21 @@ class Property(DBusConstruct, Typed):
             return 'Read only'
         elif self.access & self.ACCESS_WRITE:
             return 'Write only'
+
+    def get_flag_summary(self):
+        descriptions = []
+
+        if self.sometimes_immutable:
+            descriptions.append("Sometimes immutable")
+        elif self.immutable:
+            descriptions.append("Immutable")
+
+        if self.sometimes_requestable:
+            descriptions.append("Sometimes requestable")
+        elif self.requestable:
+            descriptions.append("Requestable")
+
+        return ', '.join(descriptions)
 
 class AwkwardTelepathyProperty(Typed):
     def get_type_name(self):
@@ -574,6 +716,9 @@ class Interface(Base):
         self.contact_attributes = build_list(self, ContactAttribute, self.name,
                 dom.getElementsByTagNameNS(XMLNS_TP, 'contact-attribute'))
 
+        self.client_interests = build_list(self, ClientInterest, self.name,
+                dom.getElementsByTagNameNS(XMLNS_TP, 'client-interest'))
+
         # build a list of types in this interface
         self.types = parse_types(self, dom, self.name)
 
@@ -585,26 +730,87 @@ class Interface(Base):
         self.requires = map(lambda n: n.getAttribute('interface'),
                              getChildrenByName(dom, XMLNS_TP, 'requires'))
 
+        def map_xor(element):
+            return map(lambda n: n.getAttribute('interface'),
+                       getChildrenByName(element, XMLNS_TP, 'requires'))
+
+        self.xor_requires = map(map_xor,
+                                getChildrenByName(dom, XMLNS_TP, 'xor-requires'))
+
+        # let's make sure there's nothing we don't know about here
+        self.check_for_odd_children(dom)
+
+        self.is_channel_related = self.name.startswith(spec_namespace + '.Channel')
+
     def get_interface(self):
         return self
 
-    def get_requires(self):
+    def lookup_requires(self, r):
         spec = self.get_spec()
 
-        def lookup(r):
-            try:
-                return spec.lookup(r)
-            except KeyError:
-                return External(r)
+        try:
+            return spec.lookup(r)
+        except KeyError:
+            if not spec.allow_externals:
+                print >> sys.stderr, """
+WARNING: Interface not known: '%s'
+         (<tp:requires> in %s)
+                """.strip() % (r, self)
 
-        return map(lookup, self.requires)
+            return External(r)
+
+    def get_requires(self):
+        return map(self.lookup_requires, self.requires)
+
+    def get_xor_requires(self):
+        def xor_lookup(r):
+            return map(self.lookup_requires, r)
+
+        return map(xor_lookup, self.xor_requires)
 
     def get_url(self):
         return '%s.html' % self.name_for_bindings
 
+    def check_for_odd_children(self, dom):
+        expected = [
+            (None, 'method'),
+            (None, 'property'),
+            (None, 'signal'),
+            (None, 'annotation'),
+            (XMLNS_TP, 'property'),
+            (XMLNS_TP, 'handler-capability-token'),
+            (XMLNS_TP, 'hct'),
+            (XMLNS_TP, 'contact-attribute'),
+            (XMLNS_TP, 'client-interest'),
+            (XMLNS_TP, 'simple-type'),
+            (XMLNS_TP, 'enum'),
+            (XMLNS_TP, 'flags'),
+            (XMLNS_TP, 'mapping'),
+            (XMLNS_TP, 'struct'),
+            (XMLNS_TP, 'external-type'),
+            (XMLNS_TP, 'requires'),
+            (XMLNS_TP, 'xor-requires'),
+            (XMLNS_TP, 'added'),
+            (XMLNS_TP, 'changed'),
+            (XMLNS_TP, 'deprecated'),
+            (XMLNS_TP, 'docstring')
+            ]
+
+        unexpected = [
+            x for x in dom.childNodes
+            if isinstance(x, xml.dom.minidom.Element) and
+               (x.namespaceURI, x.localName) not in expected
+            ]
+
+        if unexpected:
+            print >> sys.stderr, """
+WARNING: Unknown element(s): %s
+         (in interface '%s')
+                """.strip() % (', '.join([x.tagName for x in unexpected]), self.name)
+
 class Error(Base):
     def get_url(self):
-        return 'errors.html#%s' % self.name
+        return 'errors.html#%s' % self.get_anchor()
 
     def get_root_namespace(self):
         return self.namespace
@@ -681,7 +887,7 @@ class DBusType(Base):
         else:
             html = 'generic-types.html'
 
-        return '%s#%s' % (html, self.name)
+        return '%s#%s' % (html, self.get_anchor())
 
 class SimpleType(DBusType):
     def get_type_name(self):
@@ -793,6 +999,17 @@ class EnumLike(DBusType):
 
         return str
 
+    def check_for_duplicates(self):
+        # make sure no two values have the same value
+        for u in self.values:
+            for v in [x for x in self.values if x is not u]:
+                if u.value == v.value:
+                    raise DuplicateEnumValueValue('%s %s has two values '
+                            'with the same value: %s=%s and %s=%s' % \
+                            (self.__class__.__name__, self.name, \
+                             u.short_name, u.value, v.short_name, v.value))
+
+
 class Enum(EnumLike):
 
     devhelp_name = "enum"
@@ -811,9 +1028,16 @@ class Enum(EnumLike):
         self.values = build_list(self, EnumLike.EnumValue, self.name,
                         dom.getElementsByTagNameNS(XMLNS_TP, 'enumvalue'))
 
+        self.check_for_duplicates()
+
 class Flags(EnumLike):
     def __init__(self, parent, namespace, dom):
         super(Flags, self).__init__(parent, namespace, dom)
+
+        if dom.getAttribute('type') != 'u':
+            raise BadFlagsType('Flags %s doesn\'t make sense to be of '
+                   'type "%s" (only type "u" makes sense")' % (
+                    self.name, dom.getAttribute('type')))
 
         if dom.getElementsByTagNameNS(XMLNS_TP, 'enumvalue'):
             raise MismatchedFlagsAndEnum('%s is a tp:flags, so it should not '
@@ -823,6 +1047,17 @@ class Flags(EnumLike):
                         dom.getElementsByTagNameNS(XMLNS_TP, 'flag'))
         self.flags = self.values # in case you're looking for it
 
+        self.check_for_duplicates()
+
+        # make sure all these values are sane
+        for flag in self.values:
+            v = int(flag.value)
+
+            # positive x is a power of two if (x & (x - 1)) = 0.
+            if v == 0 or (v & (v - 1)) != 0:
+                raise BadFlagValue('Flags %s has bad value (not a power of '
+                       'two): %s=%s' % (self.name, flag.short_name, v))
+
 class TokenBase(Base):
 
     devhelp_name = "macro"      # it's a constant, which is near enough...
@@ -830,7 +1065,13 @@ class TokenBase(Base):
 
     def __init__(self, parent, namespace, dom):
         super(TokenBase, self).__init__(parent, namespace, dom)
-        self.name = namespace + '/' + self.short_name
+
+        items = [ namespace ]
+
+        if self.short_name != '':
+            items.append (self.short_name)
+
+        self.name = self.separator.join (items)
 
 class ContactAttribute(TokenBase, Typed):
 
@@ -849,6 +1090,19 @@ class HandlerCapabilityToken(TokenBase):
         assert is_family in ('yes', 'no', '')
         self.is_family = (is_family == 'yes')
 
+class ClientInterest(TokenBase):
+
+    def __init__(self, parent, namespace, dom):
+        super(ClientInterest, self).__init__(parent, namespace, dom)
+
+        self.short_name = self.name
+
+    def get_type_name(self):
+        return 'Client Interest'
+
+    def validate(self):
+        pass
+
 class SectionBase(object):
     """A SectionBase is an abstract base class for any type of node that can
        contain a <tp:section>, which means the top-level Spec object, or any
@@ -858,7 +1112,7 @@ class SectionBase(object):
     """
 
     def __init__(self, dom, spec_namespace):
-
+        self.spec_namespace = spec_namespace
         self.items = []
 
         def recurse(nodes):
@@ -879,6 +1133,9 @@ class SectionBase(object):
 
         recurse(dom.childNodes)
 
+    def get_index_context(self):
+        return self.spec_namespace
+
 class Section(Base, SectionBase):
     def __init__(self, parent, namespace, dom, spec_namespace):
         Base.__init__(self, parent, namespace, dom)
@@ -892,7 +1149,12 @@ class ErrorsSection(Section):
         pass
 
 class Spec(SectionBase):
-    def __init__(self, dom, spec_namespace):
+    def __init__(self, dom, spec_namespace, allow_externals=False):
+        self.document = dom
+        self.spec_namespace = spec_namespace
+        self.short_name = spec_namespace
+        self.allow_externals = allow_externals
+
         # build a dictionary of errors in this spec
         try:
             errorsnode = dom.getElementsByTagNameNS(XMLNS_TP, 'errors')[0]
@@ -936,18 +1198,12 @@ class Spec(SectionBase):
         for interface in self.interfaces:
                 self.everything[interface.name] = interface
 
-                for method in interface.methods:
-                    self.everything[method.name] = method
-                for signal in interface.signals:
-                    self.everything[signal.name] = signal
-                for property in interface.properties:
-                    self.everything[property.name] = property
-                for property in interface.tpproperties:
-                    self.everything[property.name] = property
-                for token in interface.contact_attributes:
-                    self.everything[token.name] = token
-                for token in interface.handler_capability_tokens:
-                    self.everything[token.name] = token
+                for things in [ 'methods', 'signals', 'properties',
+                                'tpproperties', 'contact_attributes',
+                                'handler_capability_tokens',
+                                'client_interests' ]:
+                    for thing in getattr(interface, things):
+                        self.everything[thing.name] = thing
 
                 for type in interface.types:
                     self.types[type.name] = type
@@ -1036,11 +1292,11 @@ def parse_types(parent, dom, namespace = None):
 
     return types
 
-def parse(filename, spec_namespace):
+def parse(filename, spec_namespace, allow_externals=False):
     dom = xml.dom.minidom.parse(filename)
     xincludator.xincludate(dom, filename)
 
-    spec = Spec(dom, spec_namespace)
+    spec = Spec(dom, spec_namespace, allow_externals=allow_externals)
 
     return spec
 

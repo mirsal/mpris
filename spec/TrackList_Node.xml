@@ -229,11 +229,6 @@
           <tp:member-ref>RemoveTrack</tp:member-ref> will have no effect,
           and may raise a NotSupported error.
         </p>
-        <p>
-          Every time this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited.
-        </p>
       </tp:docstring>
     </property>
 

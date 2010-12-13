@@ -3,12 +3,6 @@
   <interface name="org.mpris.MediaPlayer2">
     <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
 
-    <tp:docstring>
-      Every time the value of this interface's properties changes, the
-      <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-      signal is emited with the new values.
-    </tp:docstring>
-
     <method name="Raise" tp:name-for-bindings="Raise">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>

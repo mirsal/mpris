@@ -304,11 +304,6 @@
         <p>
           May be "Playing", "Paused" or "Stopped".
         </p>
-        <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
-        </p>
       </tp:docstring>
     </property>
 
@@ -323,11 +318,6 @@
             <li>"Track" if the current track will start again from the begining once it has finished playing</li>
             <li>"Playlist" if the playback loops through a list of tracks</li>
           </ul>
-        </p>
-        <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
         </p>
         <p>
           This property is optional, and clients should deal with NotSupported
@@ -368,11 +358,6 @@
           Clients are recommended to only use sensible fractions or multiples
           of 1 (eg: 0.5, 0.25, 1.5, 2.0, etc).
         </p>
-        <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
-        </p>
         <tp:rationale>
           <p>
             This allows clients to display (reasonably) accurate progress bars
@@ -390,11 +375,6 @@
           A value of <strong>false</strong> indicates that playback is
           progressing linearly through a playlist, while <strong>true</strong>
           means playback is progressing through a playlist in some other order.
-        </p>
-        <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
         </p>
         <p>
           This property is optional, and clients should deal with NotSupported
@@ -420,11 +400,6 @@
         <p>
           See the type documentation for more details.
         </p>
-        <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
-        </p>
       </tp:docstring>
     </property>
 
@@ -440,11 +415,6 @@
           If <tp:member-ref>CanControl</tp:member-ref> is
           <strong>false</strong>, attempting to set this property should have
           no effect and raise an error.
-        </p>
-        <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
         </p>
       </tp:docstring>
     </property>
@@ -468,10 +438,6 @@
             <tp:member-ref>Rate</tp:member-ref> property, the
             <tp:member-ref>Seeked</tp:member-ref> signal is emited.
           </p>
-          <p>
-            The <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-            is <strong>not</strong> emited when this property changes.
-          </p>
         </tp:docstring>
     </property>
 
@@ -490,11 +456,6 @@
           to 0.0.
         </p>
         <p>This value should always be 1.0 or less.</p>
-        <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
-        </p>
       </tp:docstring>
     </property>
 
@@ -510,11 +471,6 @@
         <p>
           This value should always be 1.0 or greater.
         </p>
-        <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
-        </p>
       </tp:docstring>
     </property>
 
@@ -524,11 +480,6 @@
         <p>
           Whether the client can call the <tp:member-ref>Next</tp:member-ref>
           method on this interface and expect the current track to change.
-        </p>
-        <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
         </p>
         <p>
           If <tp:member-ref>CanControl</tp:member-ref> is
@@ -556,11 +507,6 @@
           Whether the client can call the
           <tp:member-ref>Previous</tp:member-ref> method on this interface and
           expect the current track to change.
-        </p>
-        <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
         </p>
         <p>
           If <tp:member-ref>CanControl</tp:member-ref> is
@@ -597,11 +543,6 @@
           this should be <strong>true</strong>.
         </p>
         <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
-        </p>
-        <p>
           If <tp:member-ref>CanControl</tp:member-ref> is
           <strong>false</strong>, this property should also be
           <strong>false</strong>.
@@ -631,11 +572,6 @@
           this should be <strong>true</strong>.
         </p>
         <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
-        </p>
-        <p>
           If <tp:member-ref>CanControl</tp:member-ref> is
           <strong>false</strong>, this property should also be
           <strong>false</strong>.
@@ -657,11 +593,6 @@
           <tp:member-ref>Seek</tp:member-ref> and
           <tp:member-ref>SetPosition</tp:member-ref>.  This may be different for
           different tracks.
-        </p>
-        <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
         </p>
         <p>
           If <tp:member-ref>CanControl</tp:member-ref> is

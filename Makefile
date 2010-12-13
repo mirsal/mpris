@@ -1,8 +1,8 @@
 all:
 
-INSTALL ?= install
-PYTHON ?= python
-EGREP ?= egrep
+INSTALL = install
+PYTHON = python
+EGREP = egrep
 
 XMLS = $(wildcard spec/*.xml)
 TEMPLATES = $(wildcard doc/templates/*)

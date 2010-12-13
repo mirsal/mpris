@@ -54,6 +54,34 @@
       </tp:member>
     </tp:struct>
 
+    <tp:struct name="Maybe_Playlist">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>A data structure describing a playlist, or nothing.</p>
+        <tp:rationale>
+          <p>
+            D-Bus does not (at the time of writing) support a MAYBE type,
+            so we are forced to invent our own.
+          </p>
+        </tp:rationale>
+      </tp:docstring>
+      <tp:member type="b" name="Valid">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>Whether this structure refers to a valid playlist.</p>
+        </tp:docstring>
+      </tp:member>
+      <tp:member type="(oss)" tp:type="Playlist" name="Playlist">
+        <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+          <p>The playlist, providing Valid is true, otherwise undefined.</p>
+          <p>
+            When constructing this type, it should be noted that the playlist
+            ID must be a valid object path, or D-Bus implementations may reject
+            it.  This is true even when Valid is false.  It is suggested that
+            "/" is used as the playlist ID in this case.
+          </p>
+        </tp:docstring>
+      </tp:member>
+    </tp:struct>
+
     <tp:enum name="Playlist_Ordering" array-name="Playlist_Ordering_List" type="s">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Specifies the ordering of returned playlists.</p>
@@ -164,9 +192,15 @@
     </property>
 
     <property name="Orderings" tp:name-for-bindings="Orderings" type="as" tp:type="Playlist_Ordering[]" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>
           The available orderings.  At least one must be offered.
+        </p>
+        <p>
+          When this property changes, the
+          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
+          signal is emited with the new value.
         </p>
         <tp:rationale>
           <p>
@@ -176,6 +210,30 @@
             clients should have some way to get the "most recent" playlists.
           </p>
         </tp:rationale>
+      </tp:docstring>
+    </property>
+
+    <property name="ActivePlaylist" type="(b(oss))" tp:name-for-bindings="Active_Playlist" tp:type="Maybe_Playlist" access="read">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          The currently-active playlist.
+        </p>
+        <p>
+          If there is no currently-active playlist, the structure's Valid field
+          will be false, and the Playlist details are undefined.
+        </p>
+        <p>
+          Note that this may not have a value even after ActivatePlaylist is
+          called with a valid playlist id as ActivatePlaylist implementations
+          have the option of simply inserting the contents of the playlist into
+          the current tracklist.
+        </p>
+        <p>
+          When this property changes, the
+          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
+          signal is emited with the new value.
+        </p>
       </tp:docstring>
     </property>
   </interface>

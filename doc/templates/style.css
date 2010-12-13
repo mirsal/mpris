@@ -141,10 +141,16 @@ div.access {
 	margin-left: 1ex;
 }
 
-div.summary {
+div.summary, div.legal {
 	padding: 0.5ex;
 	background-color: #eeeeec;
 	border: 1px solid #d3d7cf;
+}
+
+div.legal ul {
+	list-style: none;
+	padding-left: 0;
+	margin-left: 0;
 }
 
 table.summary {
@@ -177,39 +183,65 @@ div.docstring {
 	margin: 1ex;
 }
 
-div.added {
-	border-left: 2px solid #4e9a06;
+div.annotation {
+	border-left: 2px solid;
 	margin: 1ex;
 	padding-left: 1ex;
+}
+
+div.annotation span.version, span.warning, span.note {
+	font-weight: bold;
+}
+
+div.added {
+	border-left-color: #4e9a06;
 }
 
 div.added span.version {
 	color: #4e9a06;
-	font-weight: bold;
 }
 
 div.changed {
-	border-left: 2px solid #8f5902;
-	margin: 1ex;
-	padding-left: 1ex;
+	border-left-color: #8f5902;
 }
 
 div.changed span.version {
 	color: #8f5902;
-	font-weight: bold;
 }
 
 div.deprecated,
 div.havoc {
-	border-left: 2px solid #a40000;
-	margin: 1ex;
-	padding-left: 1ex;
+	border-left-color: #a40000;
 }
 
 div.deprecated span.version,
+div.deprecated.no-version,
 span.warning {
 	color: #a40000;
-	font-weight: bold;
+}
+
+div.connection-parameter {
+	border-left-color: #0000a4;
+}
+
+div.connection-parameter .note {
+	color: #0000a4;
+}
+
+div.emits-changed {
+	border-left-color: #17BBC3;
+}
+
+div.immutable {
+	border-left-color: #02598f;
+}
+
+div.no-reply {
+	border-left-color: #9C11A1;
+}
+
+div.requestable {
+	border-left-color: #598f02;
 }
 
 div.rationale {
@@ -294,14 +326,6 @@ pre {
 h3.chapter {
 	margin-top: 1.5em;
 	font-weight: bold;
-}
-
-div.license {
-	border: 1px solid black;
-	background: #ddd;
-	padding: 1em;
-	margin-top: 1em;
-	margin-bottom: 1em;
 }
 
 div.main {

@@ -183,11 +183,6 @@
         <p>
           The number of playlists available.
         </p>
-        <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
-        </p>
       </tp:docstring>
     </property>
 
@@ -196,11 +191,6 @@
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>
           The available orderings.  At least one must be offered.
-        </p>
-        <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
         </p>
         <tp:rationale>
           <p>
@@ -228,11 +218,6 @@
           called with a valid playlist id as ActivatePlaylist implementations
           have the option of simply inserting the contents of the playlist into
           the current tracklist.
-        </p>
-        <p>
-          When this property changes, the
-          <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
-          signal is emited with the new value.
         </p>
       </tp:docstring>
     </property>

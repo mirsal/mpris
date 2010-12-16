@@ -17,9 +17,6 @@
    #if $interface.methods: | <a href="#methods">Methods</a>
    #if $interface.signals: | <a href="#signals">Signals</a>
    #if $interface.properties: | <a href="#properties">Properties</a>
-   #if $interface.tpproperties: | <a href="#tpproperties">Telepathy Properties</a>
-   #if $interface.contact_attributes: | <a href="#contact-attributes">Contact Attributes</a>
-   #if $interface.handler_capability_tokens: | <a href="#handler-capability-tokens">Handler Capability Tokens</a>
    #if $interface.types: | <a href="#types">Types</a>
   </div>
   <div class="main">
@@ -31,7 +28,7 @@
      <h3>Methods</h3>
      <table class="summary">
       #for $method in $interface.methods
-       #if $method.deprecated
+       #if $method.is_deprecated
         <tr class="deprecated">
        #else
         <tr>
@@ -41,7 +38,7 @@
        <td>&#8594;</td>
        <td>$method.get_out_args()</td>
        <td>
-        #if $method.deprecated: (deprecated)
+        #if $method.is_deprecated: (deprecated)
        </td>
       </tr>
       #end for
@@ -52,7 +49,7 @@
      <h3>Signals</h3>
      <table class="summary">
       #for $signal in $interface.signals
-       #if $signal.deprecated
+       #if $signal.is_deprecated
         <tr class="deprecated">
        #else
         <tr>
@@ -60,7 +57,7 @@
        <td><a href="$signal.get_url()">$signal.short_name</a></td>
        <td>($signal.get_args())</td>
        <td>
-        #if $signal.deprecated: (deprecated)
+        #if $signal.is_deprecated: (deprecated)
        </td>
       </tr>
       #end for
@@ -71,7 +68,7 @@
      <h3>Properties</h3>
      <table class="summary">
       #for $property in $interface.properties
-       #if $property.deprecated
+       #if $property.is_deprecated
         <tr class="deprecated">
        #else
         <tr>
@@ -84,65 +81,19 @@
        <td>$property.get_access()</td>
        <td>$property.get_flag_summary()</td>
        <td>
-        #if $property.deprecated: (deprecated)
+        #if $property.is_deprecated: (deprecated)
        </td>
       </tr>
       #end for
     </table>
     #end if
 
-     #if $interface.tpproperties
-     <h3>Telepathy Properties</h3>
-     <table class="summary">
-      #for $property in $interface.tpproperties
-       <tr class="deprecated">
-       <td><a href="$property.get_url()">$property.short_name</a></td>
-       <td>
-        $property.dbus_type
-        #if $property.type: (<a href="$property.get_type_url()" title="$property.get_type_title()">$property.get_type().short_name</a>)
-       </td>
-      </tr>
-      #end for
-    </table>
-    #end if
-
-     #if $interface.contact_attributes
-     <h3>Contact Attributes</h3>
-     <table class="summary">
-      #for $token in $interface.contact_attributes
-       <tr class="contact-attribute">
-       <td><a href="$token.get_url()">$token.name</a></td>
-       <td>
-        $token.dbus_type
-        #if $token.type: (<a href="$token.get_type_url()" title="$token.get_type_title()">$token.get_type().short_name</a>)
-       </td>
-      </tr>
-      #end for
-    </table>
-    #end if
-
-     #if $interface.handler_capability_tokens
-     <h3>Handler Capability Tokens</h3>
-     <table class="summary">
-      #for $token in $interface.handler_capability_tokens
-       <tr class="handler-capability-token">
-         <td><a href="$token.get_url()">$token.name</a>
-           #if $token.is_family
-             (etc.)
-           #end if
-         </td>
-       <td>
-       </td>
-      </tr>
-      #end for
-    </table>
-    #end if
 
      #if $interface.types
      <h3>Types</h3>
      <table class="summary">
       #for $type in $interface.types
-       #if type.deprecated
+       #if type.is_deprecated
         <tr class="deprecated">
        #else
         <tr>
@@ -151,7 +102,7 @@
        <td>$type.get_type_name()</td>
        <td>$type.dbus_type</td>
        <td>
-        #if $type.deprecated: (deprecated)
+        #if $type.is_deprecated: (deprecated)
        </td>
       </tr>
       #end for
@@ -207,7 +158,10 @@
      $method.get_added()
      $method.get_changed()
      $method.get_deprecated()
-     $method.get_no_reply()
+
+     #if $method.no_reply
+     <div class="annotation no-reply">The caller should not expect a reply when calling this method.</div>
+     #end if
 
      #if $method.in_args
      <div class="indent">
@@ -327,7 +281,26 @@
      $property.get_added()
      $property.get_changed()
      $property.get_deprecated()
-     $property.get_emits_changed()
+
+     #if $property.emits_changed == $property.EMITS_CHANGED_UPDATES
+     <div class="annotation emits-changed emits-changed-updates">
+       When this property changes, the
+       <code>org.freedesktop.DBus.Properties.PropertiesChanged</code>
+       signal is emitted with the new value.
+     </div>
+     #elif $property.emits_changed == $property.EMITS_CHANGED_INVALIDATES
+     <div class="annotation emits-changed emits-changed-invalidates">
+       When this property changes, the
+       <code>org.freedesktop.DBus.Properties.PropertiesChanged</code>
+       signal is emitted, but the new value is not sent.
+     </div>
+     #elif $property.emits_changed == $property.EMITS_CHANGED_NONE
+     <div class="annotation emits-changed emits-changed-none">
+       The <code>org.freedesktop.DBus.Properties.PropertiesChanged</code>
+       signal is <strong>not</strong> emitted when this property changes.</div>
+     </div>
+     #end if
+
      $property.get_docstring()
     </div>
     #end for

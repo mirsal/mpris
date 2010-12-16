@@ -162,9 +162,10 @@ class Base(object):
         self.docstring = getOnlyChildByName(dom, XMLNS_TP, 'docstring')
         self.added = getOnlyChildByName(dom, XMLNS_TP, 'added')
         self.deprecated = getOnlyChildByName(dom, XMLNS_TP, 'deprecated')
-        self.is_deprecated = True
-        if self.deprecated == None:
-            self.is_deprecated = getAnnotationByName(dom, 'org.freedesktop.DBus.Deprecated') == 'true'
+        if self.deprecated is None:
+            self.is_deprecated = (getAnnotationByName(dom, 'org.freedesktop.DBus.Deprecated') == 'true')
+        else:
+            self.is_deprecated = True
 
         self.changed = getChildrenByName(dom, XMLNS_TP, 'changed')
 
@@ -509,7 +510,7 @@ class Method(DBusConstruct):
         self.possible_errors = build_list(self, PossibleError, None,
                         dom.getElementsByTagNameNS(XMLNS_TP, 'error'))
 
-        self.no_reply = getAnnotationByName(dom, 'org.freedesktop.DBus.Method.NoReply') == 'true'
+        self.no_reply = (getAnnotationByName(dom, 'org.freedesktop.DBus.Method.NoReply') == 'true')
 
     def get_in_args(self):
         return ', '.join(map(lambda a: a.spec_name(), self.in_args))
@@ -519,13 +520,6 @@ class Method(DBusConstruct):
             return ', '.join(map(lambda a: a.spec_name(), self.out_args))
         else:
             return 'nothing'
-
-    def get_no_reply(self):
-        if self.no_reply:
-            return '<div class="annotation no-reply">' \
-                   'The caller should not expect a reply when calling this method.</div>'
-        else:
-            return ''
 
     def check_consistency(self):
         for x in self.in_args:
@@ -590,14 +584,14 @@ class Typed(Base):
         return '%s(%s:%s)' % (self.__class__.__name__, self.name, self.dbus_type)
 
 class Property(DBusConstruct, Typed):
-    ACCESS_READ     = 1
-    ACCESS_WRITE    = 2
+    ACCESS_READ = 1
+    ACCESS_WRITE = 2
 
     ACCESS_READWRITE = ACCESS_READ | ACCESS_WRITE
 
-    EMITS_CHANGED_UNKNOWN     = 0
-    EMITS_CHANGED_NONE        = 1
-    EMITS_CHANGED_UPDATES     = 2
+    EMITS_CHANGED_UNKNOWN = 0
+    EMITS_CHANGED_NONE = 1
+    EMITS_CHANGED_UPDATES = 2
     EMITS_CHANGED_INVALIDATES = 3
 
     def __init__(self, parent, namespace, dom):
@@ -661,25 +655,6 @@ class Property(DBusConstruct, Typed):
             descriptions.append("Requestable")
 
         return ', '.join(descriptions)
-
-    def get_emits_changed(self):
-        if self.emits_changed == self.EMITS_CHANGED_UPDATES:
-            return '<div class="annotation emits-changed emits-changed-updates">' \
-                   'When this property changes, the ' \
-                   '<literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal> ' \
-                   'signal is emitted with the new value.</div>';
-        elif self.emits_changed == self.EMITS_CHANGED_INVALIDATES:
-            return '<div class="annotation emits-changed emits-changed-invalidates">' \
-                   'When this property changes, the ' \
-                   '<literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal> ' \
-                   'signal is emitted, but the new value is not sent.</div>';
-        elif self.emits_changed == self.EMITS_CHANGED_NONE:
-            return '<div class="annotation emits-changed emits-changed-none">' \
-                   'The ' \
-                   '<literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal> ' \
-                   'signal is <strong>not</strong> emitted when this property changes.</div>';
-	else:
-            return '';
 
 class AwkwardTelepathyProperty(Typed):
     def get_type_name(self):

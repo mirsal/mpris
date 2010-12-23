@@ -13,10 +13,14 @@
    <a href="index.html">Interface Index</a>
    (<a href="interfaces.html">Compact</a>)
    | <a href="#summary">Summary</a>
+   #if $interface.client_interests: | <a href="#client-interests">Client Interests</a>
    #if $interface.docstring: | <a href="#description">Description</a>
    #if $interface.methods: | <a href="#methods">Methods</a>
    #if $interface.signals: | <a href="#signals">Signals</a>
    #if $interface.properties: | <a href="#properties">Properties</a>
+   #if $interface.tpproperties: | <a href="#tpproperties">Telepathy Properties</a>
+   #if $interface.contact_attributes: | <a href="#contact-attributes">Contact Attributes</a>
+   #if $interface.handler_capability_tokens: | <a href="#handler-capability-tokens">Handler Capability Tokens</a>
    #if $interface.types: | <a href="#types">Types</a>
   </div>
   <div class="main">
@@ -24,6 +28,14 @@
     #if $interface.methods or $interface.signals or $interface.properties or $interface.types or $interface.tpproperties
     <div class="summary">
      <a name="summary"></a>
+     #if $interface.client_interests
+     <h3>Client Interests</h3>
+     <table class="summary">
+      #for $interest in $interface.client_interests
+      <td><a href="$interest.get_url()">$interest.name</a></td>
+      #end for
+     </table>
+     #end if
      #if $interface.methods
      <h3>Methods</h3>
      <table class="summary">
@@ -88,6 +100,52 @@
     </table>
     #end if
 
+     #if $interface.tpproperties
+     <h3>Telepathy Properties</h3>
+     <table class="summary">
+      #for $property in $interface.tpproperties
+       <tr class="deprecated">
+       <td><a href="$property.get_url()">$property.short_name</a></td>
+       <td>
+        $property.dbus_type
+        #if $property.type: (<a href="$property.get_type_url()" title="$property.get_type_title()">$property.get_type().short_name</a>)
+       </td>
+      </tr>
+      #end for
+    </table>
+    #end if
+
+     #if $interface.contact_attributes
+     <h3>Contact Attributes</h3>
+     <table class="summary">
+      #for $token in $interface.contact_attributes
+       <tr class="contact-attribute">
+       <td><a href="$token.get_url()">$token.name</a></td>
+       <td>
+        $token.dbus_type
+        #if $token.type: (<a href="$token.get_type_url()" title="$token.get_type_title()">$token.get_type().short_name</a>)
+       </td>
+      </tr>
+      #end for
+    </table>
+    #end if
+
+     #if $interface.handler_capability_tokens
+     <h3>Handler Capability Tokens</h3>
+     <table class="summary">
+      #for $token in $interface.handler_capability_tokens
+       <tr class="handler-capability-token">
+         <td><a href="$token.get_url()">$token.name</a>
+           #if $token.is_family
+             (etc.)
+           #end if
+         </td>
+       <td>
+       </td>
+      </tr>
+      #end for
+    </table>
+    #end if
 
      #if $interface.types
      <h3>Types</h3>
@@ -143,6 +201,27 @@
     <a name="description"></a>
     <h3>Description</h3>
     $interface.get_docstring()
+   #end if
+
+   #if $interface.client_interests
+   <div class="outset client-interests client-interest">
+    <a name="client-interests"></a>
+    <h1>Client Interests</h1>
+    <div>
+     Set using the
+     <a href="Connection.html#org.freedesktop.Telepathy.Connection.AddClientInterest">AddClientInterest</a> and
+     <a href="Connection.html#org.freedesktop.Telepathy.Connection.RemoveClientInterest">RemoveClientInterest</a> methods.
+    </div>
+    #for $interest in $interface.client_interests
+    <div class="inset client-interest">
+     <a name="$interest.get_anchor()"></a>
+     <span class="permalink">(<a href="$interest.get_url()">Permalink</a>)</span>
+     <h2>$interest.name</h2>
+
+     $interest.get_docstring()
+    </div>
+    #end for
+   </div>
    #end if
 
    #if $interface.methods
@@ -278,6 +357,62 @@
      </h2>
       <div class="access">$property.get_access()</div>
 
+     #if $property.sometimes_immutable:
+     <div class="annotation immutable">Depending on the protocol, this
+       property may be <strong>immutable</strong> which means that it can never
+       #if $interface.is_channel_related:
+       change once the channel has been created. Immutable properties SHOULD
+       appear in the channel detail list
+       of <a href="Connection_Interface_Requests.html#org.freedesktop.Telepathy.Connection.Interface.Requests.NewChannels">NewChannels</a>
+       signals.
+       #else
+       change.
+       #end if
+     </div>
+     #elif $property.immutable:
+     <div class="annotation immutable">This property is
+       <strong>immutable</strong> which means that it can never
+       #if $interface.is_channel_related:
+       change once the channel has been created. Immutable properties SHOULD
+       appear in the channel detail list
+       of <a href="Connection_Interface_Requests.html#org.freedesktop.Telepathy.Connection.Interface.Requests.NewChannels">NewChannels</a>
+       signals.
+       #else
+       change.
+       #end if
+     </div>
+     #end if
+
+     #if $property.sometimes_requestable:
+     <div class="annotation requestable">Depending on the protocol, this
+       property may be <strong>requestable</strong>, which means that it may be
+       allowed in the properties hash of a channel request such as in the
+       <a href="Connection_Interface_Requests.html#org.freedesktop.Telepathy.Connection.Interface.Requests.CreateChannel">CreateChannel</a>
+       and
+       <a href="Connection_Interface_Requests.html#org.freedesktop.Telepathy.Connection.Interface.Requests.EnsureChannel">EnsureChannel</a>
+       methods
+       on <a href="Connection_Interface_Requests.html">Requests</a>
+       and <a href="Channel_Dispatcher.html">ChannelDispatcher</a>.
+       If supported on this protocol, the property should appear in either the
+       Fixed_Properties or Allowed_Properties of
+       a <a href="Connection_Interface_Requests.html#org.freedesktop.Telepathy.Connection.Interface.Requests.RequestableChannelClasses">RequestableChannelClass</a>
+       advertised by the CM.</div>
+     #elif $property.requestable:
+     <div class="annotation requestable">This property
+       is <strong>requestable</strong>, which means that it is allowed
+       in the properties hash of a channel request such as in the
+       <a href="Connection_Interface_Requests.html#org.freedesktop.Telepathy.Connection.Interface.Requests.CreateChannel">CreateChannel</a>
+       and 
+       <a href="Connection_Interface_Requests.html#org.freedesktop.Telepathy.Connection.Interface.Requests.EnsureChannel">EnsureChannel</a>
+       methods
+       on <a href="Connection_Interface_Requests.html">Requests</a>
+       and <a href="Channel_Dispatcher.html">ChannelDispatcher</a>.
+       The property should also appear in either the Fixed_Properties
+       or Allowed_Properties of
+       a <a href="Connection_Interface_Requests.html#org.freedesktop.Telepathy.Connection.Interface.Requests.RequestableChannelClasses">RequestableChannelClass</a>
+       advertised by the CM.</div>
+     #end if
+
      $property.get_added()
      $property.get_changed()
      $property.get_deprecated()
@@ -301,12 +436,104 @@
      </div>
      #end if
 
+      #if $property.is_connection_parameter:
+      <div class="annotation connection-parameter">
+        <p><span class='note'>Note:</span> Connections implementing this
+          property SHOULD provide a corresponding parameter named
+          <tt>$interface.name</tt> with the <a
+          href="Connection_Manager.html#Conn_Mgr_Param_Flags">DBus_Property</a>
+          flag. Clients SHOULD update this property by
+          calling <a
+            href="Account.html#org.freedesktop.Telepathy.Account.UpdateParameters">UpdateParameters</a>
+          on the relevant <a href="Account.html">Account</a> rather than
+          setting the property directly; change notification is via <a
+            href="Account.html#org.freedesktop.Telepathy.Account.AccountPropertyChanged">AccountPropertyChanged</a>.
+          </p>
+      </div>
+      #end if
+
      $property.get_docstring()
     </div>
     #end for
    </div>
    #end if
 
+   #if $interface.tpproperties
+   <div class="outset tpproperties tpproperty">
+    <a name="tpproperties"></a>
+    <h1>Telepathy Properties</h1>
+    <div>
+     Accessed using the <a
+       href="Properties_Interface.html">org.freedesktop.Telepathy.Properties</a>
+     interface.
+    </div>
+    #for $property in $interface.tpproperties
+    <div class="inset tpproperty">
+     <a name="$property.get_anchor()"></a>
+     <span class="permalink">(<a href="$property.get_url()">Permalink</a>)</span>
+     <h2>
+      $property.short_name &mdash; $property.dbus_type
+      #if $property.type: (<a href="$property.get_type_url()" title="$property.get_type_title()">$property.get_type().short_name</a>)
+     </h2>
+     $property.get_added()
+     $property.get_changed()
+     $property.get_deprecated()
+     $property.get_docstring()
+    </div>
+    #end for
+   </div>
+   #end if
+
+   #if $interface.contact_attributes
+   <div class="outset contact-attributes">
+    <a name="contact-attributes"></a>
+    <h1>Contact Attributes</h1>
+    <div>
+      Attributes that a contact can have, accessed with the
+      org.freedesktop.Telepathy.Connection.Interface.Contacts interface.
+    </div>
+    #for $token in $interface.contact_attributes
+    <div class="inset contact-attribute">
+     <a name="$token.get_anchor()"></a>
+     <span class="permalink">(<a href="$token.get_url()">Permalink</a>)</span>
+     <h2>
+      $token.name &mdash; $token.dbus_type
+      #if $token.type: (<a href="$token.get_type_url()" title="$token.get_type_title()">$token.get_type().short_name</a>)
+     </h2>
+     $token.get_added()
+     $token.get_changed()
+     $token.get_deprecated()
+     $token.get_docstring()
+    </div>
+    #end for
+   </div>
+   #end if
+
+   #if $interface.handler_capability_tokens
+   <div class="outset handler-capability-tokens">
+    <a name="handler-capability-tokens"></a>
+    <h1>Handler Capability Tokens</h1>
+    <div>
+      Tokens representing capabilities that a Client.Handler can have.
+    </div>
+    #for $token in $interface.handler_capability_tokens
+    <div class="inset handler-capability-token">
+     <a name="$token.get_anchor()"></a>
+     <span class="permalink">(<a href="$token.get_url()">Permalink</a>)</span>
+     <h2>
+      $token.name
+      #if $token.is_family
+      (etc.)
+      #end if
+     </h2>
+     $token.get_added()
+     $token.get_changed()
+     $token.get_deprecated()
+     $token.get_docstring()
+    </div>
+    #end for
+   </div>
+   #end if
 
    #if $interface.types
    <div class="outset types type">

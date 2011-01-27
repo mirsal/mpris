@@ -226,19 +226,23 @@
     <signal name="PlaylistChanged" tp:name-for-bindings="Playlist_Changed">
       <arg name="Playlist" type="(oss)" tp:type="Playlist">
         <tp:docstring>
-          <p>The playlist whose details have changed.</p>
+          The playlist which details have changed.
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
-        <p>
-          Indicates that the name or icon for a playlist has changed.
+        <p>Indicates that either the Name or Icon attribute of a
+           playlist has changed.
         </p>
-        <p>
-          Note that, for this signal to operate correctly, the id of the
-          playlist must not change when the name changes.
+        <p>Client implementations should be aware that this signal
+           may not be implemented.
         </p>
+        <tp:rationale>
+           Without this signal, media players have no way to notify clients
+           of a change in the attributes of a playlist other than the active one
+        </tp:rationale>
       </tp:docstring>
     </signal>
+
   </interface>
 </node>
 <!-- vim:set sw=2 sts=2 et ft=xml: -->

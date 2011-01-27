@@ -40,6 +40,7 @@
       <tp:member type="o" tp:type="Playlist_Id" name="Id">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>A unique identifier for the playlist.</p>
+          <p>This should remain the same if the playlist is renamed.</p>
         </tp:docstring>
       </tp:member>
       <tp:member type="s" name="Name">
@@ -221,6 +222,23 @@
         </p>
       </tp:docstring>
     </property>
+
+    <signal name="PlaylistChanged" tp:name-for-bindings="Playlist_Changed">
+      <arg name="Playlist" type="(oss)" tp:type="Playlist">
+        <tp:docstring>
+          <p>The playlist whose details have changed.</p>
+        </tp:docstring>
+      </arg>
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          Indicates that the name or icon for a playlist has changed.
+        </p>
+        <p>
+          Note that, for this signal to operate correctly, the id of the
+          playlist must not change when the name changes.
+        </p>
+      </tp:docstring>
+    </signal>
   </interface>
 </node>
 <!-- vim:set sw=2 sts=2 et ft=xml: -->

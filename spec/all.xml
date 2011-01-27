@@ -141,6 +141,9 @@
           2010-09-26: Added EmitsChangedSignal annotation to Volume property
           on the Player interface.
         </li>
+        <li>
+          2011-01-26: Added PlaylistChanged signal to the Playlists interface.
+        </li>
       </ul>
     </tp:docstring>
   </tp:section>

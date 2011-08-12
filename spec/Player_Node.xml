@@ -482,6 +482,11 @@
           method on this interface and expect the current track to change.
         </p>
         <p>
+          If it is unknown whether a call to <tp:member-ref>Next</tp:member-ref> will
+          be successful (for example, when streaming tracks), this property should
+          be set to <strong>true</strong>.
+        </p>
+        <p>
           If <tp:member-ref>CanControl</tp:member-ref> is
           <strong>false</strong>, this property should also be
           <strong>false</strong>.
@@ -507,6 +512,11 @@
           Whether the client can call the
           <tp:member-ref>Previous</tp:member-ref> method on this interface and
           expect the current track to change.
+        </p>
+        <p>
+          If it is unknown whether a call to <tp:member-ref>Previous</tp:member-ref>
+          will be successful (for example, when streaming tracks), this property
+          should be set to <strong>true</strong>.
         </p>
         <p>
           If <tp:member-ref>CanControl</tp:member-ref> is
@@ -538,7 +548,7 @@
         <p>
           Note that this is related to whether there is a "current track": the
           value should not depend on whether the track is currently paused or
-          playing.  In fact, if a track is currently playing
+          playing.  In fact, if a track is currently playing (and
           <tp:member-ref>CanControl</tp:member-ref> is <strong>true</strong>),
           this should be <strong>true</strong>.
         </p>
@@ -619,7 +629,7 @@
         <p>
           If this is <strong>false</strong>, clients should assume that all
           properties on this interface are read-only (and will raise errors
-          if writing to them is attempted); all methods are not implemented
+          if writing to them is attempted), no methods are implemented
           and all other properties starting with "Can" are also
           <strong>false</strong>.
         </p>
@@ -644,7 +654,7 @@
           Indicates that the track position has changed in a way that is
           inconsistant with the current playing state.
         </p>
-        <p>When this signal is not received, clients should assume that :</p>
+        <p>When this signal is not received, clients should assume that:</p>
         <ul>
           <li>
             When playing, the position progresses according to the rate property.

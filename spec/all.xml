@@ -46,9 +46,9 @@
         for controlling media players.
       </p>
       <p>
-        It provides a mechanism for compliant media players discovery,
-        basic playback and media player state control as well as a tracklist
-        interface which is used to add context to the current item.
+        It provides a mechanism for discovery, querying and basic playback
+        control of compliant media players, as well as a tracklist
+        interface which is used to add context to the active media item.
       </p>
     </tp:docstring>
   </tp:section>

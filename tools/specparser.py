@@ -254,6 +254,54 @@ class Base(object):
             n.namespaceURI = None
             n.setAttribute('href', t.get_url())
 
+        # rewrite <tp:value-ref>
+        for n in node.getElementsByTagNameNS(XMLNS_TP, 'value-ref'):
+            if n.hasAttribute('type'):
+                type_name = n.getAttribute('type')
+                value_name = getText(n)
+                t = spec.lookup_type(type_name)
+                assert isinstance(t, EnumLike), ("%s is not an enum or flags type"
+                        % type_name)
+            else:
+                type_name = getText(n)
+                value_name_parts = []
+                while type_name not in spec.types:
+                    type_name, _, rest = type_name.rpartition('_')
+                    value_name_parts.insert(0, rest)
+                    if not type_name:
+                        raise ValueError("No substrings of '%s' describe "
+                                "a valid type." % getText(n))
+                value_name = '_'.join(value_name_parts)
+                t = spec.lookup_type(type_name)
+                assert isinstance(t, EnumLike), ("%s is not an enum or flags type"
+                        % type_name)
+
+            n.tagName = 'a'
+            n.namespaceURI = None
+            n.setAttribute('href', t.get_url())
+            short_names = [val.short_name for val in t.values]
+            if value_name not in short_names:
+                raise ValueError("'%s' is not a valid value of '%s'. "
+                        "Valid values are %s" %
+                        (value_name, type_name, short_names))
+
+        # rewrite <tp:error-ref>
+        error_ns = spec.spec_namespace + '.Error.'
+        for n in node.getElementsByTagNameNS(XMLNS_TP, 'error-ref'):
+            try:
+                e = spec.errors[error_ns + getText(n)]
+            except KeyError:
+                print >> sys.stderr, """
+WARNING: Error '%s' not known in error namespace '%s'
+         (<tp:error-ref> in %s)
+                """.strip() % (getText(n), error_ns[:-1], self)
+                continue
+
+            n.tagName = 'a'
+            n.namespaceURI = None
+            n.setAttribute('href', e.get_url())
+            n.setAttribute('title', error_ns + getText(n))
+
         # rewrite <tp:member-ref>
         for n in node.getElementsByTagNameNS(XMLNS_TP, 'member-ref'):
             key = getText(n)

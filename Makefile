@@ -8,6 +8,7 @@ CANONXML = xmllint --nsclean --noblanks --c14n --nonet
 XML_LINEBREAKS = perl -pe 's/>/>\n/g'
 DROP_NAMESPACE = perl -pe '$$hash = chr(35); s{xmlns:tp="http://telepathy\.freedesktop\.org/wiki/DbusSpec$${hash}extensions-v0"}{}g'
 PYTHON = python
+PYTHON = $(shell if python --version 2>/dev/null | grep "Python 3" >/dev/null 2>/dev/null; then echo python; else echo python2; fi)
 
 XMLS = $(wildcard spec/*.xml)
 TEMPLATES = $(wildcard doc/templates/*)

@@ -491,11 +491,6 @@
           <strong>false</strong>, this property should also be
           <strong>false</strong>.
         </p>
-        <p>
-          If <tp:member-ref>CanControl</tp:member-ref> is
-          <strong>false</strong>, this property should also be
-          <strong>false</strong>.
-        </p>
         <tp:rationale>
           <p>
             Even when playback can generally be controlled, there may not
@@ -517,11 +512,6 @@
           If it is unknown whether a call to <tp:member-ref>Previous</tp:member-ref>
           will be successful (for example, when streaming tracks), this property
           should be set to <strong>true</strong>.
-        </p>
-        <p>
-          If <tp:member-ref>CanControl</tp:member-ref> is
-          <strong>false</strong>, this property should also be
-          <strong>false</strong>.
         </p>
         <p>
           If <tp:member-ref>CanControl</tp:member-ref> is

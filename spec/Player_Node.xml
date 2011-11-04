@@ -414,8 +414,8 @@
         <p>The metadata of the current element.</p>
         <p>
           If there is a current track, this must have a "mpris:trackid" entry
-          at the very least, which contains a string that uniquely identifies
-          this track.
+          (of D-Bus type "o") at the very least, which contains a D-Bus path that
+          uniquely identifies this track.
         </p>
         <p>
           See the type documentation for more details.

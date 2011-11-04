@@ -127,6 +127,10 @@
           2010-09-26: Added EmitsChangedSignal annotation to Volume property
           on the Player interface.
         </li>
+        <li>
+          2011-11-04: Clarified the type of the mpris:trackid entry in the
+          Metadata property of the Player interface.
+        </li>
       </ul>
     </tp:docstring>
   </tp:section>

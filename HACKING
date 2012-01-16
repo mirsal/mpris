@@ -1,0 +1,10 @@
+If you want to suggest changes or additions to the specification, you should
+only have to edit the XML files in spec/.
+
+The system for producing the HTML output is kept closely in sync with the
+Telepathy system.  Currently, the only differences are the Makefile and one
+or two files in doc/templates/.  Any fixes to this system should almost
+certainly be passed upstream.
+
+Please send patches to mpris@lists.freedesktop.org
+

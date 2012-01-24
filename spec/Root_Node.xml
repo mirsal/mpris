@@ -32,7 +32,7 @@
           interface or a notification area icon for example) should allow clients
           to use this method. Otherwise, it should not be needed.
         </p>
-        <p>If the media player does not have a UI, this should be implemented</p>
+        <p>If the media player does not have a UI, this should be implemented.</p>
       </tp:docstring>
     </method>
 
@@ -88,7 +88,7 @@
           Example: The desktop entry file is "/usr/share/applications/vlc.desktop",
           and this property contains "vlc"
         </p>
-        <p>This property is optional. Clients should handle its absence gracefully</p>
+        <p>This property is optional. Clients should handle its absence gracefully.</p>
       </tp:docstring>
     </property>
 

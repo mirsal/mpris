@@ -49,6 +49,63 @@
       </tp:docstring>
     </property>
 
+    <property name="Fullscreen" type="b" tp:name-for-bindings="Fullscreen" access="readwrite">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>Whether the media player is occupying the fullscreen.</p>
+        <p>
+          This is typically used for videos.  A value of <strong>true</strong>
+          indicates that the media player is taking up the full screen.
+        </p>
+        <p>
+          Media centre software may well have this value fixed to <strong>true</strong>
+        </p>
+        <p>
+          If <tp:member-ref>CanSetFullscreen</tp:member-ref> is <strong>true</strong>,
+          clients may set this property to <strong>true</strong> to tell the media player
+          to enter fullscreen mode, or to <strong>false</strong> to return to windowed
+          mode.
+        <p>
+          If <tp:member-ref>CanSetFullscreen</tp:member-ref> is <strong>false</strong>,
+          then attempting to set this property should have no effect, and may raise
+          an error.  However, even if it is <strong>true</strong>, the media player
+          may still be unable to fulfil the request, in which case attempting to set
+          this property will have no effect (but should not raise an error).
+        </p>
+        <p>This property is optional. Clients should handle its absence gracefully.</p>
+        <tp:rationale>
+          <p>
+            This allows remote control interfaces, such as LIRC or mobile devices like
+            phones, to control whether a video is shown in fullscreen.
+          </p>
+        </tp:rationale>
+      </tp:docstring>
+    </property>
+
+    <property name="CanSetFullscreen" type="b" tp:name-for-bindings="Can_Set_Fullscreen" access="read">
+      <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+          If <strong>false</strong>, attempting to set
+          <tp:member-ref>Fullscreen</tp:member-ref> will have no effect, and may
+          raise an error.  If <strong>true</strong>, attempting to set
+          <tp:member-ref>Fullscreen</tp:member-ref> will not raise an error, and (if it
+          is different from the current value) will cause the media player to attempt to
+          enter or exit fullscreen mode.
+        </p>
+        <p>
+          Note that the media player may be unable to fulfil the request.
+          In this case, the value will not change.  If the media player knows in
+          advance that it will not be able to fulfil the request, however, this
+          property should be <strong>false</strong>.
+        </p>
+        <tp:rationale>
+          <p>
+            This allows clients to choose whether to display controls for entering
+            or exiting fullscreen mode.
+          </p>
+        </tp:rationale>
+      </tp:docstring>
+    </property>
+
     <property name="CanRaise" type="b" tp:name-for-bindings="Can_Raise" access="read">
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>

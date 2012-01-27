@@ -65,7 +65,7 @@
             </li>
             <li>
               The path <b>/org/mpris/MediaPlayer2/TrackList/NoTrack</b> now represents
-              "no track" where requires in the <b>org.mpris.MediaPlayer2.TrackList</b>
+              "no track" where required in the <b>org.mpris.MediaPlayer2.TrackList</b>
               interface (since empty paths are not allowed by D-Bus).
             </li>
           </ul>

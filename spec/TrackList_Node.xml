@@ -134,8 +134,10 @@
         <tp:docstring>
           <p>
             The identifier of the track after which
-            the new item should be inserted. An empty
-            string means at the begining of the track list.
+            the new item should be inserted. The path
+            <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+            indicates that the track should be inserted at the
+            start of the track list.
           </p>
         </tp:docstring>
       </arg>
@@ -143,7 +145,7 @@
         <tp:docstring>
           <p>
             Whether the newly inserted track should be considered as
-            the current track. Setting this to trye has the same effect as
+            the current track. Setting this to true has the same effect as
             calling GoTo afterwards.
           </p>
         </tp:docstring>
@@ -166,6 +168,10 @@
       <arg direction="in" type="o" tp:type="Track_Id" name="TrackId">
         <tp:docstring>
           <p>Identifier of the track to be removed.</p>
+          <p>
+            <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+            is <em>not</em> a valid value for this argument.
+          </p>
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -187,6 +193,10 @@
       <arg direction="in" type="o" tp:type="Track_Id" name="TrackId">
         <tp:docstring>
           <p>Identifier of the track to skip to.</p>
+          <p>
+            <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+            is <em>not</em> a valid value for this argument.
+          </p>
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -243,6 +253,15 @@
       <arg name="CurrentTrack" type="o" tp:type="Track_Id">
         <tp:docstring>
           <p>The identifier of the track to be considered as current.</p>
+          <p>
+            <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+            indicates that there is no current track.
+          </p>
+          <p>
+            This should correspond to the <literal>mpris:trackid</literal> field of the
+            Metadata property of the <literal>org.mpris.MediaPlayer2.Player</literal>
+            interface.
+          </p>
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -268,8 +287,10 @@
         <tp:docstring>
           <p>
             The identifier of the track after which the new track
-            was inserted. An empty string means at the begining of
-            the tracklist.
+            was inserted. The path
+            <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+            indicates that the track was inserted at the
+            start of the track list.
           </p>
         </tp:docstring>
       </arg>
@@ -282,6 +303,10 @@
       <arg type="o" tp:type="Track_Id" name="TrackId">
         <tp:docstring>
           <p>The identifier of the track being removed.</p>
+          <p>
+            <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+            is <em>not</em> a valid value for this argument.
+          </p>
         </tp:docstring>
       </arg>
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
@@ -293,12 +318,20 @@
       <arg type="o" tp:type="Track_Id" name="TrackId">
         <tp:docstring>
           <p>The id of the track which metadata has changed.</p>
+          <p>If the track id has changed, this will be the old value.</p>
+          <p>
+            <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+            is <em>not</em> a valid value for this argument.
+          </p>
         </tp:docstring>
       </arg>
       <arg type="a{sv}" tp:type="Metadata_Map" name="Metadata">
         <tp:docstring>
           <p>The new track metadata.</p>
-          <p>This must include a mpris:trackid entry.</p>
+          <p>
+            This must include a mpris:trackid entry.  If the track id has
+            changed, this will be the new value.
+          </p>
           <p>See the type documentation for more details.</p>
         </tp:docstring>
       </arg>

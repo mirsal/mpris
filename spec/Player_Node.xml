@@ -64,6 +64,13 @@
           should not assume that any object is actually exported with any
           interfaces at that path.
         </p>
+        <p>
+          Media players may not use any paths starting with
+          <literal>/org/mpris</literal> unless explicitly allowed by this specification.
+          Such paths are intended to have special meaning, such as
+          <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+          to indicate "no track".
+        </p>
         <tp:rationale>
           <p>
             This is a D-Bus object id as that is the definitive way to have
@@ -230,6 +237,10 @@
           <p>
             If this does not match the id of the currently-playing track,
             the call is ignored as "stale".
+          </p>
+          <p>
+            <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+            is <em>not</em> a valid value for this argument.
           </p>
         </tp:docstring>
       </arg>

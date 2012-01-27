@@ -64,6 +64,7 @@
           clients may set this property to <strong>true</strong> to tell the media player
           to enter fullscreen mode, or to <strong>false</strong> to return to windowed
           mode.
+        </p>
         <p>
           If <tp:member-ref>CanSetFullscreen</tp:member-ref> is <strong>false</strong>,
           then attempting to set this property should have no effect, and may raise

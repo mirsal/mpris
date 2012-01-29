@@ -1,0 +1,262 @@
+<?xml version="1.0"?>
+<book xml:id="index" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+	<info>
+		<title>Media Player Remote Interfacing Specification</title>
+		<titleabbrev>MPRIS</titleabbrev>
+		<releaseinfo>
+			MPRIS 2.2 DRAFT
+		</releaseinfo>
+
+		<abstract>
+			<para>The Media Player Remote Interfacing Specification is a standard
+			<link xlink:href="http://www.freedesktop.org/wiki/Software/dbus">D-Bus</link>
+			interface which aims to provide a common programmatic API
+			for controlling media players.</para>
+
+			<para>It provides a mechanism for discovery, querying and basic playback
+			control of compliant media players, as well as a tracklist
+			interface which is used to add context to the active media item.</para>
+		</abstract>
+
+		<authorgroup>
+		<author>
+			<firstname>Mirsal</firstname>
+			<surname>Ennaime</surname>
+			<affiliation>
+				<jobtitle>VideoLAN Developer</jobtitle>
+			</affiliation>
+		</author>
+		<author>
+			<firstname>Alex</firstname>
+			<surname>Merry</surname>
+			<affiliation>
+				<jobtitle>Amarok Developer</jobtitle>
+			</affiliation>
+		</author>
+		<author>
+			<firstname>Rafaël</firstname>
+			<surname>Carré</surname>
+			<affiliation>
+				<jobtitle>VideoLAN Developer</jobtitle>
+			</affiliation>
+		</author>
+		<author>
+			<firstname>Jean-Paul</firstname>
+			<surname>Simon</surname>
+			<affiliation>
+				<jobtitle>VideoLAN Developer</jobtitle>
+			</affiliation>
+		</author>
+		<author>
+			<firstname>Milosz</firstname>
+			<surname>Derezynski</surname>
+		</author>
+		<author>
+			<firstname>Nick</firstname>
+			<surname>Welch</surname>
+		</author>
+		</authorgroup>
+
+		<copyright>
+			<year>2005</year>
+			<year>2006</year>
+			<year>2007</year>
+			<year>2008</year>
+			<year>2009</year>
+			<year>2010</year>
+			<year>2011</year>
+			<year>2012</year>
+			<holder>The VideoLAN developers</holder>
+		</copyright>
+
+		<copyright>
+			<year>2005</year>
+			<year>2006</year>
+			<year>2007</year>
+			<year>2008</year>
+			<holder>Milosz Derezynski</holder>
+		</copyright>
+
+		<copyright>
+			<year>2008</year>
+			<holder>Nick Welch</holder>
+		</copyright>
+
+		<copyright>
+			<year>2010</year>
+			<year>2011</year>
+			<year>2012</year>
+			<holder>Alex Merry</holder>
+		</copyright>
+
+		<legalnotice>
+			<para>This library is free software; you can redistribute it and/or
+			modify it under the terms of the GNU Lesser General Public
+			License as published by the Free Software Foundation; either
+			version 2.1 of the License, or (at your option) any later
+			version.</para>
+
+			<para>This library is distributed in the hope that it will be useful,
+			but WITHOUT ANY WARRANTY; without even the implied warranty of
+			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+			GNU Lesser General Public License for more details.</para>
+
+			<para>You should have received a copy of the GNU Lesser General
+			Public License along with this library; if not, write to the
+			Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+			Boston, MA 02110-1301, USA.</para>
+		</legalnotice>
+
+		<revhistory>
+			<revision>
+				<revnumber>2.2</revnumber>
+				<date>2010-12-23</date>
+				<revdescription>
+					<itemizedlist>
+						<listitem>
+							<para>Added the optional <property>Fullscreen</property> and
+								<property>CanSetFullscreen</property> properties to the
+								<link linkend="org.mpris.MediaPlayer2"><interface>org.mpris.MediaPlayer2</interface></link>
+								interface.</para>
+						</listitem>
+						<listitem>
+							<para>The path <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal> now represents
+								"no track" where required in the
+								<link linkend="org.mpris.MediaPlayer2.TrackList"><interface>org.mpris.MediaPlayer2.TrackList</interface></link>
+								interface (since empty paths are not allowed by D-Bus).</para>
+						</listitem>
+					</itemizedlist>
+				</revdescription>
+			</revision>
+			<revision>
+				<revnumber>2.1</revnumber>
+				<date>2010-12-23</date>
+				<revremark>Added the optional
+					<link linkend="org.mpris.MediaPlayer2.Playlists"><interface>org.mpris.MediaPlayer2.Playlists</interface></link>
+					interface.</revremark>
+			</revision>
+
+			<revision>
+				<revnumber>2.0</revnumber>
+				<date>2010-08-12</date>
+				<revremark>Overhaul of MPRIS</revremark>
+			</revision>
+		</revhistory>
+	</info>
+
+	<chapter xml:id='intro'>
+		<title>Introduction</title>
+
+		<para>The Media Player Remote Interfacing Specification is a standard
+		<link xlink:href="http://www.freedesktop.org/wiki/Software/dbus">D-Bus</link>
+		interface which aims to provide a common programmatic API for controlling
+		media players.</para>
+
+		<para>The idea is that clients that want to retrieve information from
+		or control a variety of media players need only implement the code to
+		deal with one D-Bus interface.  These clients may include widgets on the
+		desktop, remote-control applications operating over bluetooth and "now playing"
+		plugins for instant messaging clients.</para>
+
+		<para>Media players can choose to implement only a bare minimum of the
+		interface, only allowing clients to retreive some basic information about
+		what is currently playing, or include many optional elements such as controlling
+		playback, find out what has recently been playing or is coming up and finding
+		out about available playlists.</para>
+
+		<para>All versions with the same major revision number (eg: 2.0, 2.1, 2.2) are
+		compatible - later revisions only introduce optional interfaces.</para>
+
+		<warning>
+			<para>MPRIS 1.0 has serious flaws and should not be used.</para>
+		</warning>
+	</chapter>
+
+	<chapter xml:id='properties-changed-signal'>
+		<title>The PropertiesChanged signal</title>
+
+		<para>MPRIS uses the
+		<literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
+		signal to notify clients of changes in the media player state.</para>
+
+		<para>If a client implementation uses D-Bus bindings which do not support this
+		signal, then it should connect to it manually.</para>
+
+		<para>If a media player implementation uses D-Bus bindings which do not support
+		this signal, then it should send it manually.</para>
+	</chapter>
+
+	<chapter xml:id='bus-names'>
+		<title>Bus Name Policy</title>
+
+		<para>Each media player <emphasis>must</emphasis> request a unique bus name
+		which begins with <literal>org.mpris.MediaPlayer2</literal>. For example:
+		<itemizedlist>
+			<listitem><literal>org.mpris.MediaPlayer2.audacious</literal></listitem>
+			<listitem><literal>org.mpris.MediaPlayer2.vlc</literal></listitem>
+			<listitem><literal>org.mpris.MediaPlayer2.bmp</literal></listitem>
+			<listitem><literal>org.mpris.MediaPlayer2.xmms2</literal></listitem>
+		</itemizedlist>
+		</para>
+
+		<para>
+		This allows clients to list available media players
+		(either already running or which can be started via D-Bus activation)
+		</para>
+
+		<para>
+		In the case where the media player allows multiple instances running
+		simultaneously, each additional instance should request a unique bus
+		name, adding a dot and a unique identifier (such as a UNIX process
+		id) to its usual bus name. For example, this could be
+		<literal>org.mpris.MediaPlayer2.vlc.7389</literal>
+		</para>
+	</chapter>
+
+	<chapter xml:id='object-paths'>
+		<title>Object Paths</title>
+
+		<para>The media player <emphasis>must</emphasis> expose the
+		<literal>/org/mpris/MediaPlayer2</literal> object path, which
+		<emphasis>must</emphasis> implement the following interfaces:
+		<itemizedlist>
+			<listitem><link linkend="org.mpris.MediaPlayer2"><interface>org.mpris.MediaPlayer2</interface></link></listitem>
+			<listitem><link linkend="org.mpris.MediaPlayer2.Player"><interface>org.mpris.MediaPlayer2.Player</interface></link></listitem>
+		</itemizedlist>
+		</para>
+
+
+		<para>The <literal>/org/mpris/MediaPlayer2</literal> object may implement
+		the <link linkend="org.mpris.MediaPlayer2.TrackList"><interface>org.mpris.MediaPlayer2.TrackList</interface></link> interface.</para>
+
+		<para>The <literal>/org/mpris/MediaPlayer2</literal> object may implement
+		the <link linkend="org.mpris.MediaPlayer2.Playlists"><interface>org.mpris.MediaPlayer2.Playlists</interface></link> interface.</para>
+
+		<important>
+			<para>Media players should not make use of paths starting with
+			<literal>/org/mpris/</literal> unless explicitly permitted by
+			this specification.  This is especially relevant for track IDs.</para>
+		</important>
+	</chapter>
+
+	<xi:include href="reference.xml" xpointer="interfaces" xmlns:xi="http://www.w3.org/2001/XInclude">
+		<xi:fallback/>
+	</xi:include>
+	<xi:include href="reference.xml" xpointer="types" xmlns:xi="http://www.w3.org/2001/XInclude">
+		<xi:fallback/>
+	</xi:include>
+	<xi:include href="reference.xml" xpointer="errors" xmlns:xi="http://www.w3.org/2001/XInclude">
+		<xi:fallback/>
+	</xi:include>
+
+	<bibliography>
+		<title>References</title>
+
+		<bibliomixed>
+			<abbrev>rfc3986</abbrev>
+			IETF <ulink url="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</ulink>:
+			Uniform Resource Identifier (URI): Generic Syntax
+		</bibliomixed>
+	</bibliography>
+
+</book>

@@ -1,40 +1,46 @@
 all:
 
 INSTALL = install
-PYTHON = $(shell if python --version 2>&1 | grep "Python 3" >/dev/null 2>/dev/null; then echo python2; else echo python; fi)
 EGREP = egrep
+XMLTO = xmlto
+XSLTPROC = xsltproc
 
-XMLS = $(wildcard spec/*.xml)
-TEMPLATES = $(wildcard doc/templates/*)
+DBUS_SPEC = spec/org.mpris.MediaPlayer2.xml
+DOCBOOK = spec/specification.xml
+HTMLDIR = doc/html
+
+DBUS_DOCBOOK = spec/reference.xml
 
 GENERATED_FILES = \
-	doc/spec/index.html \
-	FIXME.out \
-	$(NULL)
+	$(DBUS_DOCBOOK) \
+	$(HTMLDIR)/index.html \
+	FIXME.out
 
-doc/spec/index.html: $(XMLS) tools/doc-generator.py tools/specparser.py $(TEMPLATES)
-	@$(INSTALL) -d doc
-	$(PYTHON) tools/doc-generator.py spec/all.xml doc/spec/ mpris-spec \
-		org.mpris
+$(DBUS_DOCBOOK): $(DBUS_SPEC) tools/spec-to-docbook.xsl tools/resolve-type.xsl
+	@echo '  GEN   ' $@
+	@$(XSLTPROC) tools/spec-to-docbook.xsl $(DBUS_SPEC) > $@
+
+$(HTMLDIR)/index.html: $(DOCBOOK) $(DBUS_DOCBOOK) docbook-params.xsl
+	@echo '  GEN   ' $@
+	@$(INSTALL) -d $(HTMLDIR)
+	@xmlto --skip-validation -o $(HTMLDIR)/ -x docbook-params.xsl xhtml $(DOCBOOK)
 
 all: $(GENERATED_FILES)
 	@echo "Your spec HTML starts at:"
 	@echo
-	@echo file://$(CURDIR)/doc/spec/index.html
+	@echo file://$(CURDIR)/$(HTMLDIR)/index.html
 	@echo
 
-FIXME.out: $(XMLS)
+FIXME.out: $(DOCBOOK) $(DBUS_SPEC)
 	@echo '  GEN   ' $@
-	@$(EGREP) -A 5 '[F]IXME|[T]ODO|[X]XX' $(XMLS) \
+	@$(EGREP) -A 5 '[F]IXME|[T]ODO|[X]XX' $(DOCBOOK) $(DBUS_SPEC) \
 		> FIXME.out || true
 
 clean:
 	rm -f $(GENERATED_FILES)
-	rm -rf tmp
-	rm -rf doc/spec
+	rm -f $(HTMLDIR)/*.html
 
 distclean: clean
-	rm -rf tools/*.pyc
 
 # automake requires these rules for anything that's in DIST_SUBDIRS
 maintainer-clean: distclean

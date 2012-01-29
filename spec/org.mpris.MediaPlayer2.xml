@@ -1,0 +1,1489 @@
+<?xml version="1.0" ?>
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<tp:spec
+  xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:docbook="http://docbook.org/ns/docbook">
+
+  <tp:title>Media Player Remote Interfacing Specification</tp:title>
+  <tp:version>2.2</tp:version>
+
+  <tp:copyright>
+    Copyright © 2006-2012 the VideoLAN team
+    (Mirsal Ennaime, Rafaël Carré, Jean-Paul Saman)
+  </tp:copyright>
+  <tp:copyright>Copyright © 2005-2008 Milosz Derezynski</tp:copyright>
+  <tp:copyright>Copyright © 2008 Nick Welch</tp:copyright>
+  <tp:copyright>Copyright © 2010-2012 Alex Merry</tp:copyright>
+
+  <!--
+   * ==================================================================
+   * Types
+   *
+  -->
+
+  <tp:enum name="Playback_Status" tp:name-for-bindings="Playback_Status" type="s">
+    <tp:enumvalue suffix="Playing" value="Playing">
+      <tp:docstring>
+        A track is currently playing.
+      </tp:docstring>
+    </tp:enumvalue>
+    <tp:enumvalue suffix="Paused" value="Paused">
+      <tp:docstring>
+        A track is currently paused.
+      </tp:docstring>
+    </tp:enumvalue>
+    <tp:enumvalue suffix="Stopped" value="Stopped">
+      <tp:docstring>
+        There is no track currently playing.
+      </tp:docstring>
+    </tp:enumvalue>
+    <tp:docstring>
+      A playback state.
+    </tp:docstring>
+  </tp:enum>
+
+  <tp:enum name="Loop_Status" tp:name-for-bindings="Loop_Status" type="s">
+    <tp:enumvalue suffix="None" value="None">
+      <tp:docstring>
+        The playback will stop when there are no more tracks to play
+      </tp:docstring>
+    </tp:enumvalue>
+    <tp:enumvalue suffix="Track" value="Track">
+      <tp:docstring>
+        The current track will start again from the begining once it has finished playing
+      </tp:docstring>
+    </tp:enumvalue>
+    <tp:enumvalue suffix="Playlist" value="Playlist">
+      <tp:docstring>
+        The playback loops through a list of tracks
+      </tp:docstring>
+    </tp:enumvalue>
+    <tp:docstring>
+      A repeat / loop status
+    </tp:docstring>
+  </tp:enum>
+
+  <tp:simple-type name="Track_Id" type="o" array-name="Track_Id_List">
+    <tp:docstring xmlns="http://docbook.org/ns/docbook">
+      <para>Unique track identifier.</para>
+      <para>
+        If the media player implements the TrackList interface and allows
+        the same track to appear multiple times in the tracklist,
+        this must be unique within the scope of the tracklist.
+      </para>
+      <para>
+        Note that this should be a valid D-Bus object id, although clients
+        should not assume that any object is actually exported with any
+        interfaces at that path.
+      </para>
+      <para>
+        Media players may not use any paths starting with
+        <literal>/org/mpris</literal> unless explicitly allowed by this specification.
+        Such paths are intended to have special meaning, such as
+        <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+        to indicate "no track".
+      </para>
+      <tp:rationale>
+        <para>
+          This is a D-Bus object id as that is the definitive way to have
+          unique identifiers on D-Bus.  It also allows for future optional
+          expansions to the specification where tracks are exported to D-Bus
+          with an interface similar to org.gnome.UPnP.MediaItem2.
+        </para>
+      </tp:rationale>
+    </tp:docstring>
+  </tp:simple-type>
+
+  <tp:simple-type name="Playback_Rate" type="d">
+    <tp:docstring xmlns="http://docbook.org/ns/docbook">
+      <para>A playback rate</para>
+      <para>
+        This is a multiplier, so a value of 0.5 indicates that playback is
+        happening at half speed, while 1.5 means that 1.5 seconds of "track time"
+        is consumed every second.
+      </para>
+    </tp:docstring>
+  </tp:simple-type>
+
+  <tp:simple-type name="Volume" type="d">
+    <tp:docstring xmlns="http://docbook.org/ns/docbook">
+      <para>Audio volume level</para>
+      <itemizedlist>
+        <listitem><para>0.0 means mute.</para></listitem>
+        <listitem><para>1.0 is a sensible maximum volume level (ex: 0dB).</para></listitem>
+      </itemizedlist>
+      <para>
+        Note that the volume may be higher than 1.0, although generally
+        clients should not attempt to set it above 1.0.
+      </para>
+    </tp:docstring>
+  </tp:simple-type>
+
+  <tp:simple-type name="Time_In_Us" type="x">
+    <tp:docstring xmlns="http://docbook.org/ns/docbook">
+      <para>Time in microseconds.</para>
+    </tp:docstring>
+  </tp:simple-type>
+
+  <tp:mapping name="Metadata_Map" array-name="Metadata_Map_List">
+    <tp:docstring xmlns="http://docbook.org/ns/docbook">
+      <para>A mapping from metadata attribute names to values.</para>
+      <para>
+        The <literal>mpris:trackid</literal> attribute must always be present, and must be
+        of D-Bus type "o".  This contains a D-Bus path that uniquely identifies
+        the track within the scope of the playlist.  There may or may not be
+        an actual D-Bus object at that path; this specification says nothing
+        about what interfaces such an object may implement.
+      </para>
+      <para>
+        If the length of the track is known, it should be provided in the
+        metadata property with the "mpris:length" key.  The length must be
+        given in microseconds, and be represented as a signed 64-bit integer.
+      </para>
+      <para>
+        If there is an image associated with the track, a URL for it may be
+        provided using the "mpris:artUrl" key.  For other metadata, fields
+        defined by the
+        <link xlink:href="http://xesam.org/main/XesamOntology">Xesam ontology</link>
+        should be used, prefixed by "xesam:".  See
+        <link xlink:href="http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata">
+          http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata
+        </link> for a list of common fields.
+      </para>
+      <para>
+        Lists of strings should be passed using the array-of-string ("as")
+        D-Bus type.  Dates should be passed as strings using the ISO 8601
+        extended format (eg: 2007-04-29T14:35:51).  If the timezone is
+        known, RFC 3339's internet profile should be used (eg:
+        2007-04-29T14:35:51+02:00).
+      </para>
+    </tp:docstring>
+    <tp:member type="s" name="Attribute">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>
+          The name of the attribute; see
+          <link xlink:href="http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata">
+            http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata
+          </link> for guidelines on names to use.
+        </para>
+      </tp:docstring>
+    </tp:member>
+    <tp:member type="v" name="Value">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>The value of the attribute, in the most appropriate format.</para>
+      </tp:docstring>
+    </tp:member>
+  </tp:mapping>
+
+  <tp:simple-type name="Uri" type="s" array-name="Uri_List">
+    <tp:docstring xmlns="http://docbook.org/ns/docbook">
+      <para>A uniform resource identifier <citation>rfc3986</citation>.</para>
+    </tp:docstring>
+  </tp:simple-type>
+
+  <tp:simple-type name="Playlist_Id" type="o" array-name="Playlist_Id_List">
+    <tp:docstring xmlns="http://docbook.org/ns/docbook">
+      <para>Unique playlist identifier.</para>
+      <tp:rationale>
+        <para>
+          Multiple playlists may have the same name.
+        </para>
+        <para>
+          This is a D-Bus object id as that is the definitive way to have
+          unique identifiers on D-Bus.  It also allows for future optional
+          expansions to the specification where tracks are exported to D-Bus
+          with an interface similar to org.gnome.UPnP.MediaItem2.
+        </para>
+      </tp:rationale>
+    </tp:docstring>
+  </tp:simple-type>
+
+  <tp:struct name="Playlist" array-name="Playlist_List">
+    <tp:docstring xmlns="http://docbook.org/ns/docbook">
+      <para>A data structure describing a playlist.</para>
+    </tp:docstring>
+    <tp:member type="o" tp:type="Playlist_Id" name="Id">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>A unique identifier for the playlist.</para>
+        <para>This should remain the same if the playlist is renamed.</para>
+      </tp:docstring>
+    </tp:member>
+    <tp:member type="s" name="Name">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>The name of the playlist, typically given by the user.</para>
+      </tp:docstring>
+    </tp:member>
+    <tp:member type="s" tp:type="Uri" name="Icon">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>The URI of an (optional) icon.</para>
+      </tp:docstring>
+    </tp:member>
+  </tp:struct>
+
+  <tp:struct name="Maybe_Playlist">
+    <tp:docstring xmlns="http://docbook.org/ns/docbook">
+      <para>A data structure describing a playlist, or nothing.</para>
+      <tp:rationale>
+        <para>
+          D-Bus does not (at the time of writing) support a MAYBE type,
+          so we are forced to invent our own.
+        </para>
+      </tp:rationale>
+    </tp:docstring>
+    <tp:member type="b" name="Valid">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>Whether this structure refers to a valid playlist.</para>
+      </tp:docstring>
+    </tp:member>
+    <tp:member type="(oss)" tp:type="Playlist" name="Playlist">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>The playlist, providing Valid is true, otherwise undefined.</para>
+        <para>
+          When constructing this type, it should be noted that the playlist
+          ID must be a valid object path, or D-Bus implementations may reject
+          it.  This is true even when Valid is false.  It is suggested that
+          "/" is used as the playlist ID in this case.
+        </para>
+      </tp:docstring>
+    </tp:member>
+  </tp:struct>
+
+  <tp:enum name="Playlist_Ordering" array-name="Playlist_Ordering_List" type="s">
+    <tp:docstring xmlns="http://docbook.org/ns/docbook">
+      <para>Specifies the ordering of returned playlists.</para>
+    </tp:docstring>
+    <tp:enumvalue suffix="Alphabetical" value="Alphabetical">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>Alphabetical ordering by name, ascending.</para>
+      </tp:docstring>
+    </tp:enumvalue>
+    <tp:enumvalue suffix="CreationDate" value="Created">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>Ordering by creation date, oldest first.</para>
+      </tp:docstring>
+    </tp:enumvalue>
+    <tp:enumvalue suffix="ModifiedDate" value="Modified">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>Ordering by last modified date, oldest first.</para>
+      </tp:docstring>
+    </tp:enumvalue>
+    <tp:enumvalue suffix="LastPlayDate" value="Played">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>Ordering by date of last playback, oldest first.</para>
+      </tp:docstring>
+    </tp:enumvalue>
+    <tp:enumvalue suffix="UserDefined" value="User">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>A user-defined ordering.</para>
+        <tp:rationale>
+          <para>
+            Some media players may allow users to order playlists as they
+            wish.  This ordering allows playlists to be retreived in that
+            order.
+          </para>
+        </tp:rationale>
+      </tp:docstring>
+    </tp:enumvalue>
+  </tp:enum>
+
+  <!--
+   * ==================================================================
+   * Interfaces
+   *
+  -->
+
+  <node name="/org/mpris/MediaPlayer2">
+    <interface name="org.mpris.MediaPlayer2">
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>
+          Provides basic information about the media player and allows application-level
+          control, such as quitting.
+        </para>
+      </tp:docstring>
+
+      <method name="Raise" tp:name-for-bindings="Raise">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            Brings the media player's user interface to the front using any
+            appropriate mechanism available.
+          </para>
+          <para>
+            The media player may be unable to control how its user interface
+            is displayed, or it may not have a graphical user interface at all.
+            In this case, the <tp:member-ref>CanRaise</tp:member-ref> property is
+            <constant>false</constant> and this method does nothing.
+          </para>
+        </tp:docstring>
+      </method>
+
+      <method name="Quit" tp:name-for-bindings="Quit">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Causes the media player to stop running.</para>
+          <para>
+            The media player may refuse to allow clients to shut it down.
+            In this case, the <tp:member-ref>CanQuit</tp:member-ref> property is
+            <constant>false</constant> and this method does nothing.
+          </para>
+          <para>
+            Note: Media players which can be D-Bus activated, or for which there is
+            no sensibly easy way to terminate a running instance (via the main
+            interface or a notification area icon for example) should allow clients
+            to use this method. Otherwise, it should not be needed.
+          </para>
+          <para>If the media player does not have a UI, this should be implemented.</para>
+        </tp:docstring>
+      </method>
+
+      <property name="CanQuit" type="b" tp:name-for-bindings="Can_Quit" access="read">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            If <constant>false</constant>, calling
+            <tp:member-ref>Quit</tp:member-ref> will have no effect, and may
+            raise a NotSupported error.  If <constant>true</constant>, calling
+            <tp:member-ref>Quit</tp:member-ref> will cause the media application
+            to attempt to quit (although it may still be prevented from quitting
+            by the user, for example).
+          </para>
+        </tp:docstring>
+      </property>
+
+      <property name="Fullscreen" type="b" tp:name-for-bindings="Fullscreen" access="readwrite">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Whether the media player is occupying the fullscreen.</para>
+          <para>
+            This is typically used for videos.  A value of <constant>true</constant>
+            indicates that the media player is taking up the full screen.
+          </para>
+          <para>
+            Media centre software may well have this value fixed to <constant>true</constant>
+          </para>
+          <para>
+            If <tp:member-ref>CanSetFullscreen</tp:member-ref> is <constant>true</constant>,
+            clients may set this property to <constant>true</constant> to tell the media player
+            to enter fullscreen mode, or to <constant>false</constant> to return to windowed
+            mode.
+          </para>
+          <para>
+            If <tp:member-ref>CanSetFullscreen</tp:member-ref> is <constant>false</constant>,
+            then attempting to set this property should have no effect, and may raise
+            an error.  However, even if it is <constant>true</constant>, the media player
+            may still be unable to fulfil the request, in which case attempting to set
+            this property will have no effect (but should not raise an error).
+          </para>
+          <para>This property is optional. Clients should handle its absence gracefully.</para>
+          <tp:rationale>
+            <para>
+              This allows remote control interfaces, such as LIRC or mobile devices like
+              phones, to control whether a video is shown in fullscreen.
+            </para>
+          </tp:rationale>
+        </tp:docstring>
+      </property>
+
+      <property name="CanSetFullscreen" type="b" tp:name-for-bindings="Can_Set_Fullscreen" access="read">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            If <constant>false</constant>, attempting to set
+            <tp:member-ref>Fullscreen</tp:member-ref> will have no effect, and may
+            raise an error.  If <constant>true</constant>, attempting to set
+            <tp:member-ref>Fullscreen</tp:member-ref> will not raise an error, and (if it
+            is different from the current value) will cause the media player to attempt to
+            enter or exit fullscreen mode.
+          </para>
+          <para>
+            Note that the media player may be unable to fulfil the request.
+            In this case, the value will not change.  If the media player knows in
+            advance that it will not be able to fulfil the request, however, this
+            property should be <constant>false</constant>.
+          </para>
+          <tp:rationale>
+            <para>
+              This allows clients to choose whether to display controls for entering
+              or exiting fullscreen mode.
+            </para>
+          </tp:rationale>
+        </tp:docstring>
+      </property>
+
+      <property name="CanRaise" type="b" tp:name-for-bindings="Can_Raise" access="read">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            If <constant>false</constant>, calling
+            <tp:member-ref>Raise</tp:member-ref> will have no effect, and may
+            raise a NotSupported error.  If <constant>true</constant>, calling
+            <tp:member-ref>Raise</tp:member-ref> will cause the media application
+            to attempt to bring its user interface to the front, although it may
+            be prevented from doing so (by the window manager, for example).
+          </para>
+        </tp:docstring>
+      </property>
+
+      <property name="HasTrackList" type="b" tp:name-for-bindings="Has_TrackList" access="read">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            Indicates whether the <literal>/org/mpris/MediaPlayer2</literal>
+            object implements the
+            <link linkend="org.mpris.MediaPlayer2.TrackList"><interface>org.mpris.MediaPlayer2.TrackList</interface></link>
+            interface.
+          </para>
+        </tp:docstring>
+      </property>
+
+      <property name="Identity" type="s" tp:name-for-bindings="Identity" access="read">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>A friendly name to identify the media player to users.</para>
+          <para>This should usually match the name found in .desktop files</para>
+          <para>(eg: "VLC media player").</para>
+        </tp:docstring>
+      </property>
+
+      <property name="DesktopEntry" type="s" tp:name-for-bindings="Desktop_Entry" access="read">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>The basename of an installed .desktop file which complies with the <link xlink:href="http://standards.freedesktop.org/desktop-entry-spec/latest/">Desktop entry specification</link>,
+          with the ".desktop" extension stripped.</para>
+          <para>
+            Example: The desktop entry file is "/usr/share/applications/vlc.desktop",
+            and this property contains "vlc"
+          </para>
+          <para>This property is optional. Clients should handle its absence gracefully.</para>
+        </tp:docstring>
+      </property>
+
+      <property name="SupportedUriSchemes" type="as" tp:name-for-bindings="Supported_Uri_Schemes" access="read">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            The URI schemes supported by the media player.
+          </para>
+          <para>
+            This can be viewed as protocols supported by the player in almost
+            all cases.  Almost every media player will include support for the
+            "file" scheme.  Other common schemes are "http" and "rtsp".
+          </para>
+          <para>
+            Note that URI schemes should be lower-case.
+          </para>
+          <tp:rationale>
+            <para>
+              This is important for clients to know when using the editing
+              capabilities of the Playlist interface, for example.
+            </para>
+          </tp:rationale>
+        </tp:docstring>
+      </property>
+
+      <property name="SupportedMimeTypes" type="as" tp:name-for-bindings="Supported_Mime_Types" access="read">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            The mime-types supported by the media player.
+          </para>
+          <para>
+            Mime-types should be in the standard format (eg: audio/mpeg or
+            application/ogg).
+          </para>
+          <tp:rationale>
+            <para>
+              This is important for clients to know when using the editing
+              capabilities of the Playlist interface, for example.
+            </para>
+          </tp:rationale>
+        </tp:docstring>
+      </property>
+    </interface>
+
+    <interface name="org.mpris.MediaPlayer2.Player">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>
+          Provides methods for querying and providing basic
+          control over what is currently playing.
+        </para>
+      </tp:docstring>
+
+      <method name="Next" tp:name-for-bindings="Next">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Skips to the next track in the tracklist.</para>
+          <para>
+            If there is no next track (and endless playback and track
+            repeat are both off), stop playback.
+          </para>
+          <para>If playback is paused or stopped, it remains that way.</para>
+          <para>
+            If <tp:member-ref>CanGoNext</tp:member-ref> is
+            <constant>false</constant>, attempting to call this method should have
+            no effect.
+          </para>
+        </tp:docstring>
+      </method>
+
+      <method name="Previous" tp:name-for-bindings="Previous">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Skips to the previous track in the tracklist.</para>
+          <para>
+            If there is no previous track (and endless playback and track
+            repeat are both off), stop playback.
+          </para>
+          <para>If playback is paused or stopped, it remains that way.</para>
+          <para>
+            If <tp:member-ref>CanGoPrevious</tp:member-ref> is
+            <constant>false</constant>, attempting to call this method should have
+            no effect.
+          </para>
+        </tp:docstring>
+      </method>
+
+      <method name="Pause" tp:name-for-bindings="Pause">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Pauses playback.</para>
+          <para>If playback is already paused, this has no effect.</para>
+          <para>
+            Calling Play after this should cause playback to start again
+            from the same position.
+          </para>
+          <para>
+            If <tp:member-ref>CanPause</tp:member-ref> is
+            <constant>false</constant>, attempting to call this method should have
+            no effect.
+          </para>
+        </tp:docstring>
+      </method>
+
+      <method name="PlayPause" tp:name-for-bindings="PlayPause">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Pauses playback.</para>
+          <para>If playback is already paused, resumes playback.</para>
+          <para>If playback is stopped, starts playback.</para>
+          <para>
+            If <tp:member-ref>CanPause</tp:member-ref> is
+            <constant>false</constant>, attempting to call this method should have
+            no effect and raise an error.
+          </para>
+        </tp:docstring>
+      </method>
+
+      <method name="Stop" tp:name-for-bindings="Stop">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Stops playback.</para>
+          <para>If playback is already stopped, this has no effect.</para>
+          <para>
+            Calling Play after this should cause playback to
+            start again from the beginning of the track.
+          </para>
+          <para>
+            If <tp:member-ref>CanControl</tp:member-ref> is
+            <constant>false</constant>, attempting to call this method should have
+            no effect and raise an error.
+          </para>
+        </tp:docstring>
+      </method>
+
+      <method name="Play" tp:name-for-bindings="Play">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Starts or resumes playback.</para>
+          <para>If already playing, this has no effect.</para>
+          <para>If there is no track to play, this has no effect.</para>
+          <para>
+            If <tp:member-ref>CanPlay</tp:member-ref> is
+            <constant>false</constant>, attempting to call this method should have
+            no effect.
+          </para>
+        </tp:docstring>
+      </method>
+
+      <method name="Seek" tp:name-for-bindings="Seek">
+        <arg direction="in" type="x" name="Offset" tp:type="Time_In_Us">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>The number of microseconds to seek forward.</para>
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            Seeks forward in the current track by the specified number
+            of microseconds.
+          </para>
+          <para>
+            A negative value seeks back. If this would mean seeking
+            back further than the start of the track, the position
+            is set to 0.
+          </para>
+          <para>
+            If the value passed in would mean seeking beyond the end
+            of the track, acts like a call to Next.
+          </para>
+          <para>
+            If the <tp:member-ref>CanSeek</tp:member-ref> property is false,
+            this has no effect.
+          </para>
+        </tp:docstring>
+      </method>
+
+      <method name="SetPosition" tp:name-for-bindings="Set_Position">
+        <arg direction="in" type="o" tp:type="Track_Id" name="TrackId">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>The currently playing track's identifier.</para>
+            <para>
+              If this does not match the id of the currently-playing track,
+              the call is ignored as "stale".
+            </para>
+            <para>
+              <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+              is <emphasis>not</emphasis> a valid value for this argument.
+            </para>
+          </tp:docstring>
+        </arg>
+        <arg direction="in" type="x" tp:type="Time_In_Us" name="Position">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>Track position in microseconds.</para>
+            <para>This must be between 0 and &lt;track_length&gt;.</para>
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Sets the current track position in microseconds.</para>
+          <para>If the Position argument is less than 0, do nothing.</para>
+          <para>
+            If the Position argument is greater than the track length,
+            do nothing.
+          </para>
+          <para>
+            If the <tp:member-ref>CanSeek</tp:member-ref> property is false,
+            this has no effect.
+          </para>
+          <tp:rationale>
+            <para>
+              The reason for having this method, rather than making
+              <tp:member-ref>Position</tp:member-ref> writable, is to include
+              the TrackId argument to avoid race conditions where a client tries
+              to seek to a position when the track has already changed.
+            </para>
+          </tp:rationale>
+        </tp:docstring>
+      </method>
+
+      <method name="OpenUri" tp:name-for-bindings="Open_Uri">
+        <arg direction="in" type="s" tp:type="Uri" name="Uri">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>
+              Uri of the track to load. Its uri scheme should be an element of the
+              <literal>org.mpris.MediaPlayer2.SupportedUriSchemes</literal>
+              property and the mime-type should match one of the elements of the
+              <literal>org.mpris.MediaPlayer2.SupportedMimeTypes</literal>.
+            </para>
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Opens the Uri given as an argument</para>
+          <para>If the playback is stopped, starts playing</para>
+          <para>
+            If the uri scheme or the mime-type of the uri to open is not supported,
+            this method does nothing and may raise an error.  In particular, if the
+            list of available uri schemes is empty, this method may not be
+            implemented.
+          </para>
+          <para>Clients should not assume that the Uri has been opened as soon as this
+             method returns. They should wait until the mpris:trackid field in the
+             <tp:member-ref>Metadata</tp:member-ref> property changes.
+          </para>
+          <para>
+            If the media player implements the TrackList interface, then the
+            opened track should be made part of the tracklist, the
+            <literal>org.mpris.MediaPlayer2.TrackList.TrackAdded</literal> or
+            <literal>org.mpris.MediaPlayer2.TrackList.TrackListReplaced</literal>
+            signal should be fired, as well as the
+            <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
+            signal on the tracklist interface.
+          </para>
+        </tp:docstring>
+      </method>
+
+      <property name="PlaybackStatus" tp:name-for-bindings="Playback_Status" type="s" tp:type="Playback_Status" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>The current playback status.</para>
+          <para>
+            May be "Playing", "Paused" or "Stopped".
+          </para>
+        </tp:docstring>
+      </property>
+
+      <property name="LoopStatus" type="s" access="readwrite"
+                tp:name-for-bindings="Loop_Status" tp:type="Loop_Status">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>The current loop / repeat status</para>
+          <para>May be:
+            <itemizedlist>
+              <listitem><para>"None" if the playback will stop when there are no more tracks to play</para></listitem>
+              <listitem><para>"Track" if the current track will start again from the begining once it has finished playing</para></listitem>
+              <listitem><para>"Playlist" if the playback loops through a list of tracks</para></listitem>
+            </itemizedlist>
+          </para>
+          <para>
+            This property is optional, and clients should deal with NotSupported
+            errors gracefully.
+          </para>
+          <para>
+            If <tp:member-ref>CanControl</tp:member-ref> is
+            <constant>false</constant>, attempting to set this property should have
+            no effect and raise an error.
+          </para>
+        </tp:docstring>
+      </property>
+
+      <property name="Rate" tp:name-for-bindings="Rate" type="d" tp:type="Playback_Rate" access="readwrite">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>The current playback rate.</para>
+          <para>
+            The value must fall in the range described by
+            <tp:member-ref>MinimumRate</tp:member-ref> and
+            <tp:member-ref>MaximumRate</tp:member-ref>, and must not be 0.0.  If
+            playback is paused, the <tp:member-ref>PlaybackStatus</tp:member-ref>
+            property should be used to indicate this.  A value of 0.0 should not
+            be set by the client.  If it is, the media player should act as
+            though <tp:member-ref>Pause</tp:member-ref> was called.
+          </para>
+          <para>
+            If the media player has no ability to play at speeds other than the
+            normal playback rate, this must still be implemented, and must
+            return 1.0.  The <tp:member-ref>MinimumRate</tp:member-ref> and
+            <tp:member-ref>MaximumRate</tp:member-ref> properties must also be
+            set to 1.0.
+          </para>
+          <para>
+            Not all values may be accepted by the media player.  It is left to
+            media player implementations to decide how to deal with values they
+            cannot use; they may either ignore them or pick a "best fit" value.
+            Clients are recommended to only use sensible fractions or multiples
+            of 1 (eg: 0.5, 0.25, 1.5, 2.0, etc).
+          </para>
+          <tp:rationale>
+            <para>
+              This allows clients to display (reasonably) accurate progress bars
+              without having to regularly query the media player for the current
+              position.
+            </para>
+          </tp:rationale>
+        </tp:docstring>
+      </property>
+
+      <property name="Shuffle" tp:name-for-bindings="Shuffle" type="b" access="readwrite">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            A value of <constant>false</constant> indicates that playback is
+            progressing linearly through a playlist, while <constant>true</constant>
+            means playback is progressing through a playlist in some other order.
+          </para>
+          <para>
+            This property is optional, and clients should deal with NotSupported
+            errors gracefully.
+          </para>
+          <para>
+            If <tp:member-ref>CanControl</tp:member-ref> is
+            <constant>false</constant>, attempting to set this property should have
+            no effect and raise an error.
+          </para>
+        </tp:docstring>
+      </property>
+
+      <property name="Metadata" tp:name-for-bindings="Metadata" type="a{sv}" tp:type="Metadata_Map" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>The metadata of the current element.</para>
+          <para>
+            If there is a current track, this must have a "mpris:trackid" entry
+            (of D-Bus type "o") at the very least, which contains a D-Bus path that
+            uniquely identifies this track.
+          </para>
+          <para>
+            See the type documentation for more details.
+          </para>
+        </tp:docstring>
+      </property>
+
+      <property name="Volume" type="d" tp:type="Volume" tp:name-for-bindings="Volume" access="readwrite">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true" />
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>The volume level.</para>
+          <para>
+            When setting, if a negative value is passed, the volume
+            should be set to 0.0.
+          </para>
+          <para>
+            If <tp:member-ref>CanControl</tp:member-ref> is
+            <constant>false</constant>, attempting to set this property should have
+            no effect and raise an error.
+          </para>
+        </tp:docstring>
+      </property>
+
+      <property name="Position" type="x" tp:type="Time_In_Us" tp:name-for-bindings="Position" access="read">
+          <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>
+              The current track position in microseconds, between 0 and
+              the 'mpris:length' metadata entry (see Metadata).
+            </para>
+            <para>
+              Note: If the media player allows it, the current playback position
+              can be changed either the SetPosition method or the Seek method on
+              this interface.  If this is not the case, the
+              <tp:member-ref>CanSeek</tp:member-ref> property is false, and
+              setting this property has no effect and can raise an error.
+            </para>
+            <para>
+              If the playback progresses in a way that is inconstistant with the
+              <tp:member-ref>Rate</tp:member-ref> property, the
+              <tp:member-ref>Seeked</tp:member-ref> signal is emited.
+            </para>
+          </tp:docstring>
+      </property>
+
+      <property name="MinimumRate" tp:name-for-bindings="Minimum_Rate" type="d" tp:type="Playback_Rate" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            The minimum value which the <tp:member-ref>Rate</tp:member-ref>
+            property can take.
+            Clients should not attempt to set the
+            <tp:member-ref>Rate</tp:member-ref> property below this value.
+          </para>
+          <para>
+            Note that even if this value is 0.0 or negative, clients should
+            not attempt to set the <tp:member-ref>Rate</tp:member-ref> property
+            to 0.0.
+          </para>
+          <para>This value should always be 1.0 or less.</para>
+        </tp:docstring>
+      </property>
+
+      <property name="MaximumRate" tp:name-for-bindings="Maximum_Rate" type="d" tp:type="Playback_Rate" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            The maximum value which the <tp:member-ref>Rate</tp:member-ref>
+            property can take.
+            Clients should not attempt to set the
+            <tp:member-ref>Rate</tp:member-ref> property above this value.
+          </para>
+          <para>
+            This value should always be 1.0 or greater.
+          </para>
+        </tp:docstring>
+      </property>
+
+      <property name="CanGoNext" tp:name-for-bindings="Can_Go_Next" type="b" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            Whether the client can call the <tp:member-ref>Next</tp:member-ref>
+            method on this interface and expect the current track to change.
+          </para>
+          <para>
+            If it is unknown whether a call to <tp:member-ref>Next</tp:member-ref> will
+            be successful (for example, when streaming tracks), this property should
+            be set to <constant>true</constant>.
+          </para>
+          <para>
+            If <tp:member-ref>CanControl</tp:member-ref> is
+            <constant>false</constant>, this property should also be
+            <constant>false</constant>.
+          </para>
+          <tp:rationale>
+            <para>
+              Even when playback can generally be controlled, there may not
+              always be a next track to move to.
+            </para>
+          </tp:rationale>
+        </tp:docstring>
+      </property>
+
+      <property name="CanGoPrevious" tp:name-for-bindings="Can_Go_Previous" type="b" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            Whether the client can call the
+            <tp:member-ref>Previous</tp:member-ref> method on this interface and
+            expect the current track to change.
+          </para>
+          <para>
+            If it is unknown whether a call to <tp:member-ref>Previous</tp:member-ref>
+            will be successful (for example, when streaming tracks), this property
+            should be set to <constant>true</constant>.
+          </para>
+          <para>
+            If <tp:member-ref>CanControl</tp:member-ref> is
+            <constant>false</constant>, this property should also be
+            <constant>false</constant>.
+          </para>
+          <tp:rationale>
+            <para>
+              Even when playback can generally be controlled, there may not
+              always be a next previous to move to.
+            </para>
+          </tp:rationale>
+
+        </tp:docstring>
+      </property>
+
+      <property name="CanPlay" tp:name-for-bindings="Can_Play" type="b" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Whether playback can be started using
+             <tp:member-ref>Play</tp:member-ref> or
+             <tp:member-ref>PlayPause</tp:member-ref>.
+          </para>
+          <para>
+            Note that this is related to whether there is a "current track": the
+            value should not depend on whether the track is currently paused or
+            playing.  In fact, if a track is currently playing (and
+            <tp:member-ref>CanControl</tp:member-ref> is <constant>true</constant>),
+            this should be <constant>true</constant>.
+          </para>
+          <para>
+            If <tp:member-ref>CanControl</tp:member-ref> is
+            <constant>false</constant>, this property should also be
+            <constant>false</constant>.
+          </para>
+          <tp:rationale>
+            <para>
+              Even when playback can generally be controlled, it may not be
+              possible to enter a "playing" state, for example if there is no
+              "current track".
+            </para>
+          </tp:rationale>
+        </tp:docstring>
+      </property>
+
+      <property name="CanPause" tp:name-for-bindings="Can_Pause" type="b" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Whether playback can be paused using
+             <tp:member-ref>Pause</tp:member-ref> or
+             <tp:member-ref>PlayPause</tp:member-ref>.
+          </para>
+          <para>
+            Note that this is an intrinsic property of the current track: its
+            value should not depend on whether the track is currently paused or
+            playing.  In fact, if playback is currently paused (and
+            <tp:member-ref>CanControl</tp:member-ref> is <constant>true</constant>),
+            this should be <constant>true</constant>.
+          </para>
+          <para>
+            If <tp:member-ref>CanControl</tp:member-ref> is
+            <constant>false</constant>, this property should also be
+            <constant>false</constant>.
+          </para>
+          <tp:rationale>
+            <para>
+              Not all media is pausable: it may not be possible to pause some
+              streamed media, for example.
+            </para>
+          </tp:rationale>
+        </tp:docstring>
+      </property>
+
+      <property name="CanSeek" tp:name-for-bindings="Can_Seek" type="b" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            Whether the client can control the playback position using
+            <tp:member-ref>Seek</tp:member-ref> and
+            <tp:member-ref>SetPosition</tp:member-ref>.  This may be different for
+            different tracks.
+          </para>
+          <para>
+            If <tp:member-ref>CanControl</tp:member-ref> is
+            <constant>false</constant>, this property should also be
+            <constant>false</constant>.
+          </para>
+          <tp:rationale>
+            <para>
+              Not all media is seekable: it may not be possible to seek when
+              playing some streamed media, for example.
+            </para>
+          </tp:rationale>
+        </tp:docstring>
+      </property>
+
+      <property name="CanControl" tp:name-for-bindings="Can_Control" type="b" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Whether the media player may be controlled over this interface.</para>
+          <para>
+            This property is not expected to change, as it describes an intrinsic
+            capability of the implementation.
+          </para>
+          <para>
+            If this is <constant>false</constant>, clients should assume that all
+            properties on this interface are read-only (and will raise errors
+            if writing to them is attempted), no methods are implemented
+            and all other properties starting with "Can" are also
+            <constant>false</constant>.
+          </para>
+          <tp:rationale>
+            <para>
+              This allows clients to determine whether to present and enable
+              controls to the user in advance of attempting to call methods
+              and write to properties.
+            </para>
+          </tp:rationale>
+        </tp:docstring>
+      </property>
+
+      <signal name="Seeked" tp:name-for-bindings="Seeked">
+        <arg name="Position" type="x" tp:type="Time_In_Us">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>The new position, in microseconds.</para>
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            Indicates that the track position has changed in a way that is
+            inconsistant with the current playing state.
+          </para>
+          <para>When this signal is not received, clients should assume that:</para>
+          <itemizedlist>
+            <listitem><para>
+              When playing, the position progresses according to the rate property.
+            </para></listitem>
+            <listitem><para>When paused, it remains constant.</para></listitem>
+          </itemizedlist>
+          <para>
+            This signal does not need to be emitted when playback starts
+            or when the track changes, unless the track is starting at an
+            unexpected position. An expected position would be the last
+            known one when going from Paused to Playing, and 0 when going from
+            Stopped to Playing.
+          </para>
+        </tp:docstring>
+      </signal>
+    </interface>
+
+    <interface name="org.mpris.MediaPlayer2.TrackList">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>
+          Provides access to a short list of tracks which were recently played or
+          will be played shortly.  This is intended to provide context to the
+          currently-playing track, rather than giving complete access to the
+          media player's playlist.
+        </para>
+        <para>
+          Example use cases are the list of tracks from the same album as the
+          currently playing song or the
+          <link xlink:href="http://projects.gnome.org/rhythmbox/">Rhythmbox</link> play queue.
+        </para>
+        <para>
+          Each track in the tracklist has a unique identifier.
+          The intention is that this uniquely identifies the track within
+          the scope of the tracklist. In particular, if a media item
+          (a particular music file, say) occurs twice in the track list, each
+          occurrence should have a different identifier. If a track is removed
+          from the middle of the playlist, it should not affect the track ids
+          of any other tracks in the tracklist.
+        </para>
+        <para>
+          As a result, the traditional track identifiers of URLs and position
+          in the playlist cannot be used. Any scheme which satisfies the
+          uniqueness requirements is valid, as clients should not make any
+          assumptions about the value of the track id beyond the fact
+          that it is a unique identifier.
+        </para>
+        <para>
+          Note that the (memory and processing) burden of implementing the
+          TrackList interface and maintaining unique track ids for the
+          playlist can be mitigated by only exposing a subset of the playlist when
+          it is very long (the 20 or so tracks around the currently playing
+          track, for example). This is a recommended practice as the tracklist
+          interface is not designed to enable browsing through a large list of tracks,
+          but rather to provide clients with context about the currently playing track.
+        </para>
+      </tp:docstring>
+
+      <method name="GetTracksMetadata" tp:name-for-bindings="Get_Tracks_Metadata">
+        <arg direction="in" name="TrackIds" type="ao" tp:type="Track_Id[]">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>The list of track ids for which metadata is requested.</para>
+          </tp:docstring>
+        </arg>
+        <arg direction="out" type="aa{sv}" tp:type="Metadata_Map[]" name="Metadata">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>Metadata of the set of tracks given as input.</para>
+            <para>See the type documentation for more details.</para>
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Gets all the metadata available for a set of tracks.</para>
+          <para>
+            Each set of metadata must have a "mpris:trackid" entry at the very least,
+            which contains a string that uniquely identifies this track within
+            the scope of the tracklist.
+          </para>
+        </tp:docstring>
+      </method>
+
+      <method name="AddTrack" tp:name-for-bindings="Add_Track">
+        <arg direction="in" type="s" tp:type="Uri" name="Uri">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>
+              The uri of the item to add. Its uri scheme should be an element of the
+              <link linkend="org.mpris.MediaPlayer2.SupportedUriSchemes"><methodname>org.mpris.MediaPlayer2.SupportedUriSchemes</methodname></link>
+              property and the mime-type should match one of the elements of the
+              <methodname>org.mpris.MediaPlayer2.SupportedMimeTypes</methodname>
+            </para>
+          </tp:docstring>
+        </arg>
+        <arg direction="in" type="o" tp:type="Track_Id" name="AfterTrack">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>
+              The identifier of the track after which
+              the new item should be inserted. The path
+              <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+              indicates that the track should be inserted at the
+              start of the track list.
+            </para>
+          </tp:docstring>
+        </arg>
+        <arg direction="in" type="b" name="SetAsCurrent">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>
+              Whether the newly inserted track should be considered as
+              the current track. Setting this to true has the same effect as
+              calling GoTo afterwards.
+            </para>
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Adds a URI in the TrackList.</para>
+          <para>
+            If the <tp:member-ref>CanEditTracks</tp:member-ref> property is false,
+            this has no effect.
+          </para>
+          <para>
+            Note: Clients should not assume that the track has been added at the
+            time when this method returns. They should wait for a TrackAdded (or
+            TrackListReplaced) signal.
+          </para>
+        </tp:docstring>
+      </method>
+
+      <method name="RemoveTrack" tp:name-for-bindings="Remove__Track">
+        <arg direction="in" type="o" tp:type="Track_Id" name="TrackId">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>Identifier of the track to be removed.</para>
+            <para>
+              <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+              is <emphasis>not</emphasis> a valid value for this argument.
+            </para>
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Removes an item from the TrackList.</para>
+          <para>If the track is not part of this tracklist, this has no effect.</para>
+          <para>
+            If the <tp:member-ref>CanEditTracks</tp:member-ref> property is false,
+            this has no effect.
+          </para>
+          <para>
+            Note: Clients should not assume that the track has been removed at the
+            time when this method returns. They should wait for a TrackRemoved (or
+            TrackListReplaced) signal.
+          </para>
+        </tp:docstring>
+      </method>
+
+      <method name="GoTo" tp:name-for-bindings="Go_To">
+        <arg direction="in" type="o" tp:type="Track_Id" name="TrackId">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>Identifier of the track to skip to.</para>
+            <para>
+              <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+              is <emphasis>not</emphasis> a valid value for this argument.
+            </para>
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Skip to the specified TrackId.</para>
+          <para>If the track is not part of this tracklist, this has no effect.</para>
+          <para>
+            If this object is not <literal>/org/mpris/MediaPlayer2</literal>,
+            the current TrackList's tracks should be replaced with the contents of
+            this TrackList, and the TrackListReplaced signal should be fired from
+            <literal>/org/mpris/MediaPlayer2</literal>.
+          </para>
+        </tp:docstring>
+      </method>
+
+      <property name="Tracks" type="ao" tp:type="Track_Id[]" tp:name-for-bindings="Tracks" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="invalidates"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            An array which contains the identifier of each track
+            in the tracklist, in order.
+          </para>
+          <para>
+            The <literal>org.freedesktop.DBus.Properties.PropertiesChanged</literal>
+            signal is emited every time this property changes, but the signal
+            message does not contain the new value.
+
+            Client implementations should rather rely on the
+            <tp:member-ref>TrackAdded</tp:member-ref>,
+            <tp:member-ref>TrackRemoved</tp:member-ref> and
+            <tp:member-ref>TrackListReplaced</tp:member-ref> signals to keep their
+            representation of the tracklist up to date.
+          </para>
+        </tp:docstring>
+      </property>
+
+      <property name="CanEditTracks" type="b" tp:name-for-bindings="Can_Edit_Tracks" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            If <constant>false</constant>, calling
+            <tp:member-ref>AddTrack</tp:member-ref> or
+            <tp:member-ref>RemoveTrack</tp:member-ref> will have no effect,
+            and may raise a NotSupported error.
+          </para>
+        </tp:docstring>
+      </property>
+
+      <signal name="TrackListReplaced" tp:name-for-bindings="Track_List_Replaced">
+        <arg name="Tracks" type="ao" tp:type="Track_Id[]">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>The new content of the tracklist.</para>
+          </tp:docstring>
+        </arg>
+        <arg name="CurrentTrack" type="o" tp:type="Track_Id">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>The identifier of the track to be considered as current.</para>
+            <para>
+              <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+              indicates that there is no current track.
+            </para>
+            <para>
+              This should correspond to the <literal>mpris:trackid</literal> field of the
+              Metadata property of the <literal>org.mpris.MediaPlayer2.Player</literal>
+              interface.
+            </para>
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Indicates that the entire tracklist has been replaced.</para>
+          <para>
+            It is left up to the implementation to decide when
+            a change to the track list is invasive enough that
+            this signal should be emitted instead of a series of
+            TrackAdded and TrackRemoved signals.
+          </para>
+        </tp:docstring>
+      </signal>
+
+      <signal name="TrackAdded" tp:name-for-bindings="Track_Added">
+        <arg type="a{sv}" tp:type="Metadata_Map" name="Metadata">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>The metadata of the newly added item.</para>
+            <para>This must include a mpris:trackid entry.</para>
+            <para>See the type documentation for more details.</para>
+          </tp:docstring>
+        </arg>
+        <arg type="o" tp:type="Track_Id" name="AfterTrack">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>
+              The identifier of the track after which the new track
+              was inserted. The path
+              <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+              indicates that the track was inserted at the
+              start of the track list.
+            </para>
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Indicates that a track has been added to the track list.</para>
+        </tp:docstring>
+      </signal>
+
+      <signal name="TrackRemoved" tp:name-for-bindings="Track_Removed">
+        <arg type="o" tp:type="Track_Id" name="TrackId">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>The identifier of the track being removed.</para>
+            <para>
+              <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+              is <emphasis>not</emphasis> a valid value for this argument.
+            </para>
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Indicates that a track has been removed from the track list.</para>
+        </tp:docstring>
+      </signal>
+
+      <signal name="TrackMetadataChanged" tp:name-for-bindings="Track_Metadata_Changed">
+        <arg type="o" tp:type="Track_Id" name="TrackId">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>The id of the track which metadata has changed.</para>
+            <para>If the track id has changed, this will be the old value.</para>
+            <para>
+              <literal>/org/mpris/MediaPlayer2/TrackList/NoTrack</literal>
+              is <emphasis>not</emphasis> a valid value for this argument.
+            </para>
+          </tp:docstring>
+        </arg>
+        <arg type="a{sv}" tp:type="Metadata_Map" name="Metadata">
+          <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            <para>The new track metadata.</para>
+            <para>
+              This must include a mpris:trackid entry.  If the track id has
+              changed, this will be the new value.
+            </para>
+            <para>See the type documentation for more details.</para>
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            Indicates that the metadata of a track in the tracklist has changed.
+          </para>
+          <para>
+            This may indicate that a track has been replaced, in which case the
+            mpris:trackid metadata entry is different from the TrackId argument.
+          </para>
+        </tp:docstring>
+      </signal>
+    </interface>
+
+    <interface name="org.mpris.MediaPlayer2.Playlists">
+      <tp:docstring xmlns="http://docbook.org/ns/docbook">
+        <para>Provides access to the media player's playlists.</para>
+        <para>
+          Since D-Bus does not provide an easy way to check for what interfaces
+          are exported on an object, clients should attempt to get one of the
+          properties on this interface to see if it is implemented.
+        </para>
+      </tp:docstring>
+
+      <method name="ActivatePlaylist" tp:name-for-bindings="Activate_Playlist">
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            Starts playing the given playlist.
+          </para>
+          <para>
+            Note that this must be implemented.  If the media player does not
+            allow clients to change the playlist, it should not implement this
+            interface at all.
+          </para>
+          <para>
+            It is up to the media player whether this completely replaces the
+            current tracklist, or whether it is merely inserted into the
+            tracklist and the first track starts.  For example, if the media
+            player is operating in a "jukebox" mode, it may just append the
+            playlist to the list of upcoming tracks, and skip to the first
+            track in the playlist.
+          </para>
+        </tp:docstring>
+        <arg direction="in" name="PlaylistId" type="o">
+          <tp:docstring>
+            The id of the playlist to activate.
+          </tp:docstring>
+        </arg>
+      </method>
+
+      <method name="GetPlaylists" tp:name-for-bindings="Get_Playlists">
+        <tp:docstring>
+          Gets a set of playlists.
+        </tp:docstring>
+        <arg direction="in" name="Index" type="u">
+          <tp:docstring>
+            The index of the first playlist to be fetched (according to the ordering).
+          </tp:docstring>
+        </arg>
+        <arg direction="in" name="MaxCount" type="u">
+          <tp:docstring>
+            The maximum number of playlists to fetch.
+          </tp:docstring>
+        </arg>
+        <arg direction="in" name="Order" type="s" tp:type="Playlist_Ordering">
+          <tp:docstring>
+            The ordering that should be used.
+          </tp:docstring>
+        </arg>
+        <arg direction="in" name="ReverseOrder" type="b">
+          <tp:docstring>
+            Whether the order should be reversed.
+          </tp:docstring>
+        </arg>
+        <arg direction="out" name="Playlists" type="a(oss)" tp:type="Playlist[]">
+          <tp:docstring>
+            A list of (at most MaxCount) playlists.
+          </tp:docstring>
+        </arg>
+      </method>
+
+      <property name="PlaylistCount" type="u" tp:name-for-bindings="Playlist_Count" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+            The number of playlists available.
+        </tp:docstring>
+      </property>
+
+      <property name="Orderings" tp:name-for-bindings="Orderings" type="as" tp:type="Playlist_Ordering[]" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            The available orderings.  At least one must be offered.
+          </para>
+          <tp:rationale>
+            <para>
+              Media players may not have access to all the data required for some
+              orderings.  For example, creation times are not available on UNIX
+              filesystems (don't let the ctime fool you!).  On the other hand,
+              clients should have some way to get the "most recent" playlists.
+            </para>
+          </tp:rationale>
+        </tp:docstring>
+      </property>
+
+      <property name="ActivePlaylist" type="(b(oss))" tp:name-for-bindings="Active_Playlist" tp:type="Maybe_Playlist" access="read">
+        <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>
+            The currently-active playlist.
+          </para>
+          <para>
+            If there is no currently-active playlist, the structure's Valid field
+            will be false, and the Playlist details are undefined.
+          </para>
+          <para>
+            Note that this may not have a value even after ActivatePlaylist is
+            called with a valid playlist id as ActivatePlaylist implementations
+            have the option of simply inserting the contents of the playlist into
+            the current tracklist.
+          </para>
+        </tp:docstring>
+      </property>
+
+      <signal name="PlaylistChanged" tp:name-for-bindings="Playlist_Changed">
+        <arg name="Playlist" type="(oss)" tp:type="Playlist">
+          <tp:docstring>
+            The playlist which details have changed.
+          </tp:docstring>
+        </arg>
+        <tp:docstring xmlns="http://docbook.org/ns/docbook">
+          <para>Indicates that either the Name or Icon attribute of a
+             playlist has changed.
+          </para>
+          <para>Client implementations should be aware that this signal
+             may not be implemented.
+          </para>
+          <tp:rationale>
+             Without this signal, media players have no way to notify clients
+             of a change in the attributes of a playlist other than the active one
+          </tp:rationale>
+        </tp:docstring>
+      </signal>
+    </interface>
+  </node>
+</tp:spec>
+<!-- vim:set sw=2 sts=2 et ft=xml: -->

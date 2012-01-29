@@ -67,7 +67,7 @@
             </xsl:for-each>
             <xsl:for-each select="@tp:type">
                 <xsl:variable name="type">
-                    <xsl:call-template name="TpType">
+                    <xsl:call-template name="TpType" mode="EggDBus">
                         <xsl:with-param name="type" select="."/>
                     </xsl:call-template>
                 </xsl:variable>
@@ -122,7 +122,7 @@
     <!-- tp:member to org.gtk.EggDBus.Struct.Member -->
     <xsl:template match="tp:member">
         <xsl:variable name="type">
-            <xsl:call-template name="ResolveType">
+            <xsl:call-template name="ResolveType" mode="EggDBus">
                 <xsl:with-param name="node" select="."/>
             </xsl:call-template>
         </xsl:variable>

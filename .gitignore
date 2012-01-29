@@ -4,3 +4,4 @@
 /doc/html/*.html
 /*-spec-*.tar*
 /spec/reference.xml
+/doc/introspect.xml

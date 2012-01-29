@@ -8,13 +8,19 @@ XSLTPROC = xsltproc
 DBUS_SPEC = spec/org.mpris.MediaPlayer2.xml
 DOCBOOK = spec/specification.xml
 HTMLDIR = doc/html
+INTROSPECT = doc/introspect.xml
 
 DBUS_DOCBOOK = spec/reference.xml
 
 GENERATED_FILES = \
 	$(DBUS_DOCBOOK) \
+	$(INTROSPECT) \
 	$(HTMLDIR)/index.html \
 	FIXME.out
+
+$(INTROSPECT): $(DBUS_SPEC) tools/spec-to-introspect.xsl tools/resolve-type.xsl
+	@echo '  GEN   ' $@
+	@$(XSLTPROC) tools/spec-to-introspect.xsl $(DBUS_SPEC) > $@
 
 $(DBUS_DOCBOOK): $(DBUS_SPEC) tools/spec-to-docbook.xsl tools/resolve-type.xsl
 	@echo '  GEN   ' $@

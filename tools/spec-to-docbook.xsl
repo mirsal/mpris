@@ -550,13 +550,13 @@
       <modifier>
         <xsl:choose>
           <xsl:when test="@access = 'read'">
-            <xsl:text>READ</xsl:text>
+            <xsl:text>Read only</xsl:text>
           </xsl:when>
           <xsl:when test="@access = 'write'">
-            <xsl:text>WRITE</xsl:text>
+            <xsl:text>Write only</xsl:text>
           </xsl:when>
           <xsl:when test="@access = 'readwrite'">
-            <xsl:text>READWRITE</xsl:text>
+            <xsl:text>Read/write</xsl:text>
           </xsl:when>
           <xsl:otherwise>
             <xsl:message terminate="yes">
@@ -571,7 +571,7 @@
         </xsl:choose>
       </modifier>
       <type>
-        <xsl:call-template name="ResolveType">
+        <xsl:call-template name="FullType">
           <xsl:with-param name="node" select="."/>
         </xsl:call-template>
       </type>
@@ -588,13 +588,13 @@
       <modifier>
         <xsl:choose>
           <xsl:when test="@access = 'read'">
-            <xsl:text>READ</xsl:text>
+            <xsl:text>Read only</xsl:text>
           </xsl:when>
           <xsl:when test="@access = 'write'">
-            <xsl:text>WRITE</xsl:text>
+            <xsl:text>Write only</xsl:text>
           </xsl:when>
           <xsl:when test="@access = 'readwrite'">
-            <xsl:text>READWRITE</xsl:text>
+            <xsl:text>Read/write</xsl:text>
           </xsl:when>
           <xsl:otherwise>
             <xsl:message terminate="yes">
@@ -609,15 +609,17 @@
         </xsl:choose>
       </modifier>
       <type>
-        <xsl:call-template name="ResolveType">
+        <xsl:call-template name="FullType">
           <xsl:with-param name="node" select="."/>
         </xsl:call-template>
       </type>
       <varname>
-        <xsl:attribute name="xlink:href">
-          <xsl:value-of select="concat('#', ../@name, '.', @name)"/>
-        </xsl:attribute>
-        <xsl:value-of select="@name"/>
+        <link>
+          <xsl:attribute name="xlink:href">
+            <xsl:value-of select="concat('#', ../@name, '.', @name)"/>
+          </xsl:attribute>
+          <xsl:value-of select="@name"/>
+        </link>
       </varname>
     </fieldsynopsis>
 
@@ -837,7 +839,7 @@
       </xsl:call-template>
       <xsl:text> </xsl:text>
       <type>
-        <xsl:call-template name="ResolveType">
+        <xsl:call-template name="MiniType">
           <xsl:with-param name="node" select="."/>
         </xsl:call-template>
       </type>
@@ -878,8 +880,10 @@
   <xsl:template match="method|signal" mode="funcsynopsislinked">
     <funcprototype>
       <funcdef>
-        <function linkend="{concat(parent::interface//@name, '.', @name)}">
-          <xsl:value-of select="@name"/>
+        <function>
+          <link linkend="{concat(parent::interface//@name, '.', @name)}">
+            <xsl:value-of select="@name"/>
+          </link>
         </function>
       </funcdef>
       <xsl:choose>
@@ -1069,14 +1073,55 @@
     </xsl:if>
   </xsl:template>
 
+  <xsl:template name="TypeLink">
+    <xsl:param name="type"/>
+    <xsl:param name="text"/>
+    <link>
+      <xsl:choose>
+        <xsl:when test="contains($type,'[]')">
+          <xsl:attribute name="linkend">type-<xsl:value-of select="substring-before($type,'[]')" /></xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="linkend">type-<xsl:value-of select="$type" /></xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:value-of select="$text" />
+    </link>
+  </xsl:template>
+
+  <xsl:template name="FullType">
+    <xsl:param name="node"/>
+    <xsl:value-of select="$node/@type" />
+    <xsl:if test="$node/@tp:type">
+      (<xsl:call-template name="TypeLink">
+        <xsl:with-param name="type" select="$node/@tp:type"/>
+        <xsl:with-param name="text" select="$node/@tp:type"/>
+      </xsl:call-template>)
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="MiniType">
+    <xsl:param name="node"/>
+    <xsl:choose>
+      <xsl:when test="$node/@tp:type">
+        <xsl:call-template name="TypeLink">
+          <xsl:with-param name="type" select="$node/@tp:type"/>
+          <xsl:with-param name="text" select="$node/@type"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$node/@type" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <xsl:template match="tp:member" mode="fieldsynopsis">
-    <xsl:variable name="type">
-      <xsl:call-template name="ResolveType">
-        <xsl:with-param name="node" select="."/>
-      </xsl:call-template>
-    </xsl:variable>
     <fieldsynopsis>
-      <type><xsl:value-of select="normalize-space($type)"/></type>
+      <type>
+        <xsl:call-template name="FullType">
+          <xsl:with-param name="node" select="."/>
+        </xsl:call-template>
+      </type>
       <varname><xsl:value-of select="@name"/></varname>
     </fieldsynopsis>
   </xsl:template>

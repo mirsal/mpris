@@ -129,15 +129,15 @@ div.refsynopsisdiv code.fieldsynopsis {
 code.fieldsynopsis span.modifier {
   min-width: 8em;
   display: inline-block;
+  font-style: italic;
 }
 
 code.fieldsynopsis span.type {
-  min-width: 11em;
+  min-width: 15em;
   display: inline-block;
 }
 
 code.fieldsynopsis span.varname {
-  min-width: 11em;
   display: inline-block;
   font-size: 1.1em;
   font-weight: bold;

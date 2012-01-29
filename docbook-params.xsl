@@ -34,9 +34,25 @@
     <xsl:param name="generate.legalnotice.link">1</xsl:param>
     <xsl:param name="html.stylesheet">style.css</xsl:param>
     <xsl:param name="funcsynopsis.style">ansi</xsl:param>
-    <xsl:param name="funcsynopsis.decoration">1</xsl:param>
+    <!-- turn this off to avoid bug in docbook-xsl-stylesheets 1.76.1 -->
+    <xsl:param name="funcsynopsis.decoration">0</xsl:param>
     <xsl:param name="refentry.generate.name">0</xsl:param>
     <xsl:param name="refentry.generate.title">1</xsl:param>
     <xsl:param name="make.year.ranges">1</xsl:param>
 
+    <!-- fixes for docbook-xsl -->
+    <xsl:template match="link|olink|xref" mode="ansi-nontabular">
+      <xsl:apply-templates select="."/>
+    </xsl:template>
+    <xsl:template match="link|olink|xref" mode="ansi-tabular">
+      <xsl:apply-templates select="."/>
+    </xsl:template>
+    <xsl:template match="link|olink|xref" mode="kr-nontabular">
+      <xsl:apply-templates select="."/>
+    </xsl:template>
+    <xsl:template match="link|olink|xref" mode="kr-tabular">
+      <xsl:apply-templates select="."/>
+    </xsl:template>
+
 </xsl:stylesheet>
+<!-- vim:set sw=4 sts=4 et: -->

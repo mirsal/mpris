@@ -26,7 +26,7 @@
 
     <!-- Resolve the type a node has. This will first look at tp:type and
         - if not found - use the type attribute -->
-    <xsl:template name="ResolveType">
+    <xsl:template name="ResolveType" mode="EggDbus">
         <xsl:param name="node"/>
         <xsl:variable name="unstripped">
             <xsl:choose>
@@ -51,7 +51,7 @@
     </xsl:template>
 
     <!-- Map a D-Bus type to its EggDBus counterpart -->
-    <xsl:template name="DBusType">
+    <xsl:template name="DBusType" mode="EggDbus">
         <xsl:param name="type"/>
         <xsl:choose>
             <xsl:when test="$type='o'">ObjectPath</xsl:when>
@@ -96,12 +96,12 @@
 
     <!-- Resolve tp:type attributes by searching for matching tp:struct
             and tp:mapping elements -->
-    <xsl:template name="TpType">
+    <xsl:template name="TpType" mode="EggDbus">
         <xsl:param name="type"/>
         <xsl:choose>
             <xsl:when test="contains($type,'[]')">
                 Array&lt;
-                <xsl:call-template name="TpType">
+                <xsl:call-template name="TpType" mode="EggDbus">
                     <xsl:with-param name="type" select="substring-before($type,'[]')"/>
                 </xsl:call-template>
                 &gt;
@@ -109,12 +109,12 @@
             <xsl:otherwise>
                 <xsl:choose>
                     <xsl:when test="/tp:spec/tp:simple-type[@name=$type]">
-                        <xsl:call-template name="DBusType">
+                        <xsl:call-template name="DBusType" mode="EggDbus">
                             <xsl:with-param name="type" select="/tp:spec/tp:simple-type[@name=$type]//@type"/>
                         </xsl:call-template>
                     </xsl:when>
                     <xsl:when test="/tp:spec/tp:enum[@name=$type]">
-                        <xsl:call-template name="DBusType">
+                        <xsl:call-template name="DBusType" mode="EggDbus">
                             <xsl:with-param name="type" select="/tp:spec/tp:enum[@name=$type]//@type"/>
                         </xsl:call-template>
                     </xsl:when>
@@ -123,10 +123,10 @@
                     </xsl:when>
                     <xsl:when test="/tp:spec/tp:mapping[@name=$type]">
                         Dict&lt;
-                        <xsl:call-template name="ResolveType">
+                        <xsl:call-template name="ResolveType" mode="EggDbus">
                             <xsl:with-param name="node" select="/tp:spec/tp:mapping[@name=$type]/tp:member[position()=1]"/>
                         </xsl:call-template>,
-                        <xsl:call-template name="ResolveType">
+                        <xsl:call-template name="ResolveType" mode="EggDbus">
                             <xsl:with-param name="node" select="/tp:spec/tp:mapping[@name=$type]/tp:member[position()=2]"/>
                         </xsl:call-template>
                         &gt;
@@ -141,3 +141,4 @@
         </xsl:choose>
     </xsl:template>
 </xsl:stylesheet>
+<!-- vim:set et sts=4 sw=4: -->

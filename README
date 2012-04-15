@@ -9,6 +9,7 @@ developed with the assumption that it would be applied to audio
 players.
 
   <http://www.mpris.org>
+  <http://specifications.freedesktop.org/mpris-spec/latest/>
 
 Requirements
 ============
@@ -23,15 +24,15 @@ Bugs, feature requests and to-do list
 =====================================
 
 Report all errata, feature requests and "to-do" items here:
-  <mailto:mpris@videolan.org>,
+  <mailto:mpris@lists.freedesktop.org>,
 
-  (mailman: <http://mailman.videolan.org/listinfo/mpris>)
+  (mailman: <http://lists.freedesktop.org/mailman/listinfo/mpris>)
 
 Hacking
 =======
 
 The current development version of mpris-spec is available from the
 'master' branch in the git repository:
-  <git://gitorious.org/mpris/mainline.git>
+  <git://anongit.freedesktop.org/xdg/mpris-spec>
 
-  See also <http://gitorious.org/projects/mpris>.
+  See also <http://cgit.freedesktop.org/xdg/mpris-spec>.

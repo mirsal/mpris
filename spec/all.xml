@@ -75,7 +75,11 @@
           </ul>
         </dd>
         <dt>From 2.0 to 2.1:</dt>
-        <dd>Added the optional <b>org.mpris.MediaPlayer2.Playlists</b> interface.</dd>
+        <dd>
+          <ul>
+            <li>Added the optional <b>org.mpris.MediaPlayer2.Playlists</b> interface.</li>
+          </ul>
+        </dd>
       </dl>
     </tp:docstring>
   </tp:section>

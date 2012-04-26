@@ -61,10 +61,9 @@
           provided using the "mpris:artUrl" key.  For other metadata, fields
           defined by the
           <a href="http://xesam.org/main/XesamOntology">Xesam ontology</a>
-          should be used, prefixed by "xesam:".  See
-          <a href="http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata">
-            http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata
-          </a> for a list of common fields.
+          should be used, prefixed by "xesam:".  See the
+          <a href="http://www.freedesktop.org/wiki/Specifications/mpris-spec/metadata">metadata page on the freedesktop.org wiki</a>
+          for a list of common fields.
         </p>
         <p>
           Lists of strings should be passed using the array-of-string ("as")
@@ -77,10 +76,9 @@
       <tp:member type="s" name="Attribute">
         <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
           <p>
-            The name of the attribute; see
-            <a href="http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata">
-              http://wiki.xmms2.xmms.se/wiki/MPRIS_Metadata
-            </a> for guidelines on names to use.
+            The name of the attribute; see the
+            <a href="http://www.freedesktop.org/wiki/Specifications/mpris-spec/metadata">metadata page</a>
+            for guidelines on names to use.
           </p>
         </tp:docstring>
       </tp:member>

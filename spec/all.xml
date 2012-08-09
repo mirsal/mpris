@@ -84,25 +84,16 @@
     </tp:docstring>
   </tp:section>
 
-  <!-- (Only list corrections to the current version)
   <tp:section name="Corrections">
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
       <ul>
         <li>
-          2010-09-26: Added EmitsChangedSignal annotation to Volume property
-          on the Player interface.
-        </li>
-        <li>
-          2011-01-26: Added PlaylistChanged signal to the Playlists interface.
-        </li>
-        <li>
-          2011-11-04: Clarified the type of the mpris:trackid entry in the
-          Metadata property of the Player interface.
+          2012-08-07: Clarified behaviour of the Play method
+          of the Player interface when paused.
         </li>
       </ul>
     </tp:docstring>
   </tp:section>
--->
 
   <tp:section name="Bus Name Policy">
     <tp:docstring xmlns="http://www.w3.org/1999/xhtml">

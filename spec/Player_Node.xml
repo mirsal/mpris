@@ -194,6 +194,7 @@
       <tp:docstring xmlns="http://www.w3.org/1999/xhtml">
         <p>Starts or resumes playback.</p>
         <p>If already playing, this has no effect.</p>
+        <p>If paused, playback resumes from the current position.</p>
         <p>If there is no track to play, this has no effect.</p>
         <p>
           If <tp:member-ref>CanPlay</tp:member-ref> is

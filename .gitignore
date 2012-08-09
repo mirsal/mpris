@@ -8,3 +8,7 @@
 /*-spec-*.tar*
 /test/output
 /tmp
+
+# ignore files from other branches
+/spec/reference.xml
+/spec/html/
